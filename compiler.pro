@@ -20,10 +20,16 @@ CONFIG(debug, debug|release) {
 
 SOURCES += main.cpp \
     utils.cpp \
-    tokenizer.cpp
+    pretokenizer.cpp \
+    token.cpp \
+    unicode.cpp
 
 HEADERS += \
     utils.hpp \
     constants.hpp \
-    tokenizer.hpp
+    pretokenizer.hpp \
+    token.hpp \
+    unicode.hpp \
+    ipretokenstream.hpp \
+    debugpretokenstream.hpp
 

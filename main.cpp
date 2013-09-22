@@ -2,13 +2,11 @@
 #include <cstdio>
 #include <iostream>
 #include <fstream>
+#include <vector>
 
-#include "tokenizer.hpp"
-
-namespace Compiler
-{
-
-} // Compiler
+#include "constants.hpp"
+#include "pretokenizer.hpp"
+#include "debugpretokenstream.hpp"
 
 void ShowHelp()
 {
@@ -29,8 +27,8 @@ int main(int argc, char** argv)
     using namespace Compiler;
 
     if (argc == 1
-            || argv[1] == std::string("-h")
-            || argv[1] == std::string("--help"))
+            || argv[1] == string("-h")
+            || argv[1] == string("--help"))
     {
         ShowHelp();
         return EXIT_SUCCESS;
@@ -38,7 +36,15 @@ int main(int argc, char** argv)
 
     try
     {
-        Tokenizer tokenizer(); //argv[1]
+        ifstream inputFile;
+        inputFile.open(argv[1], ios::binary | ios::ate);
+        ifstream::pos_type fileSize = inputFile.tellg();
+        inputFile.seekg(0, ios::beg);
+        vector<char> input(fileSize);
+        inputFile.read(&input[0], fileSize);
+
+        DebugPreTokenStream output;
+        PreTokenizer pretokenizer(input, output);
     }
     catch (exception& e)
     {

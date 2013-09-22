@@ -2,7 +2,7 @@
 
 namespace Compiler
 {
-    class Tokenizer
+    class Token
     {
     public:
 

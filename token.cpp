@@ -1,5 +1,4 @@
-#include "tokenizer.hpp"
-#include "utils.hpp"
+#include "token.hpp"
 
 namespace Compiler
 {
