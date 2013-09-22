@@ -1,0 +1,6 @@
+/Makefile
+/Makefile.Debug
+/Makefile.Release
+/temp/debug/obj
+
+/temp/release/obj
