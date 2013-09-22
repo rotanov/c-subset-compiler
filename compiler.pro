@@ -31,5 +31,6 @@ HEADERS += \
     tokenizer.hpp \
     unicode.hpp \
     ipretokenstream.hpp \
-    debugpretokenstream.hpp
+    debugpretokenstream.hpp \
+    debugtokenoutputstream.hpp
 

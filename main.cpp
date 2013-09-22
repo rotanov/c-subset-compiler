@@ -6,7 +6,9 @@
 
 #include "constants.hpp"
 #include "pretokenizer.hpp"
+#include "tokenizer.hpp"
 #include "debugpretokenstream.hpp"
+#include "debugtokenoutputstream.hpp"
 
 void ShowHelp()
 {
@@ -43,8 +45,11 @@ int main(int argc, char** argv)
         vector<char> input(fileSize);
         inputFile.read(&input[0], fileSize);
 
-        DebugPreTokenStream output;
-        PreTokenizer pretokenizer(input, output);
+//        DebugPreTokenStream debugPreTokenStream;
+        DebugTokenOutputStream debugTokenOutputStream;
+        Tokenizer tokenizer(debugTokenOutputStream);
+//        PreTokenizer pretokenizer(input, debugPreTokenStream);
+        PreTokenizer pretokenizer(input, tokenizer);
     }
     catch (exception& e)
     {
