@@ -59,7 +59,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    string UTF8CodePointToString(int *c, int start, int end)
+    string UTF8CodePointToString(const int *c, int start, int end)
     {
         int i = 0;
         char* utf8 = new char[(end - start + 1) * 4 + 1];
@@ -338,13 +338,18 @@ namespace Compiler
         Split(s, '|', prefixes);
         for (auto prefix : prefixes)
         {
-            int matched = MatchPrefix(prefix, where);
-            if (matched == prefix.size())
+            if (MatchPrefix(prefix, where))
             {
-                return matched;
+                return prefix.size();
             }
         }
         return 0;
+    }
+
+//------------------------------------------------------------------------------
+    string UTF8CodePointToString(const int *source, size_t size)
+    {
+        return UTF8CodePointToString(source, 0, size);
     }
 
 

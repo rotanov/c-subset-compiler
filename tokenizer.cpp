@@ -1,6 +1,7 @@
 #include "tokenizer.hpp"
 
 #include <iostream>
+#include <climits>
 
 #include "unicode.hpp"
 
@@ -12,8 +13,10 @@ namespace Compiler
     Tokenizer::Tokenizer(DebugTokenOutputStream &output)
         : output_(output)
         , codePoints_(NULL)
-        , codePointsAllocated_(NULL)
         , codePointsCount_(0)
+        , codePointsAllocated_(NULL)
+        , line_(1)
+        , column_(1)
     {
         codePointsAllocated_ = 512;
         codePoints_ = new int[codePointsAllocated_];
@@ -26,33 +29,40 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    void Tokenizer::emit_whitespace_sequence()
+    void Tokenizer::EmitWhitespaceSequence(const int rowOffset)
     {
-
+        column_ += rowOffset;
     }
 
 //------------------------------------------------------------------------------
-    void Tokenizer::emit_new_line()
+    void Tokenizer::EmitNewLine()
     {
-
+        line_++;
+        column_ = 1;
     }
 
 //------------------------------------------------------------------------------
-    void Tokenizer::emit_identifier(const string &data)
+    void Tokenizer::EmitIdentifier(const int* data, size_t size)
     {
         FlushAdjacentStringLiterals_();
-        if (StringToTokenTypeMap.find(data) != StringToTokenTypeMap.end())
+        string utf8Data = UTF8CodePointToString(data, size);
+        if (StringToKeywordTypeMap.find(utf8Data) != StringToKeywordTypeMap.end())
         {
-            output_.emit_simple(data, StringToTokenTypeMap.find(data)->second);
+            output_.EmitKeyword(utf8Data, StringToKeywordTypeMap.find(utf8Data)->second, line_, column_);
+        }
+        else if (StringToPunctuationTypeMap.find(utf8Data) != StringToPunctuationTypeMap.end())
+        {
+            output_.EmitPunctuation(utf8Data, StringToPunctuationTypeMap.find(utf8Data)->second, line_, column_);
         }
         else
         {
-            output_.emit_identifier(data);
+            output_.EmitIdentifier(utf8Data, line_, column_);
         }
+        column_ += utf8Data.size();
     }
 
 //------------------------------------------------------------------------------
-    void Tokenizer::emit_pp_number(const string &data)
+    void Tokenizer::EmitPpNumber(const string &data)
     {
         FlushAdjacentStringLiterals_();
         DecodeInput_(data);
@@ -69,8 +79,6 @@ namespace Compiler
         int state = START;
         unsigned long long intValue = 0;
         float floatValue = 0.0;
-        EFundamentalType type = FT_INVALID;
-        int* floatPartEnd = 0;
         int base = 0;
 
         int i = 0;
@@ -92,7 +100,7 @@ namespace Compiler
                 {
                     if (!IsDigit(where[1]))
                     {
-                        output_.emit_invalid(data);
+                        output_.EmitInvalid(data, line_, column_);
                         return;
                     }
                     i++;
@@ -143,7 +151,7 @@ namespace Compiler
                 }
                 else
                 {
-                    output_.emit_invalid(data);
+                    output_.EmitInvalid(data, line_, column_);
                     return;
                 }
                 break;
@@ -159,7 +167,7 @@ namespace Compiler
                 }
                 if (i == j)
                 {
-                    output_.emit_invalid(data);
+                    output_.EmitInvalid(data, line_, column_);
                     return;
                 }
                 state = FINISH;
@@ -201,7 +209,7 @@ namespace Compiler
                 }
                 else
                 {
-                    output_.emit_invalid(data);
+                    output_.EmitInvalid(data, line_, column_);
                     return;
                 }
                 break;
@@ -213,14 +221,8 @@ namespace Compiler
         }
         if (i != codePointsCount_)
         {
-            output_.emit_invalid(data);
+            output_.EmitInvalid(data, line_, column_);
             return;
-        }
-
-        string floatString = "";
-        if (floatPartEnd != 0)
-        {
-            floatString = UTF8CodePointToString(codePoints_, 0, floatPartEnd - codePoints_);
         }
 
         if (base != 0)
@@ -236,42 +238,49 @@ namespace Compiler
                                 reinterpret_cast<wchar_t**>(&where), base);
             if (errno == ERANGE || whereWas == where)
             {
-                output_.emit_invalid(data);
+                output_.EmitInvalid(data, line_, column_);
                 return;
             }
             if (intValue <= INT_MAX)
             {
                 int t = intValue;
-                output_.emit_literal(data, FT_INT, &t, sizeof(t));
+                output_.EmitLiteral(data, FT_INT, &t, sizeof(t), line_, column_);
             }
             else
             {
-                output_.emit_invalid(data);
+                output_.EmitInvalid(data, line_, column_);
                 return;
             }
         }
         else
         {
+            string floatString = "";
+            floatString = UTF8CodePointToString(codePoints_, 0, i);//where - codePoints_);
             floatValue = DecodeFloat(floatString);
-            output_.emit_literal(data, FT_FLOAT, &floatValue, sizeof(floatValue));
+            output_.EmitLiteral(data, FT_FLOAT, &floatValue, sizeof(floatValue), line_, column_);
+//            double doubleValue = DecodeDouble(floatString);
+//            output_.EmitLiteral(data, FT_DOUBLE, &doubleValue, sizeof(doubleValue), line_, row_);
         }
+        column_ += codePointsCount_;
     }
 
 //------------------------------------------------------------------------------
-    void Tokenizer::emit_character_literal(const string &data)
+    void Tokenizer::EmitCharacterLiteral(const string &data)
     {
         FlushAdjacentStringLiterals_();
         DecodeInput_(data);
         codePointsCount_ = ReplaceEscapeSequences(codePoints_);
 
-        if (codePointsCount_ > 3 && codePoints_[0] == '\'' || codePointsCount_ > 4)
+        if ((codePointsCount_ > 3 && codePoints_[0] == '\'')
+                || codePointsCount_ > 4)
         {
-            output_.emit_invalid(data);
+            output_.EmitInvalid(data, line_, column_);
             cerr << "ERROR: multi code point character literals not supported: " << data << endl;
         }
-        else if (codePointsCount_ <= 2 || codePointsCount_ == 3 && codePoints_[0] != '\'')
+        else if ((codePointsCount_ == 3 && codePoints_[0] != '\'')
+                 || codePointsCount_ <= 2)
         {
-            output_.emit_invalid(data);
+            output_.EmitInvalid(data, line_, column_);
             cerr << "ERROR: Empty character literal." << data << endl;
         }
         else
@@ -281,22 +290,23 @@ namespace Compiler
                 if (codePoints_[1] < 0x80)
                 {
                     char t = codePoints_[1];
-                    output_.emit_literal(data, FT_CHAR, &t, 1);
+                    output_.EmitLiteral(data, FT_CHAR, &t, 1, line_, column_);
                 }
                 else if (codePoints_[1] <= 0x10FFFF)
                 {
-                    output_.emit_literal(data, FT_INT, codePoints_ + 1, 4);
+                    output_.EmitLiteral(data, FT_INT, codePoints_ + 1, 4, line_, column_);
                 }
                 else
                 {
-                    output_.emit_invalid(data);
+                    output_.EmitInvalid(data, line_, column_);
                 }
             }
         }
+        column_ += codePointsCount_;
     }
 
 //------------------------------------------------------------------------------
-    void Tokenizer::emit_string_literal(const string &data)
+    void Tokenizer::EmitStringLiteral(const string &data)
     {
         DecodeInput_(data);
         StringLiteralRecord r;
@@ -319,40 +329,49 @@ namespace Compiler
 
         r.codePoints.insert(r.codePoints.end(), begin, end + 1);
         PushStringRecord_(r);
+        column_ += codePointsCount_;
     }
 
 //------------------------------------------------------------------------------
-    void Tokenizer::emit_preprocessing_op_or_punc(const string &data)
+    void Tokenizer::EmitPunctuation(const string &data)
     {
         FlushAdjacentStringLiterals_();
-        if (StringToTokenTypeMap.find(data) != StringToTokenTypeMap.end())
+        if (StringToPunctuationTypeMap.find(data) != StringToPunctuationTypeMap.end())
         {
-            output_.emit_simple(data, StringToTokenTypeMap.find(data)->second);
+            output_.EmitPunctuation(data, StringToPunctuationTypeMap.find(data)->second, line_, column_);
         }
         else
         {
-            output_.emit_invalid(data);
+            output_.EmitInvalid(data, line_, column_);
         }
+        column_ += data.size();
     }
 
 //------------------------------------------------------------------------------
-    void Tokenizer::emit_non_whitespace_char(const string &data)
+    void Tokenizer::EmitNonWhitespaceChar(const string &data)
     {
         FlushAdjacentStringLiterals_();
-        output_.emit_invalid(data);
+        output_.EmitInvalid(data, line_, column_);
+        column_++;
     }
 
 //------------------------------------------------------------------------------
-    void Tokenizer::emit_eof()
+    void Tokenizer::EmitEof()
     {
         FlushAdjacentStringLiterals_();
-        output_.emit_eof();
+        output_.EmitEof();
+    }
+
+//------------------------------------------------------------------------------
+    void Tokenizer::Flush()
+    {
+        FlushAdjacentStringLiterals_();
     }
 
 //------------------------------------------------------------------------------
     void Tokenizer::DecodeInput_(const string &data)
     {
-        int i = 0;
+        unsigned i = 0;
         codePointsCount_ = 0;
         int* utf8Data = new int [data.size()];
 
@@ -398,7 +417,7 @@ namespace Compiler
         }
 
         string commonData = "";
-        for (int i = 0; i < stringLiterals_.size(); i++)
+        for (unsigned i = 0; i < stringLiterals_.size(); i++)
         {
             commonData += stringLiterals_[i].data;
             if (i != stringLiterals_.size() - 1)
@@ -408,7 +427,7 @@ namespace Compiler
         }
 
         vector<int> codePoints;
-        for (int i = 0; i < stringLiterals_.size(); i++)
+        for (unsigned i = 0; i < stringLiterals_.size(); i++)
         {
             StringLiteralRecord& l = stringLiterals_[i];
             codePoints.insert(codePoints.end(), l.codePoints.begin(), l.codePoints.end());
@@ -416,7 +435,7 @@ namespace Compiler
 
         int j = 0;
         char* data = new char [codePoints.size() * 4 + 1];
-        int i = 0;
+        unsigned i = 0;
         while (i < codePoints.size())
         {
             j += UTF8Encode(codePoints[i], data + j);
@@ -424,7 +443,7 @@ namespace Compiler
         }
         data[j] = 0;
         j++;
-        output_.emit_literal_array(data, j, FT_CHAR, data, j);
+        output_.EmitLiteralArray(data, j, FT_CHAR, data, j, line_, column_);
         delete [] data;
         stringLiterals_.clear();
     }

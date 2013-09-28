@@ -12,10 +12,11 @@ namespace Compiler
 //------------------------------------------------------------------------------
     PreTokenizer::PreTokenizer(const std::vector<char> &input, IPreTokenStream &output)
         : state_(TS_START)
+        , pos_(0)
         , sourceSize_(input.size() + 1)
         , output_(output)
         , outStart_(0)
-        , pos_(0)
+        , whitespaceSequenceBegin_(0)
     {
         source_ = new int [sourceSize_];
         for (unsigned i = 0; i < input.size(); i++)
@@ -27,7 +28,7 @@ namespace Compiler
         DecodeUTF_();
         ProcessTrigraphs_();
 // No Universal Character Names
-//        ProcessUCN_();
+//      ProcessUCN_();
         ProcessSplicing_();
         Process_();
     }
@@ -110,6 +111,7 @@ namespace Compiler
                 if (IsWhiteSpace(c))
                 {
                     state_ = TS_WHITESPACE;
+                    whitespaceSequenceBegin_ = pos_;
                     pos_++;
                 }
 //------------------------------------------------------------------------------
@@ -127,7 +129,7 @@ namespace Compiler
 //------------------------------------------------------------------------------
                 else if (c == '\n')
                 {
-                    output_.emit_new_line();
+                    output_.EmitNewLine();
                     pos_++;
                 }
 //------------------------------------------------------------------------------
@@ -194,7 +196,7 @@ namespace Compiler
                         string s = UTF8CodePointToString(source_, pos_, pos_ + i - 1);
                         if (Punctuation[i - 1].count(s) > 0)
                         {
-                            output_.emit_preprocessing_op_or_punc(s);
+                            output_.EmitPunctuation(s);
                             pos_ += i;
                             puncFound = true;
                             break;
@@ -206,7 +208,7 @@ namespace Compiler
                         break;
                     }
 
-                    output_.emit_non_whitespace_char(UTF8CodePointToString(c));
+                    output_.EmitNonWhitespaceChar(UTF8CodePointToString(c));
                     pos_++;
                 }
                 break;
@@ -215,15 +217,15 @@ namespace Compiler
 //------------------------------------------------------------------------------
                 if (c == '\n')
                 {
-                    output_.emit_whitespace_sequence();
-                    output_.emit_new_line();
+                    output_.EmitWhitespaceSequence(pos_ - whitespaceSequenceBegin_);
+                    output_.EmitNewLine();
                     pos_++;
                     state_ = TS_START;
                 }
 //------------------------------------------------------------------------------
                 else if (c == EndOfFile)
                 {
-                    output_.emit_whitespace_sequence();
+                    output_.EmitWhitespaceSequence(pos_ - whitespaceSequenceBegin_);
                     state_ = TS_FINISHED;
                 }
 //------------------------------------------------------------------------------
@@ -237,16 +239,24 @@ namespace Compiler
 //------------------------------------------------------------------------------
                 if (MatchPrefix("*/", where))
                 {
-                    output_.emit_whitespace_sequence();
+                    output_.EmitWhitespaceSequence(pos_ - whitespaceSequenceBegin_ + 2);
                     pos_ += 2;
                     state_ = TS_START;
                 }
 //------------------------------------------------------------------------------
                 else if (c == EndOfFile)
                 {
+                    output_.Flush();
                     throw logic_error("Partial inline comment.");
                 }
 //------------------------------------------------------------------------------
+                else if (c == '\n')
+                {
+                    output_.EmitNewLine();
+                    pos_++;
+                    whitespaceSequenceBegin_ = pos_;
+                }
+                //------------------------------------------------------------------------------
                 else
                 {
                     pos_++;
@@ -269,15 +279,15 @@ namespace Compiler
 //------------------------------------------------------------------------------
                 else if (c == '\n')
                 {
-                    output_.emit_whitespace_sequence();
-                    output_.emit_new_line();
+                    output_.EmitWhitespaceSequence(pos_ - whitespaceSequenceBegin_);
+                    output_.EmitNewLine();
                     pos_++;
                     state_ = TS_START;
                 }
 //------------------------------------------------------------------------------
                 else
                 {
-                    output_.emit_whitespace_sequence();
+                    output_.EmitWhitespaceSequence(pos_ - whitespaceSequenceBegin_);
                     state_ = TS_START;
                     if (c == EndOfFile)
                     {
@@ -296,8 +306,7 @@ namespace Compiler
 //------------------------------------------------------------------------------
                 else
                 {
-                    string identifier = UTF8CodePointToString(source_, outStart_, pos_ - 1);
-                    output_.emit_identifier(identifier);
+                    output_.EmitIdentifier(source_ + outStart_, pos_ - outStart_ - 1);
                     state_ = TS_START;
                     if (c == EndOfFile)
                     {
@@ -311,13 +320,14 @@ namespace Compiler
                 // ignoring escape sequences and stuff for now
                 if (c == '\'')
                 {
-                    output_.emit_character_literal(UTF8CodePointToString(source_, outStart_, pos_));
+                    output_.EmitCharacterLiteral(UTF8CodePointToString(source_, outStart_, pos_));
                     state_ = TS_START;
                     pos_++;
                 }
 //------------------------------------------------------------------------------
                 else if (c == '\n')
                 {
+                    output_.Flush();
                     throw logic_error("Newline in character literal");
                 }
 //------------------------------------------------------------------------------
@@ -326,6 +336,7 @@ namespace Compiler
                     int escapeSequenceMatched = MatchEscapeSequence(where + 1);
                     if (escapeSequenceMatched == 0)
                     {
+                        output_.Flush();
                         throw logic_error("Invalid escape sequence.");
                     }
                     else
@@ -356,13 +367,12 @@ namespace Compiler
                         || matched > 0
                         || c == '.')
                 {
-                    matched = matched == 0 ? 1 : matched;
-                    pos_ += matched;
+                    pos_ += matched == 0 ? 1 : matched;
                 }
 //------------------------------------------------------------------------------
                 else
                 {
-                    output_.emit_pp_number(UTF8CodePointToString(source_, outStart_, pos_ - 1));
+                    output_.EmitPpNumber(UTF8CodePointToString(source_, outStart_, pos_ - 1));
                     if (c == EndOfFile)
                     {
                         state_ = TS_FINISHED;
@@ -379,12 +389,13 @@ namespace Compiler
 //------------------------------------------------------------------------------
                 if (c == '"')
                 {
-                    output_.emit_string_literal(UTF8CodePointToString(source_, outStart_, pos_));
+                    output_.EmitStringLiteral(UTF8CodePointToString(source_, outStart_, pos_));
                     state_ = TS_START;
                     pos_++;
                 }
                 else if (c == '\n')
                 {
+                    output_.Flush();
                     throw logic_error("Newline in string literal");
                 }
                 else if (c == '\\')
@@ -392,6 +403,7 @@ namespace Compiler
                     int escapeSequenceMatched = MatchEscapeSequence(where + 1);
                     if (escapeSequenceMatched == 0)
                     {
+                        output_.Flush();
                         throw logic_error("Invalid escape sequence.");
                     }
                     else
@@ -401,12 +413,19 @@ namespace Compiler
                 }
                 else if (c == EndOfFile)
                 {
+                    output_.Flush();
                     throw logic_error("Unfinished string literal");
                 }
                 else
                 {
                     pos_++;
                 }
+                break;
+
+            case TS_FINISHED:
+            default:
+                output_.Flush();
+                throw logic_error("Reached unreachable state.");
                 break;
             }
         }
@@ -419,24 +438,24 @@ namespace Compiler
                 {
                     if (*(source_ + pos_ - 1) == '\n')
                     {
-                        output_.emit_new_line();
+                        output_.EmitNewLine();
                     }
                 }
                 if (*(source_ + pos_ - 1) != '\n')
                 {
-                    output_.emit_new_line();
+                    output_.EmitNewLine();
                 }
             }
             else
             {
                 if (*(source_ + pos_ - 1) != '\n')
                 {
-                    output_.emit_new_line();
+                    output_.EmitNewLine();
                 }
             }
         }
 
-        output_.emit_eof();
+        output_.EmitEof();
     }
 
 } // namespace Compiler

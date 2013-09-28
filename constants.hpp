@@ -174,8 +174,7 @@ namespace Compiler
         OP_ARROW,
     };
 
-    // StringToETokenTypeMap map of `simple` `preprocessing-tokens` to ETokenType
-    const unordered_map<string, ETokenType> StringToTokenTypeMap =
+    const unordered_map<string, ETokenType> StringToKeywordTypeMap =
     {
         // keywords
         {"auto", KW_AUTO},
@@ -211,7 +210,10 @@ namespace Compiler
         {"void", KW_VOID},
         {"volatile", KW_VOLATILE},
         {"while", KW_WHILE},
+    };
 
+    const unordered_map<string, ETokenType> StringToPunctuationTypeMap =
+    {
         // operators/punctuation
         {"{", OP_LBRACE},
         {"<%", OP_LBRACE},
@@ -278,7 +280,7 @@ namespace Compiler
     };
 
     // map of enum to string
-    const map<ETokenType, string> TokenTypeToStringMap =
+    const map<ETokenType, string> KeywordTypeToStringMap =
     {
         {KW_AUTO, "KW_AUTO"},
         {KW_BREAK, "KW_BREAK"},
@@ -313,6 +315,10 @@ namespace Compiler
         {KW_VOID, "KW_VOID"},
         {KW_VOLATILE, "KW_VOLATILE"},
         {KW_WHILE, "KW_WHILE"},
+    };
+
+    const map<ETokenType, string> PunctuationTypeToStringMap =
+    {
         {OP_LBRACE, "OP_LBRACE"},
         {OP_RBRACE, "OP_RBRACE"},
         {OP_LSQUARE, "OP_LSQUARE"},

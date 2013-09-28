@@ -1,6 +1,8 @@
 #pragma once
 
 #include <iostream>
+#include <exception>
+#include <sstream>
 
 #include "constants.hpp"
 #include "utils.hpp"
@@ -9,41 +11,62 @@ namespace Compiler
 {
     using std::cout;
     using std::endl;
+    using std::logic_error;
+    using std::stringstream;
 
     struct DebugTokenOutputStream
     {
-        // output: invalid <source>
-        void emit_invalid(const string& source)
+        // output: <line>-<column>: invalid <source>
+        void EmitInvalid(const string& source, const int line, const int column)
         {
-            cout << "invalid " << source << endl;
+            stringstream ss;
+            ss << "Invalid token at " << line << "-" << column << ": " + source;
+            throw logic_error(ss.str());
+            cout << line << "-" << column << ": " << "invalid " << source << endl;
         }
 
-        // output: simple <source> <token_type>
-        void emit_simple(const string& source, ETokenType token_type)
+        // output: <line>-<column>: keyword <token_type> <source>
+        void EmitKeyword(const string& source, ETokenType token_type,
+                         const int line, const int column)
         {
-            cout << "simple " << source << " " << TokenTypeToStringMap.at(token_type) << endl;
+            cout << line << "-" << column << ": " << cout << "keyword "
+                 << KeywordTypeToStringMap.at(token_type) << " " << source << endl;
         }
 
-        // output: identifier <source>
-        void emit_identifier(const string& source)
+        // output: <line>-<column>: punctuation <token_type> <source>
+        void EmitPunctuation(const string& source, ETokenType token_type,
+                             const int line, const int column)
         {
-            cout << "identifier " << source << endl;
+            cout << line << "-" << column << ": " << "punctuation "
+                 << PunctuationTypeToStringMap.at(token_type) << " " << source <<  endl;
         }
 
-        // output: literal <source> <type> <hexdump(data,nbytes)>
-        void emit_literal(const string& source, EFundamentalType type, const void* data, size_t nbytes)
+        // output: <line>-<column>: identifier <source>
+        void EmitIdentifier(const string& source, const int line, const int column)
         {
-            cout << "literal " << source << " " << FundamentalTypeToStringMap.at(type) << " " << HexDump(data, nbytes) << endl;
+            cout << line << "-" << column << ": " << "identifier " << " " << source << endl;
         }
 
-        // output: literal <source> array of <num_elements> <type> <hexdump(data,nbytes)>
-        void emit_literal_array(const string& source, size_t num_elements, EFundamentalType type, const void* data, size_t nbytes)
+        // output: <line>-<column>: literal <type> <source> <hexdump(data,nbytes)>
+        void EmitLiteral(const string& source, EFundamentalType type, const void* data,
+                         size_t nbytes, const int line, const int column)
         {
-            cout << "literal " << source << " array of " << num_elements << " " << FundamentalTypeToStringMap.at(type) << " " << HexDump(data, nbytes) << endl;
+            cout << line << "-" << column << ": " << "literal " << " " << FundamentalTypeToStringMap.at(type)
+                 << " " << source << " " << HexDump(data, nbytes) << endl;
+        }
+
+        // output: <line>-<column>: literal <source> array of <num_elements> <type> <hexdump(data,nbytes)>
+        void EmitLiteralArray(const string& source, size_t num_elements,
+                              EFundamentalType type, const void* data, size_t nbytes,
+                              const int line, const int column)
+        {
+            cout << line << "-" << column << ": " << "literal " << source << " array of "
+                 << num_elements << " " << FundamentalTypeToStringMap.at(type)
+                 << " " << HexDump(data, nbytes) << endl;
         }
 
         // output : eof
-        void emit_eof()
+        void EmitEof()
         {
             cout << "eof" << endl;
         }

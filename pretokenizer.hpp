@@ -38,6 +38,7 @@ namespace Compiler
         int* source_;
         IPreTokenStream& output_;
         int outStart_;
+        int whitespaceSequenceBegin_;
 
         void DecodeUTF_();
         void ProcessTrigraphs_();

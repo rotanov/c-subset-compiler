@@ -45,10 +45,13 @@ int main(int argc, char** argv)
         vector<char> input(fileSize);
         inputFile.read(&input[0], fileSize);
 
+//        pretokenizer debug output
 //        DebugPreTokenStream debugPreTokenStream;
+//        PreTokenizer pretokenizer(input, debugPreTokenStream);
+
+//        tokenizer output
         DebugTokenOutputStream debugTokenOutputStream;
         Tokenizer tokenizer(debugTokenOutputStream);
-//        PreTokenizer pretokenizer(input, debugPreTokenStream);
         PreTokenizer pretokenizer(input, tokenizer);
     }
     catch (exception& e)

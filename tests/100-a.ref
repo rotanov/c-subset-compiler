@@ -1,0 +1,16 @@
+1-1: identifier  a
+2-1: identifier  b
+3-1: identifier  ab
+3-4: identifier  ab
+4-1: identifier  a
+4-3: identifier  b
+5-1: identifier  a
+5-2: literal  char 'a' 61
+5-5: identifier  a
+8-1: identifier  test1
+8-7: identifier  test2
+8-27: identifier  test3
+9-1: identifier  test4
+11-20: identifier  test5
+12-1: identifier  test6
+eof

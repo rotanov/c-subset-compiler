@@ -1,4 +1,4 @@
-#include "Unicode.hpp"
+#include "unicode.hpp"
 
 int UTF8Encode(int codePoint, char* out)
 {
@@ -130,7 +130,7 @@ int UTF16Encode(int codePoint, char16_t* out)
     }
 }
 
-int UTF16Decode(int* in, int& out)
+int UTF16Decode(int* /*in*/, int& /*out*/)
 {
     throw std::runtime_error("Not implemented");
 }
