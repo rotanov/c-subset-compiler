@@ -18,19 +18,25 @@ CONFIG(debug, debug|release) {
     TARGET = compiler-release
 }
 
-SOURCES += main.cpp \
-    utils.cpp \
-    pretokenizer.cpp \
-    unicode.cpp \
-    tokenizer.cpp
+win32-* {
+    CONFIG += static debug
+}
+
+SOURCES += src/main.cpp \
+    src/utils.cpp \
+    src/PreTokenizer.cpp \
+    src/unicode.cpp \
+    src/Tokenizer.cpp \
+    src/SimpleExpressionParser.cpp
 
 HEADERS += \
-    utils.hpp \
-    constants.hpp \
-    pretokenizer.hpp \
-    tokenizer.hpp \
-    unicode.hpp \
-    ipretokenstream.hpp \
-    debugpretokenstream.hpp \
-    debugtokenoutputstream.hpp
+    src/utils.hpp \
+    src/constants.hpp \
+    src/PreTokenizer.hpp \
+    src/Tokenizer.hpp \
+    src/unicode.hpp \
+    src/IPreTokenStream.hpp \
+    src/DebugPreTokenStream.hpp \
+    src/DebugTokenOutputStream.hpp \
+    src/SimpleExpressionParser.hpp
 

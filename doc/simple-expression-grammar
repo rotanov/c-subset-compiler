@@ -1,0 +1,18 @@
+Simple Expression Grammar
+
+expression
+    term
+    term '+' expression
+    term '-' expression
+
+term
+    factor
+    factor '+' term
+    factor '/' term
+
+factor
+    integer-literal
+    floating-literal
+    character-literal
+    identifier
+    '(' expression ')'
