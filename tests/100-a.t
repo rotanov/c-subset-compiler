@@ -1,3 +1,4 @@
+(a + a) * (a - b)
 a
 b
 ab ab

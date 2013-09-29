@@ -4,13 +4,14 @@
 #include <climits>
 
 #include "unicode.hpp"
+#include "utils.hpp"
 
 namespace Compiler
 {
     using std::cerr;
 
 //------------------------------------------------------------------------------
-    Tokenizer::Tokenizer(DebugTokenOutputStream &output)
+    Tokenizer::Tokenizer(ITokenStream &output)
         : output_(output)
         , codePoints_(NULL)
         , codePointsCount_(0)
@@ -275,13 +276,13 @@ namespace Compiler
                 || codePointsCount_ > 4)
         {
             output_.EmitInvalid(data, line_, column_);
-            cerr << "ERROR: multi code point character literals not supported: " << data << endl;
+            cerr << "ERROR: multi code point character literals not supported: " << data << std::endl;
         }
         else if ((codePointsCount_ == 3 && codePoints_[0] != '\'')
                  || codePointsCount_ <= 2)
         {
             output_.EmitInvalid(data, line_, column_);
-            cerr << "ERROR: Empty character literal." << data << endl;
+            cerr << "ERROR: Empty character literal." << data << std::endl;
         }
         else
         {

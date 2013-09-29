@@ -7,7 +7,7 @@ expression
 
 term
     factor
-    factor '+' term
+    factor '*' term
     factor '/' term
 
 factor
@@ -16,3 +16,39 @@ factor
     character-literal
     identifier
     '(' expression ')'
+
+
+
+Node ParseExpression()
+{
+    L = ParseTerm();
+    N = Next()
+    if (N is + or -)
+    {
+        return new Node(L, N, ParseExpression());
+    }
+}
+
+Node ParseTerm()
+{
+    L = ParseFactor();
+    N = Next()
+    if (N is * or /)
+    {
+        return new Node(L, N, ParseTerm());
+    }
+    else if N is empty
+    {
+        return new Node(L);
+    }
+}
+
+ParseFactor()
+{
+    N = Next()
+    if Next is literal return lieral node
+    else if Next is '('
+        ParseE()
+        ensure Next() is ')'
+
+}

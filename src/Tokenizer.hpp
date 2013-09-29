@@ -1,14 +1,14 @@
 #pragma once
 
-#include "ipretokenstream.hpp"
-#include "debugtokenoutputstream.hpp"
+#include "IPreTokenStream.hpp"
+#include "ITokenStream.hpp"
 
 namespace Compiler
 {
     class Tokenizer : public IPreTokenStream
     {
     public:
-        Tokenizer(DebugTokenOutputStream& output);
+        Tokenizer(ITokenStream& output);
         virtual ~Tokenizer();
 
         virtual void EmitWhitespaceSequence(const int rowOffset);
@@ -29,7 +29,7 @@ namespace Compiler
             vector<int> codePoints;
         };
 
-        DebugTokenOutputStream& output_;
+        ITokenStream& output_;
         int* codePoints_;
         int codePointsCount_;
         unsigned codePointsAllocated_;

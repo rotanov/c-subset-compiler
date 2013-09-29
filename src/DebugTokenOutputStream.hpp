@@ -4,6 +4,7 @@
 #include <exception>
 #include <sstream>
 
+#include "ITokenStream.hpp"
 #include "constants.hpp"
 #include "utils.hpp"
 
@@ -14,7 +15,7 @@ namespace Compiler
     using std::logic_error;
     using std::stringstream;
 
-    struct DebugTokenOutputStream
+    struct DebugTokenOutputStream : public ITokenStream
     {
         // output: <line>-<column>: invalid <source>
         void EmitInvalid(const string& source, const int line, const int column)

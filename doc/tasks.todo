@@ -1,6 +1,9 @@
- compiler-application:
-   ☐ command line options for tokenizer, simple-expression AST builder
-   ☐ do not load whole source file in memory, block-process it instead
+compiler-project:
+  ☐ proper testing mechanism
+
+compiler-application:
+  ☐ command line options for tokenizer, simple-expression AST builder
+  ☐ do not load whole source file in memory, block-process it instead
 
 tokenizer:
   ☐ pass int* between interfaces

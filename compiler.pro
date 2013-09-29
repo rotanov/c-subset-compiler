@@ -38,5 +38,6 @@ HEADERS += \
     src/IPreTokenStream.hpp \
     src/DebugPreTokenStream.hpp \
     src/DebugTokenOutputStream.hpp \
-    src/SimpleExpressionParser.hpp
+    src/SimpleExpressionParser.hpp \
+    src/ITokenStream.hpp
 

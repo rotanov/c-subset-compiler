@@ -84,7 +84,7 @@ namespace Compiler
         Punctuation1, Punctuation2, Punctuation3, Punctuation4,
     };
 
-    // token type enum for `simples`
+    // token type enum for
     enum ETokenType
     {
         // keywords
@@ -172,6 +172,11 @@ namespace Compiler
         OP_COMMA,
         OP_ARROWSTAR,
         OP_ARROW,
+
+        // for consistency
+        TT_IDENTIFIER,
+        TT_LITERAL,
+        TT_EOF,
     };
 
     const unordered_map<string, ETokenType> StringToKeywordTypeMap =
