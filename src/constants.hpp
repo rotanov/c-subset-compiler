@@ -176,6 +176,8 @@ namespace Compiler
         // for consistency
         TT_IDENTIFIER,
         TT_LITERAL,
+        TT_INVALID,
+        TT_LITERAL_ARRAY,
         TT_EOF,
     };
 

@@ -32,28 +32,6 @@ Author: Denis Rotanov, B8303A
 
 int main(int argc, char** argv)
 {
-
-        std::async(std::launch::async, [](){
-            std::cout << "countdown:\n";
-            std::chrono::seconds one_second(1);
-            for (int i=10; i>0; --i) {
-              std::cout << i << '\n';
-              std::this_thread::sleep_for (one_second);
-            }
-            std::cout << "Lift off!\n";
-        });
-
-        std::async(std::launch::async, [](){
-            std::cout << "countdown:\n";
-            std::chrono::seconds one_second(2);
-            for (int i=10; i>0; --i) {
-              std::cout << i << '\n';
-              std::this_thread::sleep_for (one_second);
-            }
-            std::cout << "Lift off!\n";
-        });
-
-
     using namespace std;
     using namespace Compiler;
 
@@ -86,16 +64,7 @@ int main(int argc, char** argv)
 //        simlpe expression parser AST
         SimpleExpressionParser simpleExpressionParser;
         Tokenizer tokenizer(simpleExpressionParser);
-        std::thread([&] () {PreTokenizer pretokenizer(input, tokenizer);}).join();
-
-//        std::thread f(&SimpleExpressionParser::Run, &simpleExpressionParser);
-//        f.join();
-        std::future<ASTNode*> rootFuture = std::async(std::launch::async,
-            &SimpleExpressionParser::ParseExpression, &simpleExpressionParser);
-        ASTNode* root = rootFuture.get();
-        std::cout << (int)root;
-//        simpleExpressionParser.Run();
-
+        PreTokenizer pretokenizer(input, tokenizer);
     }
     catch (exception& e)
     {
