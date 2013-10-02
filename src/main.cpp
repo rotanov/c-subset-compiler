@@ -26,7 +26,7 @@ or:    compiler [OPTION]
 
   -h, --help, no options    display this help and exit
 
-Author: Denis Rotanov, B8303A
+Author: Denis Rotanov, B8303A, FEFU
 )";
 }
 
@@ -73,7 +73,7 @@ int main(int argc, char** argv)
     }
     catch (...)
     {
-        cerr << "Unhandled exception.";
+        cerr << "ERROR: unknown exception";
         return EXIT_FAILURE;
     }
 

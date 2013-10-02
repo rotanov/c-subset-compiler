@@ -5,6 +5,7 @@
 #include <functional>
 #include <queue>
 #include <iostream>
+#include <algorithm>
 
 namespace Compiler
 {
@@ -87,36 +88,62 @@ namespace Compiler
             unsigned depth;
         };
 
-        auto depth = 0;
-        std::function<unsigned(ASTNode*, PrintTreeNode*)> f = [&](ASTNode* next, PrintTreeNode* print) -> unsigned
+        std::vector<int> offsetByDepth;
+        offsetByDepth.resize(1);
+        offsetByDepth[0] = 0;
+
+        unsigned depth = 0;
+
+        std::function<unsigned(ASTNode*, PrintTreeNode*, int)> f = [&](ASTNode* next, PrintTreeNode* print, int estimate) -> unsigned
         {
             if (next != NULL)
             {
+                if (offsetByDepth.size() < depth + 1)
+                {
+                    offsetByDepth.resize(depth + 1, 0);
+                }
+                int spaceCount = estimate - offsetByDepth[depth];
+
                 if (next->GetLeft() == NULL
                         && next->GetRight() == NULL)
                 {
                     if (print != NULL)
                     {
-                        print->text = next->token.value + ' ';
-                        print->length = next->token.value.size() + 1;
+                        print->text = std::string(spaceCount, ' ') + next->token.value;
+                        print->length = next->token.value.size() + spaceCount;
                         print->depth = depth;
+                        offsetByDepth[depth] += print->length;
                     }
-                    return print->length;
+                    return print->length - spaceCount;
                 }
                 else
                 {
                     print->left = new PrintTreeNode;
                     print->right = new PrintTreeNode;
+
                     depth++;
-                    unsigned length = f(next->GetLeft(), print->left) + f(next->GetRight(), print->right);
+                    unsigned leftLength = f(next->GetLeft(), print->left, estimate);
+                    unsigned rightLength = f(next->GetRight(), print->right, estimate + leftLength + 1);
                     depth--;
+
+                    int sizeBoth = *std::max_element(offsetByDepth.begin() + depth, offsetByDepth.end()) - estimate - rightLength + 1;
+
                     if (print != NULL)
                     {
-                        print->text = next->token.value + std::string(print->left->length, '-') + std::string(print->right->length - 1, ' ');
+                        print->text = std::string(spaceCount, ' ')
+//                                + std::string((sizeBoth - 1) / 2 - 1, '-')
+//                                + ' '
+                                + next->token.value
+//                                + ' '
+//                                + std::string((sizeBoth - 1) / 2 - 1, '-');
+
+                                + std::string(sizeBoth - 1, '-');
                         print->depth = depth;
-                        print->length = length;
+                        print->length = sizeBoth;
+                        offsetByDepth[depth] += print->length + spaceCount;
                     }
-                    return length;
+
+                    return sizeBoth;
                 }
             }
             else
@@ -126,7 +153,7 @@ namespace Compiler
         };
 
         PrintTreeNode printRoot;
-        f(root, &printRoot);
+        f(root, &printRoot, 0);
 
         std::queue<PrintTreeNode*> queue;
         queue.push(&printRoot);
