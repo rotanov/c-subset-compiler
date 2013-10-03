@@ -6,3 +6,17 @@
 /temp/release/obj
 
 /test-driver/debug
+
+/bin/compiler-debug.exe
+/bin/compiler-release.exe
+/bin/test-driver-debug.exe
+/compiler.pro.mx7108
+/compiler.pro.user.1b2b83e
+/compiler.pro.user.717f303.2.7pre1
+/test-driver/Makefile
+/test-driver/Makefile.Debug
+/test-driver/Makefile.Release
+/test-driver/object_script.test-driver-debug.Debug
+/test-driver/object_script.test-driver-release.Release
+/test-driver/test-driver.pro.user
+/vc110.pdb
