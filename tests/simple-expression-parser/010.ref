@@ -1,0 +1,8 @@
++---------
+|        |
++------  d
+|     |   
++---  c
+|  |   
+a  b
+ERROR: unexpected token at 1-12

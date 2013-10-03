@@ -30,7 +30,7 @@ namespace Compiler
         void EmitKeyword(const string& source, ETokenType token_type,
                          const int line, const int column)
         {
-            cout << line << "-" << column << ": " << cout << "keyword "
+            cout << line << "-" << column << ": " << "keyword "
                  << KeywordTypeToStringMap.at(token_type) << " " << source << endl;
         }
 

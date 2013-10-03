@@ -1,15 +1,10 @@
 #include "MainWindow.hpp"
 #include "ui_mainwindow.h"
 
-//#include <exception>
-//#include <cstdlib>
-//#include <iostream>
-//#include <map>
-//#include <string>
-//#include <functional>
 #include <cassert>
 
 #include <QTextCodec>
+#include <QLabel>
 #include <QFont>
 #include <QObject>
 #include <QRegExp>
@@ -22,6 +17,7 @@
 #include <QInputDialog>
 #include <QFile>
 #include <QTextStream>
+#include <QSettings>
 
 #include "constants.hpp"
 #include "PreTokenizer.hpp"
@@ -112,11 +108,14 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , mode_(CM_TOKENIZER)
+    , qlStatus_(NULL)
 
 {
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 
     ui->setupUi(this);
+    qlStatus_ = new QLabel;
+    ui->statusBar->addWidget(qlStatus_);
 
     tests_.resize(COMPILER_MODE_COUNT);
     testIndexes_.resize(COMPILER_MODE_COUNT, 0);
@@ -165,6 +164,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     SetMode_(mode_);
     UpdateTest_();
+    showMaximized();
 }
 
 MainWindow::~MainWindow()
@@ -214,6 +214,8 @@ void MainWindow::UpdateTest_()
     QFile referenceFile(filename + QString(".ref"));
     assert(referenceFile.open(QIODevice::ReadWrite));
     ui->qpteReference->setPlainText(referenceFile.readAll());
+    qlStatus_->setText(filename + ".t " + ui->qpteInput->textCursor().positionInBlock());
+
 }
 
 void MainWindow::on_action_New_triggered()
@@ -232,11 +234,13 @@ void MainWindow::on_action_Save_triggered()
                    << qSetFieldWidth(3)
                    << qSetPadChar('0')
                    << testIndexes_[mode_]
-                   << qSetFieldWidth(0)
-                   << QString(".t");
-    QFile file(filename);
-    assert(file.open(QIODevice::ReadWrite));
-    ui->qpteInput->setPlainText(file.readAll());
+                   << qSetFieldWidth(0);
+    QFile fileInput(filename + ".t");
+    assert(fileInput.open(QIODevice::ReadWrite));
+    fileInput.write(ui->qpteInput->toPlainText().toUtf8());
+    QFile fileReference(filename + ".ref");
+    assert(fileReference.open(QIODevice::ReadWrite));
+    fileReference.write(ui->qpteReference->toPlainText().toUtf8());
 }
 
 void MainWindow::on_action_Next_triggered()

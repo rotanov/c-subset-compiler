@@ -1,4 +1,3 @@
-(a + a) * (a - b)
 a
 b
 ab ab
@@ -11,3 +10,7 @@ test4 /* comment
 comment comment
 comment comment */ test5
 test6
+mment comment */ test5
+test6
+
+

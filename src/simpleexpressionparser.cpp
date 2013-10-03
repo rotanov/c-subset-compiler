@@ -6,6 +6,7 @@
 #include <queue>
 #include <iostream>
 #include <algorithm>
+#include <cassert>
 
 namespace Compiler
 {
@@ -45,7 +46,14 @@ namespace Compiler
         if (token == OP_PLUS
                 || token == OP_MINUS)
         {
-            return new ASTNode(token, left, ParseExpression_());
+            while (token == OP_PLUS
+                    || token == OP_MINUS)
+            {
+                left = new ASTNode(token, left, ParseTerm_());
+                token = GetNextToken_();
+            }
+            pos_--;
+            return left;
         }
         else
         {
@@ -73,8 +81,8 @@ namespace Compiler
         struct PrintTreeNode
         {
             PrintTreeNode()
-                : length(0)
-                , left(NULL)
+//                : length(0)
+                : left(NULL)
                 , right(NULL)
                 , depth(0)
             {
@@ -82,19 +90,22 @@ namespace Compiler
             }
 
             std::string text;
-            unsigned length;
+//            unsigned length;
             PrintTreeNode* left;
             PrintTreeNode* right;
             unsigned depth;
         };
 
         std::vector<int> offsetByDepth;
+//        std::vector<std::string> outputLines;
         offsetByDepth.resize(1);
         offsetByDepth[0] = 0;
 
         unsigned depth = 0;
+        const int spacing = 2;
 
-        std::function<unsigned(ASTNode*, PrintTreeNode*, int)> f = [&](ASTNode* next, PrintTreeNode* print, int estimate) -> unsigned
+        std::function<unsigned(ASTNode*, PrintTreeNode*, int)> f =
+                [&](ASTNode* next, PrintTreeNode* print, int estimate) -> unsigned
         {
             if (next != NULL)
             {
@@ -103,18 +114,19 @@ namespace Compiler
                     offsetByDepth.resize(depth + 1, 0);
                 }
                 int spaceCount = estimate - offsetByDepth[depth];
+                if (spaceCount == 1)
+                {
+                    spaceCount = 2;
+                }
 
                 if (next->GetLeft() == NULL
                         && next->GetRight() == NULL)
                 {
-                    if (print != NULL)
-                    {
-                        print->text = std::string(spaceCount, ' ') + next->token.value;
-                        print->length = next->token.value.size() + spaceCount;
-                        print->depth = depth;
-                        offsetByDepth[depth] += print->length;
-                    }
-                    return print->length - spaceCount;
+                    assert(print !=NULL);
+                    print->text = std::string(spaceCount, ' ') + next->token.value;
+                    print->depth = depth;
+                    offsetByDepth[depth] += next->token.value.size() + spaceCount;
+                    return next->token.value.size();
                 }
                 else
                 {
@@ -123,27 +135,21 @@ namespace Compiler
 
                     depth++;
                     unsigned leftLength = f(next->GetLeft(), print->left, estimate);
-                    unsigned rightLength = f(next->GetRight(), print->right, estimate + leftLength + 1);
+
+                    int maxLeft = *std::max_element(offsetByDepth.begin() + depth, offsetByDepth.end());
+
+                    unsigned rightLength = f(next->GetRight(), print->right, maxLeft + spacing);
                     depth--;
 
-                    int sizeBoth = *std::max_element(offsetByDepth.begin() + depth, offsetByDepth.end()) - estimate - rightLength + 1;
+                    assert(print != NULL);
 
-                    if (print != NULL)
-                    {
-                        print->text = std::string(spaceCount, ' ')
-//                                + std::string((sizeBoth - 1) / 2 - 1, '-')
-//                                + ' '
-                                + next->token.value
-//                                + ' '
-//                                + std::string((sizeBoth - 1) / 2 - 1, '-');
+                    print->text = std::string(spaceCount, ' ')
+                                  + next->token.value
+                                  + std::string(maxLeft + spacing - estimate, '-');
+                    print->depth = depth;
+                    offsetByDepth[depth] += next->token.value.size() + maxLeft + spacing - estimate + spaceCount;
 
-                                + std::string(sizeBoth - 1, '-');
-                        print->depth = depth;
-                        print->length = sizeBoth;
-                        offsetByDepth[depth] += print->length + spaceCount;
-                    }
-
-                    return sizeBoth;
+                    return maxLeft;
                 }
             }
             else
@@ -181,6 +187,45 @@ namespace Compiler
             {
                 std::cout << std::endl;
                 depth = queue.front()->depth;
+                for (auto node : line)
+                {
+                    if (node->left == NULL
+                            || node->right == NULL)
+                    {
+                        std::cout << std::string(node->text.size(), ' ');
+                        continue;
+                    }
+                    bool flag = false;
+                    for (int i = 0; i < node->text.size(); i++)
+                    {
+                        if (!flag)
+                        {
+                            if (node->text[i] != ' ')
+                            {
+                                std::cout << '|';
+                                flag = true;
+                            }
+                            else
+                            {
+                                std::cout << ' ';
+                            }
+                        }
+                        else
+                        {
+                            if (i == node->text.size() - 1)
+                            {
+                                std::cout << '|';
+                            }
+                            else
+                            {
+                                std::cout << ' ';
+                            }
+                        }
+
+                    }
+                }
+                std::cout << std::endl;
+                line.clear();
             }
         }
     }
@@ -190,16 +235,14 @@ namespace Compiler
         ASTNode* left = ParseFactor_();
         Token token = GetNextToken_();
 
-        if (token == OP_STAR
+        while (token == OP_STAR
                 || token == OP_DIV)
         {
-            return new ASTNode(token, left, ParseTerm_());
+            left = new ASTNode(token, left, ParseFactor_());
+            token = GetNextToken_();
         }
-        else
-        {
-            pos_--;
-            return left;
-        }
+        pos_--;
+        return left;
     }
 
     ASTNode *SimpleExpressionParser::ParseFactor_()
@@ -236,22 +279,17 @@ namespace Compiler
         }
     }
 
-    void SimpleExpressionParser::EmitInvalid(const string &source, const int line,
-                                             const int column)
+    void SimpleExpressionParser::EmitInvalid(const string &source, const int line, const int column)
     {
         ThrowInvalidTokenError_(Token(TT_INVALID, source, line, column));
     }
 
-    void SimpleExpressionParser::EmitKeyword(const string &source,
-                                             ETokenType token_type,
-                                             const int line, const int column)
+    void SimpleExpressionParser::EmitKeyword(const string &source, ETokenType token_type, const int line, const int column)
     {
         ThrowInvalidTokenError_(Token(token_type, source, line, column));
     }
 
-    void SimpleExpressionParser::EmitPunctuation(const string &source,
-                                                 ETokenType token_type,
-                                                 const int line, const int column)
+    void SimpleExpressionParser::EmitPunctuation(const string &source, ETokenType token_type, const int line, const int column)
     {
         const std::unordered_set<int> validTokenTypes =
         {
@@ -275,8 +313,7 @@ namespace Compiler
         }
     }
 
-    void SimpleExpressionParser::EmitIdentifier(const string &source,
-                                                const int line, const int column)
+    void SimpleExpressionParser::EmitIdentifier(const string &source, const int line, const int column)
     {
         Token token(TT_IDENTIFIER, source, line, column);
         tokens_.push_back(token);

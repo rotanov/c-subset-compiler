@@ -13,4 +13,10 @@
 9-1: identifier  test4
 11-20: identifier  test5
 12-1: identifier  test6
+13-1: identifier  mment
+13-7: identifier  comment
+13-15: punctuation OP_STAR *
+13-16: punctuation OP_DIV /
+13-18: identifier  test5
+14-1: identifier  test6
 eof

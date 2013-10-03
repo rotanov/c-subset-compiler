@@ -4,6 +4,8 @@
 
 #include <QMainWindow>
 
+class QLabel;
+
 namespace Ui
 {
     class MainWindow;
@@ -61,6 +63,7 @@ private:
     CompilerMode mode_;
     std::vector<int> testIndexes_;
     std::vector<std::vector<TestInfo>> tests_;
+    QLabel* qlStatus_;
 
     void CompareOutputWithReference_();
     void SetMode_(const CompilerMode& mode);
