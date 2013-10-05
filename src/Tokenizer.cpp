@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <climits>
+#include <cstdlib>
 
 #include "unicode.hpp"
 #include "utils.hpp"
@@ -235,8 +236,10 @@ namespace Compiler
                 where += 2;
             }
             int* whereWas = where;
-            intValue = wcstoull(reinterpret_cast<wchar_t*>(where),
-                                reinterpret_cast<wchar_t**>(&where), base);
+
+            std::wstring str = UTF8CodePointToWString(where, 0, codePointsCount_ - 1);
+            wchar_t* pstr = &str[0];
+            intValue = wcstoull(pstr, &pstr, base);
             if (errno == ERANGE || whereWas == where)
             {
                 output_.EmitInvalid(data, line_, column_);
@@ -257,10 +260,10 @@ namespace Compiler
         {
             string floatString = "";
             floatString = UTF8CodePointToString(codePoints_, 0, i);//where - codePoints_);
-            floatValue = DecodeFloat(floatString);
-            output_.EmitLiteral(data, FT_FLOAT, &floatValue, sizeof(floatValue), line_, column_);
-//            double doubleValue = DecodeDouble(floatString);
-//            output_.EmitLiteral(data, FT_DOUBLE, &doubleValue, sizeof(doubleValue), line_, row_);
+//            floatValue = DecodeFloat(floatString);
+//            output_.EmitLiteral(data, FT_FLOAT, &floatValue, sizeof(floatValue), line_, column_);
+            double doubleValue = DecodeDouble(floatString);
+            output_.EmitLiteral(data, FT_DOUBLE, &doubleValue, sizeof(doubleValue), line_, column_);
         }
         column_ += codePointsCount_;
     }
@@ -276,13 +279,13 @@ namespace Compiler
                 || codePointsCount_ > 4)
         {
             output_.EmitInvalid(data, line_, column_);
-            cerr << "ERROR: multi code point character literals not supported: " << data << std::endl;
+//            cerr << "ERROR: multi code point character literals not supported: " << data << std::endl;
         }
         else if ((codePointsCount_ == 3 && codePoints_[0] != '\'')
                  || codePointsCount_ <= 2)
         {
             output_.EmitInvalid(data, line_, column_);
-            cerr << "ERROR: Empty character literal." << data << std::endl;
+//            cerr << "ERROR: Empty character literal." << data << std::endl;
         }
         else
         {

@@ -1,10 +1,9 @@
-user-defined-string-literal 8 "foo"abc
-new-line 0 
-user-defined-string-literal 9 "foo"_abc
-new-line 0 
-user-defined-string-literal 4 ""_w
-new-line 0 
-user-defined-string-literal 5 "a"_w
-new-line 0 
-new-line 0 
+...2-..6: literal foo array of 4 char 666F6F00
+...2-..6: identifier  abc
+...3-..6: literal foo array of 4 char 666F6F00
+...3-..6: identifier  _abc
+...4-..3: literal  array of 1 char 00
+...4-..3: identifier  _w
+...5-..4: literal a array of 2 char 6100
+...5-..4: identifier  _w
 eof

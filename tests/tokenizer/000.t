@@ -12,9 +12,3 @@ comment comment */ test5
 test6
 mment comment */ test5
 test6
-
-
-st5
-test6
-
-

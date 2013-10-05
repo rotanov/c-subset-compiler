@@ -1,4 +1,5 @@
-1-1: identifier  foo
-1-5: literal  float 1.0e2 0000C842
-1-11: punctuation OP_STARASS *=
-3-1: literal bar array of 4 char 62617200
+...1-..1: identifier  foo
+...1-..5: literal float 1.0e2 0000C842
+...1-.11: punctuation OP_STARASS *=
+...3-..1: literal bar array of 4 char 62617200
+ERROR: unterminated inline comment

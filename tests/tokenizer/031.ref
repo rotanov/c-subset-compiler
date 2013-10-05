@@ -1,0 +1,149 @@
+...2-..1: punctuation OP_LBRACE {
+...2-..3: punctuation OP_RBRACE }
+...2-..5: punctuation OP_LSQUARE [
+...2-..7: punctuation OP_RSQUARE ]
+...2-..9: punctuation OP_LPAREN (
+...2-.11: punctuation OP_RPAREN )
+...2-.13: punctuation OP_LSQUARE <:
+...2-.16: punctuation OP_RSQUARE :>
+...2-.19: punctuation OP_LBRACE <%
+...2-.22: punctuation OP_RBRACE %>
+...2-.25: punctuation OP_SEMICOLON ;
+...2-.27: punctuation OP_COLON :
+...2-.29: punctuation OP_DOTS ...
+...2-.33: punctuation OP_QMARK ?
+...3-..1: punctuation OP_COLON :
+...3-..2: punctuation OP_COLON :
+...3-..4: punctuation OP_DOT .
+...3-..6: punctuation OP_DOT .
+...3-..7: punctuation OP_STAR *
+...3-..9: punctuation OP_PLUS +
+...3-.11: punctuation OP_MINUS -
+...3-.13: punctuation OP_STAR *
+...3-.15: punctuation OP_DIV /
+...3-.17: punctuation OP_MOD %
+...3-.19: punctuation OP_XOR ^
+...3-.21: punctuation OP_AMP &
+...3-.23: punctuation OP_BOR |
+...3-.25: punctuation OP_COMPL ~
+...3-.27: punctuation OP_LNOT !
+...3-.29: punctuation OP_ASS =
+...3-.31: punctuation OP_LT <
+...3-.33: punctuation OP_GT >
+...3-.35: punctuation OP_PLUSASS +=
+...4-..1: punctuation OP_MINUSASS -=
+...4-..4: punctuation OP_STARASS *=
+...4-..7: punctuation OP_DIVASS /=
+...4-.10: punctuation OP_MODASS %=
+...4-.13: punctuation OP_XORASS ^=
+...4-.16: punctuation OP_BANDASS &=
+...4-.19: punctuation OP_BORASS |=
+...4-.22: punctuation OP_LSHIFT <<
+...5-..1: punctuation OP_RSHIFT >>
+...5-..4: punctuation OP_RSHIFTASS >>=
+...5-..8: punctuation OP_LSHIFTASS <<=
+...5-.12: punctuation OP_EQ ==
+...5-.15: punctuation OP_NE !=
+...5-.18: punctuation OP_LE <=
+...5-.21: punctuation OP_GE >=
+...5-.24: punctuation OP_LAND &&
+...5-.27: punctuation OP_LOR ||
+...5-.30: punctuation OP_INC ++
+...5-.33: punctuation OP_DEC --
+...5-.36: punctuation OP_COMMA ,
+...6-..1: punctuation OP_ARROW ->
+...6-..3: punctuation OP_STAR *
+...7-..1: punctuation OP_ARROW ->
+...7-..4: identifier  and
+...7-..8: identifier  and_eq
+...7-.15: identifier  bitand
+...8-..1: identifier  bitor
+...8-..7: identifier  compl
+...8-.13: identifier  not
+...8-.17: identifier  not_eq
+...8-.24: identifier  or
+...8-.27: identifier  or_eq
+...8-.33: identifier  xor
+...8-.37: identifier  xor_eq
+..11-..1: identifier  new
+..11-..5: identifier  delete
+..11-.12: identifier  alignas
+..11-.20: identifier  alignof
+..11-.28: identifier  asm
+..11-.32: keyword KW_AUTO auto
+..11-.37: identifier  bool
+..12-..1: keyword KW_BREAK break
+..12-..7: keyword KW_CASE case
+..12-.12: identifier  catch
+..12-.18: keyword KW_CHAR char
+..13-..1: identifier  char16_t
+..13-.10: identifier  char32_t
+..13-.19: identifier  class
+..13-.25: keyword KW_CONST const
+..13-.31: identifier  constexpr
+..14-..1: identifier  const_cast
+..14-.12: keyword KW_CONTINUE continue
+..14-.21: identifier  decltype
+..15-..1: keyword KW_DEFAULT default
+..15-..9: identifier  delete
+..15-.16: keyword KW_DO do
+..15-.19: keyword KW_DOUBLE double
+..15-.26: identifier  dynamic_cast
+..16-..1: keyword KW_ELSE else
+..16-..6: keyword KW_ENUM enum
+..16-.11: identifier  explicit
+..16-.20: identifier  export
+..16-.27: keyword KW_EXTERN extern
+..17-..1: identifier  false
+..17-..7: keyword KW_FLOAT float
+..17-.13: keyword KW_FOR for
+..17-.17: identifier  friend
+..17-.24: keyword KW_GOTO goto
+..17-.29: keyword KW_IF if
+..17-.32: keyword KW_INLINE inline
+..18-..1: keyword KW_INT int
+..18-..5: keyword KW_LONG long
+..18-.10: identifier  mutable
+..18-.18: identifier  namespace
+..18-.28: identifier  new
+..19-..1: identifier  noexcept
+..19-.10: identifier  nullptr
+..19-.18: identifier  operator
+..19-.27: identifier  private
+..20-..1: identifier  protected
+..20-.11: identifier  public
+..20-.18: keyword KW_REGISTER register
+..20-.27: identifier  reinterpret_cast
+..21-..1: keyword KW_RETURN return
+..21-..8: keyword KW_SHORT short
+..21-.14: keyword KW_SIGNED signed
+..21-.21: keyword KW_SIZEOF sizeof
+..21-.28: keyword KW_STATIC static
+..22-..1: identifier  static_assert
+..22-.15: identifier  static_cast
+..22-.27: keyword KW_STRUCT struct
+..22-.34: keyword KW_SWITCH switch
+..23-..1: identifier  template
+..23-.10: identifier  this
+..23-.15: identifier  thread_local
+..23-.28: identifier  throw
+..24-..1: identifier  true
+..24-..6: identifier  try
+..24-.10: keyword KW_TYPEDEF typedef
+..24-.18: identifier  typeid
+..24-.25: identifier  typename
+..24-.34: keyword KW_UNION union
+..25-..1: keyword KW_UNSIGNED unsigned
+..25-.10: identifier  using
+..25-.16: identifier  virtual
+..25-.24: keyword KW_VOID void
+..26-..1: keyword KW_VOLATILE volatile
+..26-.10: identifier  wchar_t
+..26-.18: keyword KW_WHILE while
+..29-..1: identifier  abcd
+..29-..6: identifier  _foo123
+..31-..1: invalid #
+..31-..3: invalid ##
+..31-..6: invalid %:
+..31-..9: invalid %:%:
+eof

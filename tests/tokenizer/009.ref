@@ -142,3 +142,10 @@ preprocessing-op-or-punc 1 <
 preprocessing-op-or-punc 2 ::
 new-line 0 
 eof
+e 0 
+preprocessing-op-or-punc 6 xor_eq
+whitespace-sequence 0 
+preprocessing-op-or-punc 1 <
+preprocessing-op-or-punc 2 ::
+new-line 0 
+eof

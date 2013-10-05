@@ -349,6 +349,7 @@ namespace Compiler
                 {
                     if (c == EndOfFile)
                     {
+                        throw logic_error("unterminated character literal");
                         state_ = TS_FINISHED;
                     }
                     else

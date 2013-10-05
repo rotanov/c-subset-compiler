@@ -16,6 +16,7 @@ namespace Compiler
     // decodes codepoints sequence c from start index to end index inclusive
     string UTF8CodePointToString(const int* c, int start, int end);
     string UTF8CodePointToString(const int *source, size_t size);
+    std::wstring UTF8CodePointToWString(const int *c, int start, int end);
 
     bool IsWhiteSpace(const int c);
     bool IsDigit(const int c);

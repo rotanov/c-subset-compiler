@@ -242,10 +242,10 @@ void MainWindow::on_action_Save_triggered()
                    << testIndexes_[mode_]
                    << qSetFieldWidth(0);
     QFile fileInput(filename + ".t");
-    assert(fileInput.open(QIODevice::ReadWrite));
+    assert(fileInput.open(QIODevice::ReadWrite | QIODevice::Truncate));
     fileInput.write(ui->qpteInput->toPlainText().toUtf8());
     QFile fileReference(filename + ".ref");
-    assert(fileReference.open(QIODevice::ReadWrite));
+    assert(fileReference.open(QIODevice::ReadWrite | QIODevice::Truncate));
     fileReference.write(ui->qpteReference->toPlainText().toUtf8());
 }
 
@@ -263,6 +263,7 @@ void MainWindow::on_action_Prev_triggered()
 
 void MainWindow::on_action_Copy_Output_to_Reference_triggered()
 {
+    ui->qpteReference->clear();
     ui->qpteReference->setPlainText(ui->qpteOutput->toPlainText());
 }
 

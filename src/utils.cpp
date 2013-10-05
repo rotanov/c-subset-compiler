@@ -2,6 +2,7 @@
 
 #include <sstream>
 #include <exception>
+#include <cassert>
 
 #include "constants.hpp"
 #include "unicode.hpp"
@@ -59,6 +60,37 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
+    std::wstring UTF8CodePointToWString(const int *c, int start, int end)
+    {
+        if (sizeof(wchar_t) == 4)
+        {
+            // linux AMD 64 abi
+        }
+        else if (sizeof(wchar_t) == 2)
+        {
+            int i = 0;
+            wchar_t* utf16 = new wchar_t[(end - start + 1) * 2 + 1];
+
+            while (start <= end)
+            {
+                i += UTF16Encode(c[start], reinterpret_cast<char16_t*>(utf16 + i));
+                start++;
+            }
+
+            utf16[i] = 0;
+
+            std::wstring r(utf16);
+
+            delete [] utf16;
+
+            return r;
+        }
+        else
+        {
+            assert(false);
+        }
+    }
+
     string UTF8CodePointToString(const int *c, int start, int end)
     {
         int i = 0;

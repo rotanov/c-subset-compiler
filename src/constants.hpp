@@ -233,15 +233,10 @@ namespace Compiler
         {"(", OP_LPAREN},
         {")", OP_RPAREN},
         {"|", OP_BOR},
-        {"bitor", OP_BOR},
         {"^", OP_XOR},
-        {"xor", OP_XOR},
         {"~", OP_COMPL},
-        {"compl", OP_COMPL},
         {"&", OP_AMP},
-        {"bitand", OP_AMP},
         {"!", OP_LNOT},
-        {"not", OP_LNOT},
         {";", OP_SEMICOLON},
         {":", OP_COLON},
         {"...", OP_DOTS},
@@ -261,29 +256,23 @@ namespace Compiler
         {"/=", OP_DIVASS},
         {"%=", OP_MODASS},
         {"^=", OP_XORASS},
-        {"xor_eq", OP_XORASS},
         {"&=", OP_BANDASS},
-        {"and_eq", OP_BANDASS},
         {"|=", OP_BORASS},
-        {"or_eq", OP_BORASS},
         {"<<", OP_LSHIFT},
         {">>", OP_RSHIFT},
         {">>=", OP_RSHIFTASS},
         {"<<=", OP_LSHIFTASS},
         {"==", OP_EQ},
         {"!=", OP_NE},
-        {"not_eq", OP_NE},
         {"<=", OP_LE},
         {">=", OP_GE},
         {"&&", OP_LAND},
-        {"and", OP_LAND},
         {"||", OP_LOR},
-        {"or", OP_LOR},
         {"++", OP_INC},
         {"--", OP_DEC},
         {",", OP_COMMA},
         {"->*", OP_ARROWSTAR},
-        {"->", OP_ARROW}
+        {"->", OP_ARROW},
     };
 
     // map of enum to string
@@ -383,6 +372,7 @@ namespace Compiler
         FT_CHAR,
         FT_INT,
         FT_FLOAT,
+        FT_DOUBLE,
     };
 
     // convert EFundamentalType to a source code
@@ -391,6 +381,7 @@ namespace Compiler
         {FT_CHAR, "char"},
         {FT_INT, "int"},
         {FT_FLOAT, "float"},
+        {FT_DOUBLE, "double"},
     };
 
 } // namespace Compiler

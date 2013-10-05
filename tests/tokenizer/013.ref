@@ -1,3 +1,5 @@
-identifier 6 π𝄞
-new-line 0 
+...1-..1: literal int 0 00000000
+...1-..3: literal int 0x0 00000000
+...1-..7: literal int 00 00000000
+...1-.10: literal int 000000000000000000000000000 00000000
 eof
