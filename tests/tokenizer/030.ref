@@ -1,0 +1,42 @@
+...2-..1: literal a//b array of 5 char 612F2F6200
+...2-..1: invalid #
+...2-..2: identifier  include
+...4-..1: literal //e array of 4 char 2F2F6500
+...4-..1: identifier  f
+...4-..3: punctuation OP_ASS =
+...4-..5: identifier  g
+...4-.12: punctuation OP_DIV /
+...4-.13: identifier  h
+...4-.14: punctuation OP_SEMICOLON ;
+...7-..1: invalid #
+...7-..2: identifier  define
+...7-..9: identifier  glue
+...7-.13: punctuation OP_LPAREN (
+...7-.14: identifier  x
+...7-.15: punctuation OP_COMMA ,
+...7-.16: identifier  y
+...7-.17: punctuation OP_RPAREN )
+...7-.19: identifier  x
+...7-.20: invalid ##
+...7-.22: identifier  y
+...8-..1: identifier  glue
+...8-..5: punctuation OP_LPAREN (
+...8-..6: punctuation OP_DIV /
+...8-..7: punctuation OP_COMMA ,
+...8-..8: punctuation OP_DIV /
+...8-..9: punctuation OP_RPAREN )
+...8-.11: identifier  k
+...8-.12: punctuation OP_LPAREN (
+...8-.13: punctuation OP_RPAREN )
+...8-.14: punctuation OP_SEMICOLON ;
+...9-.38: identifier  l
+...9-.39: punctuation OP_LPAREN (
+...9-.40: punctuation OP_RPAREN )
+...9-.41: punctuation OP_SEMICOLON ;
+..10-..1: identifier  m
+..10-..3: punctuation OP_ASS =
+..10-..5: identifier  n
+..11-..1: punctuation OP_PLUS +
+..11-..3: identifier  p
+..11-..4: punctuation OP_SEMICOLON ;
+eof

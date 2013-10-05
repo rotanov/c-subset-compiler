@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <exception>
+#include <cassert>
 #include <sstream>
 
 #include "ITokenStream.hpp"
@@ -21,16 +22,16 @@ namespace Compiler
         void EmitInvalid(const string& source, const int line, const int column)
         {
             stringstream ss;
-            ss << "Invalid token at " << line << "-" << column << ": " + source;
-            throw logic_error(ss.str());
-            cout << line << "-" << column << ": " << "invalid " << source << endl;
+            ss << "invalid token at " << FormatPos_(line, column) << source;
+//            throw logic_error(ss.str());
+            cout << FormatPos_(line, column) << "invalid " << source << endl;
         }
 
         // output: <line>-<column>: keyword <token_type> <source>
         void EmitKeyword(const string& source, ETokenType token_type,
                          const int line, const int column)
         {
-            cout << line << "-" << column << ": " << "keyword "
+            cout << FormatPos_(line, column) << "keyword "
                  << KeywordTypeToStringMap.at(token_type) << " " << source << endl;
         }
 
@@ -38,21 +39,21 @@ namespace Compiler
         void EmitPunctuation(const string& source, ETokenType token_type,
                              const int line, const int column)
         {
-            cout << line << "-" << column << ": " << "punctuation "
+            cout << FormatPos_(line, column) << "punctuation "
                  << PunctuationTypeToStringMap.at(token_type) << " " << source <<  endl;
         }
 
         // output: <line>-<column>: identifier <source>
         void EmitIdentifier(const string& source, const int line, const int column)
         {
-            cout << line << "-" << column << ": " << "identifier " << " " << source << endl;
+            cout << FormatPos_(line, column) << "identifier " << " " << source << endl;
         }
 
         // output: <line>-<column>: literal <type> <source> <hexdump(data,nbytes)>
         void EmitLiteral(const string& source, EFundamentalType type, const void* data,
                          size_t nbytes, const int line, const int column)
         {
-            cout << line << "-" << column << ": " << "literal " << " " << FundamentalTypeToStringMap.at(type)
+            cout << FormatPos_(line, column) << "literal " << FundamentalTypeToStringMap.at(type)
                  << " " << source << " " << HexDump(data, nbytes) << endl;
         }
 
@@ -61,7 +62,7 @@ namespace Compiler
                               EFundamentalType type, const void* data, size_t nbytes,
                               const int line, const int column)
         {
-            cout << line << "-" << column << ": " << "literal " << source << " array of "
+            cout << FormatPos_(line, column) << "literal " << source << " array of "
                  << num_elements << " " << FundamentalTypeToStringMap.at(type)
                  << " " << HexDump(data, nbytes) << endl;
         }
@@ -70,6 +71,21 @@ namespace Compiler
         void EmitEof()
         {
             cout << "eof" << endl;
+        }
+
+    private:
+        inline std::string FormatPos_(const int line, const int column)
+        {
+            std::string lineString = std::to_string(line);
+            std::string columnString = std::to_string(column);
+            assert(lineString.size() <= 4);
+            assert(columnString.size() <= 3);
+            return std::string(4 - lineString.size(), '.')
+                    + lineString
+                    + '-'
+                    + std::string(3 - columnString.size(), '.')
+                    + columnString
+                    + ": ";
         }
     };
 

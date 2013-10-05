@@ -4,19 +4,19 @@ Select mode { tokenizer, simple expression, expression, ...}
 Show tests from test folder.
 If no tests. So u see.
 Actions:
-    1. Next Test
-    2. Prev Test
-    3. New Test
-    4. Copy Contents from output to reference
-    6. Save
-    5. Run Tests
+   X 1. Next Test
+   X 2. Prev Test
+   X 3. New Test
+   X 4. Copy Contents from output to reference
+   X 6. Save
+    5. Run Tests !!!
 
 :
-    1. Next Test -> shows next test
-    2. Prev Test -> shows prev test
-    3. New Test -> appends test to end of test list
+   X 1. Next Test -> shows next test
+   X 2. Prev Test -> shows prev test
+   X 3. New Test -> appends test to end of test list
 
 Features: 
-    1. Line numbers
-    2. Line highlight
-    3. Current line & column
+   X 1. Line numbers
+   X 2. Line highlight
+   X 3. Current line & column

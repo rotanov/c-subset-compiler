@@ -1,5 +1,5 @@
 compiler-project:
-  ☐ proper testing mechanism
+  ✔ proper testing mechanism @done (13-10-05 06:31)
 
 compiler-application:
   ☐ command line options for tokenizer, simple-expression AST builder

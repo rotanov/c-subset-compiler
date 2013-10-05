@@ -263,8 +263,7 @@ namespace Compiler
             {
                 delete r;
                 std::stringstream ss;
-                ss << "right brace ')' expected at" << token.line << "-"
-                   << token.column;
+                ss << "closing parenthesis ')' expected at" << token.line << "-" << token.column;
                 throw std::logic_error(ss.str());
             }
             return r;

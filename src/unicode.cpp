@@ -28,7 +28,7 @@ int UTF8Encode(int codePoint, char* out)
         out[3] = (codePoint & 0x3F) | 0x80;
         return 4;
     }
-    throw std::runtime_error("Invalid UTF8 code point");
+    throw std::runtime_error("invalid UTF8 code point");
 }
 
 int UTF8Decode(int* in, int& out)
@@ -72,7 +72,7 @@ int UTF8Decode(int* in, int& out)
     {
         if (in[1] == -1)
         {
-            throw std::runtime_error("Invalid UTF8 octet sequence.");
+            throw std::runtime_error("invalid UTF8 octet sequence");
         }
 
         out |= (in[0] ^ 0xC0) << 6;
@@ -83,7 +83,7 @@ int UTF8Decode(int* in, int& out)
     {
         if (in[1] == -1 || in[2] == -1)
         {
-            throw std::runtime_error("Invalid UTF8 octet sequence.");
+            throw std::runtime_error("invalid UTF8 octet sequence");
         }
 
         out |= (in[0] ^ 0xE0) << 12;
@@ -95,7 +95,7 @@ int UTF8Decode(int* in, int& out)
     {
         if (in[1] == -1 || in[2] == -1 || in[3] == -1)
         {
-            throw std::runtime_error("Invalid UTF8 octet sequence.");
+            throw std::runtime_error("invalid UTF8 octet sequence");
         }
 
         out |= (in[0] ^ 0xF0) << 18;
@@ -105,7 +105,7 @@ int UTF8Decode(int* in, int& out)
         return 4;
     }
 
-    throw std::runtime_error("Invalid UTF8 octet sequence.");
+    throw std::runtime_error("invalid UTF8 octet sequence");
 }
 
 int UTF16Encode(int codePoint, char16_t* out)
@@ -126,13 +126,13 @@ int UTF16Encode(int codePoint, char16_t* out)
     }
     else
     {
-        throw std::runtime_error("Unicode codepoint doesn't fit UTF16 range");
+        throw std::runtime_error("unicode codepoint doesn't fit UTF16 range");
     }
 }
 
 int UTF16Decode(int* /*in*/, int& /*out*/)
 {
-    throw std::runtime_error("Not implemented");
+    throw std::runtime_error("not implemented");
 }
 
 int UTF32Encode(int codePoint, char32_t* out)

@@ -53,6 +53,7 @@ private slots:
     void on_action_Tokenizer_triggered();
     void on_actionSimple_Expressions_triggered();
     void on_actionTest_Name_triggered();
+    void OnQpteInputCursorPositionChanged();
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -64,6 +65,7 @@ private:
     std::vector<int> testIndexes_;
     std::vector<std::vector<TestInfo>> tests_;
     QLabel* qlStatus_;
+    QLabel* qlLineColumn_;
 
     void CompareOutputWithReference_();
     void SetMode_(const CompilerMode& mode);

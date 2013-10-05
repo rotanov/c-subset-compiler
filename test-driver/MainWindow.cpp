@@ -109,13 +109,16 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
     , mode_(CM_TOKENIZER)
     , qlStatus_(NULL)
+    , qlLineColumn_(NULL)
 
 {
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
 
     ui->setupUi(this);
     qlStatus_ = new QLabel;
+    qlLineColumn_ = new QLabel;
     ui->statusBar->addWidget(qlStatus_);
+    ui->statusBar->addWidget(qlLineColumn_);
 
     tests_.resize(COMPILER_MODE_COUNT);
     testIndexes_.resize(COMPILER_MODE_COUNT, 0);
@@ -161,6 +164,9 @@ MainWindow::MainWindow(QWidget *parent)
             this, &MainWindow::OnOutputTextChanged);
     connect(ui->qpteReference, &QPlainTextEdit::textChanged,
             this, &MainWindow::OnReferenceTextChanged);
+
+    connect(ui->qpteInput, &QPlainTextEdit::cursorPositionChanged,
+            this, &MainWindow::OnQpteInputCursorPositionChanged);
 
     SetMode_(mode_);
     UpdateTest_();
@@ -262,7 +268,7 @@ void MainWindow::on_action_Copy_Output_to_Reference_triggered()
 
 void MainWindow::on_action_Run_Tests_for_Current_Mode_triggered()
 {
-
+    // TODO: DO ASAP
 }
 
 void MainWindow::on_action_Tokenizer_triggered()
@@ -281,4 +287,13 @@ void MainWindow::on_actionTest_Name_triggered()
 {
     QString testName = QInputDialog::getText(this, "Enter Test Name", "Test Name");
     GetCurrentTest_().name = testName;
+}
+
+void MainWindow::OnQpteInputCursorPositionChanged()
+{
+    QTextCursor cursor = ui->qpteInput->textCursor();
+    int line = cursor.blockNumber() + 1;
+    int column = cursor.columnNumber() + 1;
+    std::string text = std::to_string(line) + "-" + std::to_string(column);
+    qlLineColumn_->setText(QString().fromStdString(text));
 }

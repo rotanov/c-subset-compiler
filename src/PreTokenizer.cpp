@@ -247,7 +247,7 @@ namespace Compiler
                 else if (c == EndOfFile)
                 {
                     output_.Flush();
-                    throw logic_error("Partial inline comment.");
+                    throw logic_error("unterminated inline comment");
                 }
 //------------------------------------------------------------------------------
                 else if (c == '\n')
@@ -328,7 +328,7 @@ namespace Compiler
                 else if (c == '\n')
                 {
                     output_.Flush();
-                    throw logic_error("Newline in character literal");
+                    throw logic_error("newline in character literal");
                 }
 //------------------------------------------------------------------------------
                 else if (c == '\\')
@@ -337,7 +337,7 @@ namespace Compiler
                     if (escapeSequenceMatched == 0)
                     {
                         output_.Flush();
-                        throw logic_error("Invalid escape sequence.");
+                        throw logic_error("invalid escape sequence");
                     }
                     else
                     {
@@ -396,7 +396,7 @@ namespace Compiler
                 else if (c == '\n')
                 {
                     output_.Flush();
-                    throw logic_error("Newline in string literal");
+                    throw logic_error("newline in string literal");
                 }
                 else if (c == '\\')
                 {
@@ -404,7 +404,7 @@ namespace Compiler
                     if (escapeSequenceMatched == 0)
                     {
                         output_.Flush();
-                        throw logic_error("Invalid escape sequence.");
+                        throw logic_error("invalid escape sequence");
                     }
                     else
                     {
@@ -414,7 +414,7 @@ namespace Compiler
                 else if (c == EndOfFile)
                 {
                     output_.Flush();
-                    throw logic_error("Unfinished string literal");
+                    throw logic_error("unterminated string literal");
                 }
                 else
                 {
@@ -425,7 +425,7 @@ namespace Compiler
             case TS_FINISHED:
             default:
                 output_.Flush();
-                throw logic_error("Reached unreachable state.");
+                throw logic_error("reached unreachable state");
                 break;
             }
         }
