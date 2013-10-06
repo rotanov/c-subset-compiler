@@ -138,9 +138,7 @@ namespace Compiler
         OP_COLON,
         OP_DOTS,
         OP_QMARK,
-        OP_COLON2,
         OP_DOT,
-        OP_DOTSTAR,
         OP_PLUS,
         OP_MINUS,
         OP_STAR,
@@ -170,7 +168,6 @@ namespace Compiler
         OP_INC,
         OP_DEC,
         OP_COMMA,
-        OP_ARROWSTAR,
         OP_ARROW,
 
         // for consistency
@@ -181,6 +178,51 @@ namespace Compiler
         TT_EOF,
     };
 
+    enum EFundamentalType
+    {
+        FT_INVALID,
+        FT_CHAR,
+        FT_INT,
+        FT_FLOAT,
+        FT_DOUBLE,
+    };
+
+} // namespace Compiler
+
+namespace std
+{
+    template<>
+    struct hash<Compiler::ETokenType>
+    {
+        typedef Compiler::ETokenType argument_type;
+        typedef std::underlying_type<argument_type>::type underlying_type;
+        typedef std::hash<underlying_type>::result_type result_type;
+
+        result_type operator ()(const argument_type& arg) const
+        {
+            std::hash<underlying_type> hasher;
+            return hasher(static_cast<underlying_type>(arg));
+        }
+    };
+
+    template<>
+    struct hash<Compiler::EFundamentalType>
+    {
+        typedef Compiler::EFundamentalType argument_type;
+        typedef std::underlying_type<argument_type>::type underlying_type;
+        typedef std::hash<underlying_type>::result_type result_type;
+
+        result_type operator ()(const argument_type& arg) const
+        {
+            std::hash<underlying_type> hasher;
+            return hasher(static_cast<underlying_type>(arg));
+        }
+    };
+
+}
+
+namespace Compiler
+{
     const unordered_map<string, ETokenType> StringToKeywordTypeMap =
     {
         // keywords
@@ -271,7 +313,6 @@ namespace Compiler
         {"++", OP_INC},
         {"--", OP_DEC},
         {",", OP_COMMA},
-        {"->*", OP_ARROWSTAR},
         {"->", OP_ARROW},
     };
 
@@ -330,9 +371,7 @@ namespace Compiler
         {OP_COLON, "OP_COLON"},
         {OP_DOTS, "OP_DOTS"},
         {OP_QMARK, "OP_QMARK"},
-        {OP_COLON2, "OP_COLON2"},
         {OP_DOT, "OP_DOT"},
-        {OP_DOTSTAR, "OP_DOTSTAR"},
         {OP_PLUS, "OP_PLUS"},
         {OP_MINUS, "OP_MINUS"},
         {OP_STAR, "OP_STAR"},
@@ -362,26 +401,89 @@ namespace Compiler
         {OP_INC, "OP_INC"},
         {OP_DEC, "OP_DEC"},
         {OP_COMMA, "OP_COMMA"},
-        {OP_ARROWSTAR, "OP_ARROWSTAR"},
         {OP_ARROW, "OP_ARROW"},
     };
 
-    enum EFundamentalType
-    {
-        FT_INVALID,
-        FT_CHAR,
-        FT_INT,
-        FT_FLOAT,
-        FT_DOUBLE,
-    };
-
     // convert EFundamentalType to a source code
-    const map<EFundamentalType, string> FundamentalTypeToStringMap
+    const unordered_map<EFundamentalType, string> FundamentalTypeToStringMap
     {
         {FT_CHAR, "char"},
         {FT_INT, "int"},
         {FT_FLOAT, "float"},
         {FT_DOUBLE, "double"},
+    };
+
+    const unordered_set<ETokenType> TokenTypeToRightAssociativity =
+    {
+        OP_ASS,
+        OP_STARASS,
+        OP_DIVASS,
+        OP_MODASS,
+        OP_PLUSASS,
+        OP_MINUSASS,
+        OP_LSHIFTASS,
+        OP_RSHIFTASS,
+        OP_BANDASS,
+        OP_XORASS,
+        OP_BORASS,
+        OP_QMARK,
+        OP_COLON,
+        // also Unary 	 right to left 	 ++  --  +  -  !  ~  &  *  (type_name)  C++: sizeof new delete
+    };
+
+    const unordered_map<ETokenType, int> TokenTypeToPrecedence =
+    {
+        {OP_LPAREN, 0},
+        {OP_RPAREN, 0},
+        {OP_LSQUARE, 0},
+        {OP_RSQUARE, 0},
+        {OP_DOT, 0},
+        {OP_ARROW, 0},
+        // Unary ++  --  +  -  !  ~  &  *  (type_name)  C++: sizeof new delete
+        {OP_STAR, 2},
+        {OP_DIV, 2},
+        {OP_MOD, 2},
+        //
+        {OP_PLUS, 3},
+        {OP_MINUS, 3},
+        //
+        {OP_LSHIFT, 4},
+        {OP_RSHIFT, 4},
+        //
+        {OP_LT, 5},
+        {OP_GT, 5},
+        {OP_LE, 5},
+        {OP_GE, 5},
+        //
+        {OP_EQ, 6},
+        {OP_NE, 6},
+        //
+        {OP_AMP, 7},
+        //
+        {OP_XOR, 8},
+        //
+        {OP_BOR, 9},
+        //
+        {OP_LAND, 10},
+        //
+        {OP_LOR, 11},
+        // conditional
+        {OP_QMARK, 12},
+        {OP_COLON, 12},
+        //
+        {OP_ASS, 13},
+        {OP_STARASS, 13},
+        {OP_DIVASS, 13},
+        {OP_MODASS, 13},
+        {OP_PLUSASS, 13},
+        {OP_MINUSASS, 13},
+        {OP_LSHIFTASS, 13},
+        {OP_RSHIFTASS, 13},
+        {OP_BANDASS, 13},
+        {OP_XORASS, 13},
+        {OP_BORASS, 13},
+        //
+        {OP_COMMA, 14},
     };
 
 } // namespace Compiler

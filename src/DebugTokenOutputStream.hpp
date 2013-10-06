@@ -68,7 +68,7 @@ namespace Compiler
         }
 
         // output : eof
-        void EmitEof()
+        void EmitEof(const int /*line*/, const int /*column*/)
         {
             cout << "eof" << endl;
         }

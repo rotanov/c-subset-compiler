@@ -24,7 +24,7 @@ SOURCES += main.cpp\
     ../src/utils.cpp \
     ../src/unicode.cpp \
     ../src/Tokenizer.cpp \
-    ../src/simpleexpressionparser.cpp \
+    ../src/SimpleExpressionParser.cpp \
     ../src/PreTokenizer.cpp \
     CodeEditor.cpp \
     DebugStream.cpp \
@@ -34,7 +34,7 @@ HEADERS  += MainWindow.hpp \
     ../src/utils.hpp \
     ../src/unicode.hpp \
     ../src/Tokenizer.hpp \
-    ../src/simpleexpressionparser.hpp \
+    ../src/SimpleExpressionParser.hpp \
     ../src/PreTokenizer.hpp \
     ../src/ITokenStream.hpp \
     ../src/IPreTokenStream.hpp \

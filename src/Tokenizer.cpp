@@ -230,12 +230,12 @@ namespace Compiler
             unsigned long long intValue = 0;
             errno = 0;
             int* where = codePoints_;
-            if (base == 16)
-            {
-                where += 2;
-            }
+//            if (base == 16)
+//            {
+//                where += 2;
+//            }
 
-            std::wstring str = UTF8CodePointToWString(where, 0, codePointsCount_ - 2);
+            std::wstring str = UTF8CodePointToWString(where, 0, codePointsCount_ /*- 2*/);
             wchar_t* pstr = &str[0];
             wchar_t* whereWas = pstr;
             intValue = wcstoull(pstr, &pstr, base);
@@ -363,7 +363,7 @@ namespace Compiler
     void Tokenizer::EmitEof()
     {
         FlushAdjacentStringLiterals_();
-        output_.EmitEof();
+        output_.EmitEof(line_, column_);
     }
 
 //------------------------------------------------------------------------------

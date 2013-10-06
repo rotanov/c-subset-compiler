@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <queue>
 
 #include "ITokenStream.hpp"
 
@@ -50,23 +51,26 @@ namespace Compiler
         }
 
     private:
-        ASTNode* left_;
-        ASTNode* right_;
+        ASTNode* left_ = NULL;
+        ASTNode* right_ = NULL;
     };
 
     class SimpleExpressionParser : public ITokenStream
     {
         typedef SimpleExpressionToken Token;
-    private:
-        std::vector<Token> tokens_;
-        size_t pos_;
 
-        ASTNode* ParseTerm_();
-        ASTNode* ParseFactor_();
-        ASTNode* ParseExpression_();
-        const Token& GetNextToken_();
+    private:
+        std::vector<Token> tokenStack_;
+        std::vector<ASTNode*> nodeQueue_;
+
         void ThrowInvalidTokenError_(const Token& token);
         void PrintAST_(ASTNode* root) const;
+
+        // Shunting Yard algorithm
+        void PushToken_(const Token& token);
+        void FlushOutput_();
+        // TODO: rename to verbal
+        void StackTopToNode_();
 
     public:
         SimpleExpressionParser();
@@ -92,7 +96,7 @@ namespace Compiler
                                       size_t nbytes, const int line,
                                       const int column);
 
-        virtual void EmitEof();
+        virtual void EmitEof(const int line, const int column);
 
     };
 

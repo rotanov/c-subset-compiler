@@ -28,7 +28,7 @@ namespace Compiler
                                       size_t nbytes, const int line,
                                       const int column) = 0;
 
-        virtual void EmitEof() = 0;
+        virtual void EmitEof(const int line, const int column) = 0;
     };
 
 } // namespace Compiler
