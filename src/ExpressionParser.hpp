@@ -8,14 +8,14 @@
 
 namespace Compiler
 {
-    struct SimpleExpressionToken
+    struct ExpressionToken
     {
         ETokenType type;
         std::string value;
         unsigned line;
         unsigned column;
 
-        SimpleExpressionToken(const ETokenType& type, const std::string& value,
+        ExpressionToken(const ETokenType& type, const std::string& value,
                               const unsigned& line, const unsigned& column);
 
         inline bool operator ==(const ETokenType& rhs) const
@@ -29,48 +29,48 @@ namespace Compiler
         }
     };
 
-    class SimpleASTNode
+    class ASTNode
     {
     public:
-        typedef SimpleExpressionToken Token;
+        typedef ExpressionToken Token;
 
         Token token;
 
-        SimpleASTNode(const SimpleExpressionToken& token);
-        SimpleASTNode(const SimpleExpressionToken& token, SimpleASTNode* left, SimpleASTNode* right);
-        virtual ~SimpleASTNode();
+        ASTNode(const ExpressionToken& token);
+        ASTNode(const ExpressionToken& token, ASTNode* left, ASTNode* right);
+        virtual ~ASTNode();
 
-        SimpleASTNode* GetLeft()
+        ASTNode* GetLeft()
         {
             return left_;
         }
 
-        SimpleASTNode* GetRight()
+        ASTNode* GetRight()
         {
             return right_;
         }
 
     private:
-        SimpleASTNode* left_ = NULL;
-        SimpleASTNode* right_ = NULL;
+        ASTNode* left_ = NULL;
+        ASTNode* right_ = NULL;
     };
 
-    class SimpleExpressionParser : public ITokenStream
+    class ExpressionParser : public ITokenStream
     {
-        typedef SimpleExpressionToken Token;
+        typedef ExpressionToken Token;
 
     private:
         enum EParsingState
         {
-            PS_OPERAND,
-            PS_OPERATOR,
+            PS_UNARY_EXPRESSION,
+            PS_BINARY_EXPRESSION,
         };
         std::vector<EParsingState> stateStack_;
         std::vector<Token> tokenStack_;
-        std::vector<SimpleASTNode*> nodeStack_;
+        std::vector<ASTNode*> nodeStack_;
 
         void ThrowInvalidTokenError_(const Token& token);
-        void PrintAST_(SimpleASTNode* root) const;
+        void PrintAST_(ASTNode* root) const;
 
         // Shunting Yard algorithm
         void PushToken_(const Token& token);
@@ -79,7 +79,7 @@ namespace Compiler
         void StackTopToNode_();
 
     public:
-        SimpleExpressionParser();
+        ExpressionParser();
 
         virtual void EmitInvalid(const string& source, const int line,
                                  const int column);

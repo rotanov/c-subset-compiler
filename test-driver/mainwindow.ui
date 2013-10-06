@@ -88,6 +88,7 @@
      </property>
      <addaction name="action_Tokenizer"/>
      <addaction name="actionSimple_Expressions"/>
+     <addaction name="action_Expressions"/>
     </widget>
     <addaction name="action_Copy_Output_to_Reference"/>
     <addaction name="menu_Select_Mode"/>
@@ -168,7 +169,7 @@
   </action>
   <action name="actionSimple_Expressions">
    <property name="text">
-    <string>Simple &amp;Expressions</string>
+    <string>&amp;Simple Expressions</string>
    </property>
   </action>
   <action name="action_Run_Tests_for_Current_Mode">
@@ -196,6 +197,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="action_Expressions">
+   <property name="text">
+    <string>&amp;Expressions</string>
    </property>
   </action>
  </widget>

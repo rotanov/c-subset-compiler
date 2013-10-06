@@ -40,6 +40,7 @@ public:
     QAction *action_Run_Tests_for_Current_Mode;
     QAction *actionTest_Name;
     QAction *action_Log;
+    QAction *action_Expressions;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout;
     QSplitter *splitter;
@@ -82,6 +83,8 @@ public:
         action_Log = new QAction(MainWindow);
         action_Log->setObjectName(QStringLiteral("action_Log"));
         action_Log->setCheckable(true);
+        action_Expressions = new QAction(MainWindow);
+        action_Expressions->setObjectName(QStringLiteral("action_Expressions"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         verticalLayout = new QVBoxLayout(centralWidget);
@@ -148,6 +151,7 @@ public:
         menu_Edit->addAction(actionTest_Name);
         menu_Select_Mode->addAction(action_Tokenizer);
         menu_Select_Mode->addAction(actionSimple_Expressions);
+        menu_Select_Mode->addAction(action_Expressions);
         menu_View->addAction(action_Prev);
         menu_View->addAction(action_Next);
         menu_View->addAction(action_Log);
@@ -172,13 +176,14 @@ public:
         action_Copy_Output_to_Reference->setText(QApplication::translate("MainWindow", "&Copy Output to Reference", 0));
         action_Copy_Output_to_Reference->setShortcut(QApplication::translate("MainWindow", "Ctrl+D", 0));
         action_Tokenizer->setText(QApplication::translate("MainWindow", "&Tokenizer", 0));
-        actionSimple_Expressions->setText(QApplication::translate("MainWindow", "Simple &Expressions", 0));
+        actionSimple_Expressions->setText(QApplication::translate("MainWindow", "&Simple Expressions", 0));
         action_Run_Tests_for_Current_Mode->setText(QApplication::translate("MainWindow", "&Run Tests for Current Mode", 0));
         action_Run_Tests_for_Current_Mode->setShortcut(QApplication::translate("MainWindow", "Ctrl+R", 0));
         actionTest_Name->setText(QApplication::translate("MainWindow", "Test &Name", 0));
         actionTest_Name->setShortcut(QApplication::translate("MainWindow", "Ctrl+T", 0));
         action_Log->setText(QApplication::translate("MainWindow", "&Log", 0));
         action_Log->setShortcut(QApplication::translate("MainWindow", "Ctrl+L", 0));
+        action_Expressions->setText(QApplication::translate("MainWindow", "&Expressions", 0));
         qpteOutput->setDocumentTitle(QApplication::translate("MainWindow", "Output", 0));
         menu_File->setTitle(QApplication::translate("MainWindow", "&File", 0));
         menu_Edit->setTitle(QApplication::translate("MainWindow", "&Edit", 0));

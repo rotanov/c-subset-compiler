@@ -2,13 +2,13 @@ Simple Expression Grammar
 
 expression
     term
-    term '+' expression
-    term '-' expression
+    expression '+' term
+    expression '-' term  
 
 term
     factor
-    factor '*' term
-    factor '/' term
+    term '*' factor
+    term '/' factor
 
 factor
     integer-literal
@@ -16,3 +16,4 @@ factor
     character-literal
     identifier
     '(' expression ')'
+    Ø

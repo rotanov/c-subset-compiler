@@ -25,6 +25,7 @@
 #include "DebugPreTokenStream.hpp"
 #include "DebugTokenOutputStream.hpp"
 #include "SimpleExpressionParser.hpp"
+#include "ExpressionParser.hpp"
 
 #include "CxxHighlighter.hpp"
 #include "DebugStream.hpp"
@@ -58,14 +59,16 @@ void MainWindow::OnReferenceTextChanged()
 
 std::map<CompilerMode, std::string> CompilerModeToString =
 {
-    { CM_TOKENIZER, "Tokenizer" },
-    { CM_SIMPLE_EXPRESSION, "Simple Expressions" },
+    {CM_TOKENIZER, "Tokenizer"},
+    {CM_SIMPLE_EXPRESSION, "Simple Expressions"},
+    {CM_EXPRESSION_PARSER, "Expressions"},
 };
 
 std::map<CompilerMode, std::string> CompilerModeToTestDir =
 {
-    { CM_TOKENIZER, "../tests/tokenizer/" },
-    { CM_SIMPLE_EXPRESSION, "../tests/simple-expression-parser/" },
+    {CM_TOKENIZER, "../tests/tokenizer/"},
+    {CM_SIMPLE_EXPRESSION, "../tests/simple-expression-parser/"},
+    {CM_EXPRESSION_PARSER, "../tests/expression-parser/"},
 };
 
 MainWindow::MainWindow(QWidget *parent)
@@ -199,21 +202,29 @@ void MainWindow::RunCompiler_(std::vector<char> &input)
     {
         switch (mode_)
         {
-        case CM_TOKENIZER:
-        {
-            DebugTokenOutputStream debugTokenOutputStream;
-            Tokenizer tokenizer(debugTokenOutputStream);
-            PreTokenizer pretokenizer(input, tokenizer);
-        }
-            break;
+            case CM_TOKENIZER:
+            {
+                DebugTokenOutputStream debugTokenOutputStream;
+                Tokenizer tokenizer(debugTokenOutputStream);
+                PreTokenizer preTokenizer(input, tokenizer);
+                break;
+            }
 
-        case CM_SIMPLE_EXPRESSION:
-        {
-            SimpleExpressionParser simpleExpressionParser;
-            Tokenizer tokenizer(simpleExpressionParser);
-            PreTokenizer pretokenizer(input, tokenizer);
-        }
-            break;
+            case CM_SIMPLE_EXPRESSION:
+            {
+                SimpleExpressionParser simpleExpressionParser;
+                Tokenizer tokenizer(simpleExpressionParser);
+                PreTokenizer preTokenizer(input, tokenizer);
+                break;
+            }
+
+            case CM_EXPRESSION_PARSER:
+            {
+                ExpressionParser expressionParser;
+                Tokenizer tokenizer(expressionParser);
+                PreTokenizer preTokenizer(input, tokenizer);
+                break;
+            }
         }
     }
     catch (std::exception& e)
@@ -389,4 +400,10 @@ void MainWindow::on_action_Log_triggered(bool checked)
     {
         ui->qpteLog->hide();
     }
+}
+
+void MainWindow::on_action_Expressions_triggered()
+{
+    SetMode_(CM_EXPRESSION_PARSER);
+    UpdateTest_();
 }

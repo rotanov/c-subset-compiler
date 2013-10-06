@@ -1,0 +1,114 @@
+Grammar
+
+Expressions
+
+// generic-selection from standrad excluded
+primary-expression:
+    identifier
+    literal
+    string-literal
+    '(' expression ')'
+
+postfix-expression:
+    primary-expression
+    postfix-expression '[' expression ']'
+    postfix-expression '(' {expression} ')' // argument-expression-list
+    postfix-expression '.' identifier
+    postfix-expression '->' identifier
+    postfix-expression '++'
+    postfix-expression '--'
+//    '(' type-name ')' '{' initializer-list }
+//    '(' type-name ')' '{' initializer-list ',' }
+
+// NOTE: expression at the very bottom is the same, BUT
+// this is comma separated list here
+// while expression is COMMA OPERATOR separated assignment-expression
+// it is not important now, so I'll replace argument-expression-list by expression
+// argument-expression-list:
+//    assignment-expression
+//    argument-expression-list ',' assignment-expression
+
+unary-expression:
+    postfix-expression
+    '++' unary-expression
+    '--' unary-expression
+    unary-operator unary-expression // cast-expression
+//    sizeof unary-expression
+//    sizeof '(' type-name ')'
+
+unary-operator: one of
+    '&' '*' '+' '-' '~' '!'
+
+//cast-expression:
+//    unary-expression
+//    '(' type-name ')' cast-expression
+
+multiplicative-expression:
+    unary-expression // cast-expression
+    multiplicative-expression '*' unary-expression // cast-expression
+    multiplicative-expression '/' unary-expression // cast-expression
+    multiplicative-expression '%' unary-expression // cast-expression
+
+additive-expression:
+    multiplicative-expression
+    additive-expression '+' multiplicative-expression
+    additive-expression '-' multiplicative-expression
+
+shift-expression:
+    additive-expression
+    shift-expression '<<' additive-expression
+    shift-expression '>>' additive-expression
+
+relational-expression:
+    shift-expression
+    relational-expression '<' shift-expression
+    relational-expression '>' shift-expression
+    relational-expression '<=' shift-expression
+    relational-expression '>=' shift-expression
+
+equality-expression:
+    relational-expression
+    equality-expression '==' relational-expression
+    equality-expression '!=' relational-expression
+
+AND-expression:
+    equality-expression
+    AND-expression '&' equality-expression
+
+exclusive-OR-expression:
+    AND-expression
+    exclusive-OR-expression '^' AND-expression
+
+inclusive-OR-expression:
+    exclusive-OR-expression
+    inclusive-OR-expression '|' exclusive-OR-expression
+
+logical-AND-expression:
+    inclusive-OR-expression
+    logical-AND-expression '&&' inclusive-OR-expression
+
+logical-OR-expression:
+    logical-AND-expression
+    logical-OR-expression '||' logical-AND-expression
+
+// right associative
+// PHP HAS LEFT ASSOCIATIVE CONDITIONAL OPERATOR (unable to hold it)
+conditional-expression:
+    logical-OR-expression
+    logical-OR-expression '?' expression ':' conditional-expression
+
+assignment-expression:
+    conditional-expression
+    unary-expression assignment-operator assignment-expression
+
+assignment-operator: one of
+    '=' '*=' '/=' '%=' '+=' '-=' '<<=' '>>=' '&=' '^=' '|='
+
+expression:
+    assignment-expression
+    expression ',' assignment-expression
+
+// constant-expression:
+//    conditional-expression
+
+Declarations

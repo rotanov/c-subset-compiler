@@ -15,9 +15,10 @@ enum CompilerMode
 {
     CM_TOKENIZER,
     CM_SIMPLE_EXPRESSION,
+    CM_EXPRESSION_PARSER,
 };
 
-const unsigned COMPILER_MODE_COUNT = 2;
+const unsigned COMPILER_MODE_COUNT = 3;
 
 struct TestInfo
 {
@@ -35,16 +36,6 @@ public slots:
     void OnOutputTextChanged();
     void OnReferenceTextChanged();
 
-    void OnQrbTokenizerToggled(bool value)
-    {
-        SetMode_(CM_TOKENIZER);
-    }
-
-    void OnQrbSimpleExpressionsToggled(bool value)
-    {
-        SetMode_(CM_SIMPLE_EXPRESSION);
-    }
-
 private slots:
     void on_action_New_triggered();
     void on_action_Save_triggered();
@@ -54,10 +45,10 @@ private slots:
     void on_action_Run_Tests_for_Current_Mode_triggered();
     void on_action_Tokenizer_triggered();
     void on_actionSimple_Expressions_triggered();
+    void on_action_Expressions_triggered();
     void on_actionTest_Name_triggered();
-    void OnQpteInputCursorPositionChanged();
-
     void on_action_Log_triggered(bool checked);
+    void OnQpteInputCursorPositionChanged();
 
 public:
     explicit MainWindow(QWidget *parent = 0);

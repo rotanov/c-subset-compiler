@@ -28,7 +28,8 @@ SOURCES += main.cpp\
     ../src/PreTokenizer.cpp \
     CodeEditor.cpp \
     DebugStream.cpp \
-    CxxHighlighter.cpp
+    CxxHighlighter.cpp \
+    ../src/ExpressionParser.cpp
 
 HEADERS  += MainWindow.hpp \
     ../src/utils.hpp \
@@ -43,6 +44,7 @@ HEADERS  += MainWindow.hpp \
     ../src/constants.hpp \
     CodeEditor.hpp \
     DebugStream.hpp \
-    CxxHighlighter.hpp
+    CxxHighlighter.hpp \
+    ../src/ExpressionParser.hpp
 
 FORMS    += mainwindow.ui

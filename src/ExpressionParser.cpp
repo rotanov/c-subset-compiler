@@ -1,4 +1,4 @@
-#include "SimpleExpressionParser.hpp"
+#include "ExpressionParser.hpp"
 
 #include <sstream>
 #include <unordered_set>
@@ -11,21 +11,21 @@
 namespace Compiler
 {
 //------------------------------------------------------------------------------
-    SimpleASTNode::~SimpleASTNode()
+    ASTNode::~ASTNode()
     {
         delete left_;
         delete right_;
     }
 
 //------------------------------------------------------------------------------
-    SimpleASTNode::SimpleASTNode(const SimpleExpressionToken &token)
+    ASTNode::ASTNode(const ExpressionToken &token)
         : token(token)
     {
 
     }
 
 //------------------------------------------------------------------------------
-    SimpleASTNode::SimpleASTNode(const SimpleExpressionToken &token, SimpleASTNode *left, SimpleASTNode *right)
+    ASTNode::ASTNode(const ExpressionToken &token, ASTNode *left, ASTNode *right)
         : left_(left)
         , right_(right)
         , token(token)
@@ -34,13 +34,13 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    SimpleExpressionParser::SimpleExpressionParser()
+    ExpressionParser::ExpressionParser()
     {
-        stateStack_.push_back(PS_OPERAND);
+        stateStack_.push_back(PS_UNARY_EXPRESSION);
     }
 
 //------------------------------------------------------------------------------
-    void SimpleExpressionParser::ThrowInvalidTokenError_(const SimpleExpressionParser::Token &token)
+    void ExpressionParser::ThrowInvalidTokenError_(const ExpressionParser::Token &token)
     {
         std::stringstream ss;
         ss << "unexpected token at " << token.line << "-" << token.column;
@@ -48,7 +48,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    void SimpleExpressionParser::PrintAST_(SimpleASTNode *root) const
+    void ExpressionParser::PrintAST_(ASTNode *root) const
     {
         struct PrintTreeNode
         {
@@ -65,8 +65,8 @@ namespace Compiler
         unsigned depth = 0;
         const int spacing = 2;
 
-        std::function<unsigned(SimpleASTNode*, PrintTreeNode*, int)> f =
-                [&](SimpleASTNode* next, PrintTreeNode* print, int estimate) -> unsigned
+        std::function<unsigned(ASTNode*, PrintTreeNode*, int)> f =
+                [&](ASTNode* next, PrintTreeNode* print, int estimate) -> unsigned
         {
             if (next != NULL)
             {
@@ -106,9 +106,9 @@ namespace Compiler
 
                     print->text = std::string(spaceCount, ' ')
                                   + next->token.value
-                                  + std::string(maxLeft + spacing - estimate, '-');
+                                  + std::string(maxLeft + spacing - estimate - (next->token.value.size() - 1), '-');
                     print->depth = depth;
-                    offsetByDepth[depth] += next->token.value.size() + maxLeft + spacing - estimate + spaceCount;
+                    offsetByDepth[depth] += next->token.value.size() + maxLeft + spacing - estimate + spaceCount - (next->token.value.size() - 1);
 
                     return maxLeft;
                 }
@@ -192,7 +192,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    void SimpleExpressionParser::StackTopToNode_()
+    void ExpressionParser::StackTopToNode_()
     {
         if (nodeStack_.size() < 2)
         {
@@ -205,16 +205,16 @@ namespace Compiler
         }
         Token topToken = tokenStack_.back();
         tokenStack_.pop_back();
-        SimpleASTNode* right = nodeStack_.back();
+        ASTNode* right = nodeStack_.back();
         nodeStack_.pop_back();
-        SimpleASTNode* left = nodeStack_.back();
+        ASTNode* left = nodeStack_.back();
         nodeStack_.pop_back();
-        SimpleASTNode* node = new SimpleASTNode(topToken, left, right);
+        ASTNode* node = new ASTNode(topToken, left, right);
         nodeStack_.push_back(node);
     }
 
 //------------------------------------------------------------------------------
-    void SimpleExpressionParser::PushToken_(const Token& token)
+    void ExpressionParser::PushToken_(const Token& token)
     {
         auto GetPrecedence = [](const Token tt) -> int
         {
@@ -233,18 +233,24 @@ namespace Compiler
 
         switch (state)
         {
-        case PS_OPERAND:
+        case PS_UNARY_EXPRESSION:
         {
             if (token == TT_LITERAL
-                || token == TT_IDENTIFIER)
+                || token == TT_IDENTIFIER
+                || token == TT_LITERAL_ARRAY)
             {
-                nodeStack_.push_back(new SimpleASTNode(token));
-                stateStack_.push_back(PS_OPERATOR);
+                nodeStack_.push_back(new ASTNode(token));
+                stateStack_.push_back(PS_BINARY_EXPRESSION);
             }
             else if (token == OP_LPAREN)
             {
                 tokenStack_.push_back(token);
-                stateStack_.push_back(PS_OPERAND);
+                stateStack_.push_back(PS_UNARY_EXPRESSION);
+            }
+            else if (UnaryOperators.count(token.type) != 0)
+            {
+                tokenStack_.push_back(token);
+                stateStack_.push_back(PS_UNARY_EXPRESSION);
             }
             else if (token == TT_EOF)
             {
@@ -257,34 +263,28 @@ namespace Compiler
             break;
         }
 
-        case PS_OPERATOR:
+        case PS_BINARY_EXPRESSION:
         {
             if (token == TT_LITERAL
                 || token == TT_IDENTIFIER
                 || token == OP_LPAREN)
             {
                 FlushOutput_();
-                stateStack_.push_back(PS_OPERAND);
+                stateStack_.push_back(PS_UNARY_EXPRESSION);
                 PushToken_(token);
             }
-            else if (token == OP_STAR
-                     || token == OP_DIV
-                     || token == OP_PLUS
-                     || token == OP_MINUS)
+            else if (TokenTypeToPrecedence.find(token.type) != TokenTypeToPrecedence.end())
             {
                 while (!tokenStack_.empty()
-                       && ((tokenStack_.back().type == OP_STAR
-                            || tokenStack_.back().type == OP_DIV
-                            || tokenStack_.back().type == OP_PLUS
-                            || tokenStack_.back().type == OP_MINUS)
+                       && (TokenTypeToPrecedence.find(token.type) != TokenTypeToPrecedence.end()
                            && ((TokenTypeToRightAssociativity.count(token.type) == 0
-                            && GetPrecedence(token) == GetPrecedence(tokenStack_.back()))
-                           || (GetPrecedence(token) > GetPrecedence(tokenStack_.back())))))
+                                && GetPrecedence(token) == GetPrecedence(tokenStack_.back()))
+                               || (GetPrecedence(token) > GetPrecedence(tokenStack_.back())))))
                 {
                     StackTopToNode_();
                 }
                 tokenStack_.push_back(token);
-                stateStack_.push_back(PS_OPERAND);
+                stateStack_.push_back(PS_UNARY_EXPRESSION);
             }
             else if (token == OP_RPAREN)
             {
@@ -304,12 +304,12 @@ namespace Compiler
                 }
 
                 tokenStack_.pop_back();
-                stateStack_.push_back(PS_OPERATOR);
+                stateStack_.push_back(PS_BINARY_EXPRESSION);
             }
             else if (token == TT_EOF)
             {
                 FlushOutput_();
-                stateStack_.push_back(PS_OPERAND);
+                stateStack_.push_back(PS_UNARY_EXPRESSION);
             }
             else
             {
@@ -322,7 +322,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    void SimpleExpressionParser::FlushOutput_()
+    void ExpressionParser::FlushOutput_()
     {
         while (!tokenStack_.empty())
         {
@@ -338,33 +338,23 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    void SimpleExpressionParser::EmitInvalid(const string &source, const int line, const int column)
+    void ExpressionParser::EmitInvalid(const string &source, const int line, const int column)
     {
         ThrowInvalidTokenError_(Token(TT_INVALID, source, line, column));
     }
 
 //------------------------------------------------------------------------------
-    void SimpleExpressionParser::EmitKeyword(const string &source, ETokenType token_type, const int line, const int column)
+    void ExpressionParser::EmitKeyword(const string &source, ETokenType token_type, const int line, const int column)
     {
         ThrowInvalidTokenError_(Token(token_type, source, line, column));
     }
 
 //------------------------------------------------------------------------------
-    void SimpleExpressionParser::EmitPunctuation(const string &source, ETokenType token_type, const int line, const int column)
+    void ExpressionParser::EmitPunctuation(const string &source, ETokenType token_type, const int line, const int column)
     {
-        const std::unordered_set<int> validTokenTypes =
-        {
-            OP_PLUS,
-            OP_MINUS,
-            OP_STAR,
-            OP_DIV,
-            OP_LPAREN,
-            OP_RPAREN,
-        };
-
         Token token(token_type, source, line, column);
 
-        if (validTokenTypes.find(token_type) != validTokenTypes.end())
+        if (TokenTypeToPrecedence.find(token_type) != TokenTypeToPrecedence.end())
         {
             PushToken_(token);
         }
@@ -375,14 +365,14 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    void SimpleExpressionParser::EmitIdentifier(const string &source, const int line, const int column)
+    void ExpressionParser::EmitIdentifier(const string &source, const int line, const int column)
     {
         Token token(TT_IDENTIFIER, source, line, column);
         PushToken_(token);
     }
 
 //------------------------------------------------------------------------------
-    void SimpleExpressionParser::EmitLiteral(const string &source,
+    void ExpressionParser::EmitLiteral(const string &source,
                                              EFundamentalType type,
                                              const void *data, size_t nbytes,
                                              const int line, const int column)
@@ -392,7 +382,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    void SimpleExpressionParser::EmitLiteralArray(const string &source,
+    void ExpressionParser::EmitLiteralArray(const string &source,
                                                   size_t num_elements,
                                                   EFundamentalType type,
                                                   const void *data, size_t nbytes,
@@ -403,14 +393,14 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    void SimpleExpressionParser::EmitEof(const int line, const int column)
+    void ExpressionParser::EmitEof(const int line, const int column)
     {
         Token token(TT_EOF, "", line, column);
         PushToken_(token);
     }
 
 //------------------------------------------------------------------------------
-    SimpleExpressionToken::SimpleExpressionToken(const ETokenType &type,
+    ExpressionToken::ExpressionToken(const ETokenType &type,
                                                  const std::string &value,
                                                  const unsigned &line,
                                                  const unsigned &column)

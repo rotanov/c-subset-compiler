@@ -428,7 +428,19 @@ namespace Compiler
         OP_BORASS,
         OP_QMARK,
         OP_COLON,
-        // also Unary 	 right to left 	 ++  --  +  -  !  ~  &  *  (type_name)  C++: sizeof new delete
+        // also Unary 	 right to left 	 ++  --  +  -  !  ~  &  *  //(type_name)  C++: sizeof new delete
+    };
+
+    const unordered_set<ETokenType> UnaryOperators =
+    {
+        OP_INC,
+        OP_DEC,
+        OP_PLUS,
+        OP_MINUS,
+        OP_LNOT,
+        OP_COMPL,
+        OP_AMP,
+        OP_STAR,
     };
 
     const unordered_map<ETokenType, int> TokenTypeToPrecedence =
