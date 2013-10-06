@@ -1,151 +1,76 @@
-preprocessing-op-or-punc 1 {
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 }
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 [
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 ]
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 #
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 ##
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 (
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 )
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 <:
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 :>
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 <%
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 %>
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 %:
-whitespace-sequence 0 
-preprocessing-op-or-punc 4 %:%:
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 ;
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 :
-whitespace-sequence 0 
-preprocessing-op-or-punc 3 ...
-whitespace-sequence 0 
-preprocessing-op-or-punc 3 new
-whitespace-sequence 0 
-preprocessing-op-or-punc 6 delete
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 ?
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 ::
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 .
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 .*
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 +
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 -
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 *
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 /
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 %
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 ^
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 &
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 |
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 ~
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 !
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 =
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 <
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 >
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 +=
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 -=
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 *=
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 /=
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 %=
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 ^=
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 &=
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 |=
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 <<
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 >>
-whitespace-sequence 0 
-preprocessing-op-or-punc 3 >>=
-whitespace-sequence 0 
-preprocessing-op-or-punc 3 <<=
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 ==
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 !=
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 <=
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 >=
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 &&
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 ||
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 ++
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 --
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 ,
-whitespace-sequence 0 
-preprocessing-op-or-punc 3 ->*
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 ->
-whitespace-sequence 0 
-preprocessing-op-or-punc 3 and
-whitespace-sequence 0 
-preprocessing-op-or-punc 6 and_eq
-whitespace-sequence 0 
-preprocessing-op-or-punc 6 bitand
-whitespace-sequence 0 
-preprocessing-op-or-punc 5 bitor
-whitespace-sequence 0 
-preprocessing-op-or-punc 5 compl
-whitespace-sequence 0 
-preprocessing-op-or-punc 3 not
-whitespace-sequence 0 
-preprocessing-op-or-punc 6 not_eq
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 or
-whitespace-sequence 0 
-preprocessing-op-or-punc 5 or_eq
-whitespace-sequence 0 
-preprocessing-op-or-punc 3 xor
-whitespace-sequence 0 
-preprocessing-op-or-punc 6 xor_eq
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 <
-preprocessing-op-or-punc 2 ::
-new-line 0 
-eof
-e 0 
-preprocessing-op-or-punc 6 xor_eq
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 <
-preprocessing-op-or-punc 2 ::
-new-line 0 
+...1-..1: punctuation OP_LBRACE {
+...1-..3: punctuation OP_RBRACE }
+...1-..5: punctuation OP_LSQUARE [
+...1-..7: punctuation OP_RSQUARE ]
+...1-..9: invalid #
+...1-.11: invalid ##
+...1-.14: punctuation OP_LPAREN (
+...1-.16: punctuation OP_RPAREN )
+...1-.18: punctuation OP_LSQUARE <:
+...1-.21: punctuation OP_RSQUARE :>
+...1-.24: punctuation OP_LBRACE <%
+...1-.27: punctuation OP_RBRACE %>
+...1-.30: invalid %:
+...1-.33: invalid %:%:
+...1-.38: punctuation OP_SEMICOLON ;
+...2-..1: punctuation OP_COLON :
+...2-..3: punctuation OP_DOTS ...
+...2-..7: identifier  new
+...2-.11: identifier  delete
+...2-.18: punctuation OP_QMARK ?
+...2-.20: punctuation OP_COLON :
+...2-.21: punctuation OP_COLON :
+...2-.23: punctuation OP_DOT .
+...2-.25: punctuation OP_DOT .
+...2-.26: punctuation OP_STAR *
+...2-.28: punctuation OP_PLUS +
+...2-.30: punctuation OP_MINUS -
+...2-.32: punctuation OP_STAR *
+...3-..1: punctuation OP_DIV /
+...3-..3: punctuation OP_MOD %
+...3-..5: punctuation OP_XOR ^
+...3-..7: punctuation OP_AMP &
+...3-..9: punctuation OP_BOR |
+...3-.11: punctuation OP_COMPL ~
+...3-.13: punctuation OP_LNOT !
+...3-.15: punctuation OP_ASS =
+...3-.17: punctuation OP_LT <
+...3-.19: punctuation OP_GT >
+...3-.21: punctuation OP_PLUSASS +=
+...3-.24: punctuation OP_MINUSASS -=
+...3-.27: punctuation OP_STARASS *=
+...3-.30: punctuation OP_DIVASS /=
+...4-..1: punctuation OP_MODASS %=
+...4-..4: punctuation OP_XORASS ^=
+...4-..7: punctuation OP_BANDASS &=
+...4-.10: punctuation OP_BORASS |=
+...4-.13: punctuation OP_LSHIFT <<
+...4-.16: punctuation OP_RSHIFT >>
+...4-.19: punctuation OP_RSHIFTASS >>=
+...4-.23: punctuation OP_LSHIFTASS <<=
+...4-.27: punctuation OP_EQ ==
+...5-..1: punctuation OP_NE !=
+...5-..4: punctuation OP_LE <=
+...5-..7: punctuation OP_GE >=
+...5-.10: punctuation OP_LAND &&
+...5-.13: punctuation OP_LOR ||
+...5-.16: punctuation OP_INC ++
+...5-.19: punctuation OP_DEC --
+...5-.22: punctuation OP_COMMA ,
+...5-.24: punctuation OP_ARROW ->
+...5-.26: punctuation OP_STAR *
+...5-.28: punctuation OP_ARROW ->
+...6-..1: identifier  and
+...6-..5: identifier  and_eq
+...6-.12: identifier  bitand
+...6-.19: identifier  bitor
+...6-.25: identifier  compl
+...7-..1: identifier  not
+...7-..5: identifier  not_eq
+...7-.12: identifier  or
+...7-.15: identifier  or_eq
+...7-.21: identifier  xor
+...7-.25: identifier  xor_eq
+...8-..1: punctuation OP_LSQUARE <:
+...8-..3: punctuation OP_COLON :
 eof

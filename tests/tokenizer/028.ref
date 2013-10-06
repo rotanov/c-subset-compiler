@@ -1,0 +1,4 @@
+...1-..1: literal int 999999999 FFC99A3B
+...2-..1: literal int 2147483647 FFFFFF7F
+...3-..1: invalid 2147483648
+eof

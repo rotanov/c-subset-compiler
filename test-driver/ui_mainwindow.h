@@ -39,12 +39,14 @@ public:
     QAction *actionSimple_Expressions;
     QAction *action_Run_Tests_for_Current_Mode;
     QAction *actionTest_Name;
+    QAction *action_Log;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout;
     QSplitter *splitter;
     CodeEditor *qpteInput;
     QPlainTextEdit *qpteOutput;
     QPlainTextEdit *qpteReference;
+    QPlainTextEdit *qpteLog;
     QMenuBar *menuBar;
     QMenu *menu_File;
     QMenu *menu_Edit;
@@ -58,7 +60,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(1025, 771);
+        MainWindow->resize(1136, 835);
         action_New = new QAction(MainWindow);
         action_New->setObjectName(QStringLiteral("action_New"));
         action_Save = new QAction(MainWindow);
@@ -77,6 +79,9 @@ public:
         action_Run_Tests_for_Current_Mode->setObjectName(QStringLiteral("action_Run_Tests_for_Current_Mode"));
         actionTest_Name = new QAction(MainWindow);
         actionTest_Name->setObjectName(QStringLiteral("actionTest_Name"));
+        action_Log = new QAction(MainWindow);
+        action_Log->setObjectName(QStringLiteral("action_Log"));
+        action_Log->setCheckable(true);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         verticalLayout = new QVBoxLayout(centralWidget);
@@ -86,6 +91,8 @@ public:
         splitter = new QSplitter(centralWidget);
         splitter->setObjectName(QStringLiteral("splitter"));
         splitter->setOrientation(Qt::Horizontal);
+        splitter->setOpaqueResize(false);
+        splitter->setChildrenCollapsible(false);
         qpteInput = new CodeEditor(splitter);
         qpteInput->setObjectName(QStringLiteral("qpteInput"));
         qpteInput->setLineWrapMode(QPlainTextEdit::NoWrap);
@@ -101,13 +108,17 @@ public:
         qpteReference->setObjectName(QStringLiteral("qpteReference"));
         qpteReference->setLineWrapMode(QPlainTextEdit::NoWrap);
         splitter->addWidget(qpteReference);
+        qpteLog = new QPlainTextEdit(splitter);
+        qpteLog->setObjectName(QStringLiteral("qpteLog"));
+        qpteLog->setReadOnly(true);
+        splitter->addWidget(qpteLog);
 
         verticalLayout->addWidget(splitter);
 
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1025, 21));
+        menuBar->setGeometry(QRect(0, 0, 1136, 21));
         menu_File = new QMenu(menuBar);
         menu_File->setObjectName(QStringLiteral("menu_File"));
         menu_Edit = new QMenu(menuBar);
@@ -139,6 +150,7 @@ public:
         menu_Select_Mode->addAction(actionSimple_Expressions);
         menu_View->addAction(action_Prev);
         menu_View->addAction(action_Next);
+        menu_View->addAction(action_Log);
         menu_Run->addAction(action_Run_Tests_for_Current_Mode);
 
         retranslateUi(MainWindow);
@@ -165,6 +177,8 @@ public:
         action_Run_Tests_for_Current_Mode->setShortcut(QApplication::translate("MainWindow", "Ctrl+R", 0));
         actionTest_Name->setText(QApplication::translate("MainWindow", "Test &Name", 0));
         actionTest_Name->setShortcut(QApplication::translate("MainWindow", "Ctrl+T", 0));
+        action_Log->setText(QApplication::translate("MainWindow", "&Log", 0));
+        action_Log->setShortcut(QApplication::translate("MainWindow", "Ctrl+L", 0));
         qpteOutput->setDocumentTitle(QApplication::translate("MainWindow", "Output", 0));
         menu_File->setTitle(QApplication::translate("MainWindow", "&File", 0));
         menu_Edit->setTitle(QApplication::translate("MainWindow", "&Edit", 0));

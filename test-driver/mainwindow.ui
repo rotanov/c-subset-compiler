@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1025</width>
-    <height>771</height>
+    <width>1136</width>
+    <height>835</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,6 +19,12 @@
      <widget class="QSplitter" name="splitter">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="opaqueResize">
+       <bool>false</bool>
+      </property>
+      <property name="childrenCollapsible">
+       <bool>false</bool>
       </property>
       <widget class="CodeEditor" name="qpteInput">
        <property name="lineWrapMode">
@@ -47,6 +53,11 @@
         <enum>QPlainTextEdit::NoWrap</enum>
        </property>
       </widget>
+      <widget class="QPlainTextEdit" name="qpteLog">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -56,7 +67,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1025</width>
+     <width>1136</width>
      <height>21</height>
     </rect>
    </property>
@@ -88,6 +99,7 @@
     </property>
     <addaction name="action_Prev"/>
     <addaction name="action_Next"/>
+    <addaction name="action_Log"/>
    </widget>
    <widget class="QMenu" name="menu_Run">
     <property name="title">
@@ -173,6 +185,17 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+T</string>
+   </property>
+  </action>
+  <action name="action_Log">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Log</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
    </property>
   </action>
  </widget>

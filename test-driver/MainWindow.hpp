@@ -24,6 +24,8 @@ struct TestInfo
     QString name;
 };
 
+class DebugStream;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -55,21 +57,26 @@ private slots:
     void on_actionTest_Name_triggered();
     void OnQpteInputCursorPositionChanged();
 
+    void on_action_Log_triggered(bool checked);
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
-    CompilerMode mode_;
+    Ui::MainWindow* ui = NULL;
+    CompilerMode mode_ = CM_TOKENIZER;
     std::vector<int> testIndexes_;
     std::vector<std::vector<TestInfo>> tests_;
-    QLabel* qlStatus_;
-    QLabel* qlLineColumn_;
+    QLabel* qlStatus_ = NULL;
+    QLabel* qlLineColumn_ = NULL;
+    DebugStream* debugStreamCout_ = NULL; // YES WE CAN WHAT A RELIEF
+    DebugStream* debugStreamCerr_ = NULL;
 
     void CompareOutputWithReference_();
     void SetMode_(const CompilerMode& mode);
     TestInfo& GetCurrentTest_();
     // reloads current mode_ current test
     void UpdateTest_();
+    void RunCompiler_(std::vector<char>& input);
 };

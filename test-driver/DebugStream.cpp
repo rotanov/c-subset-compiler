@@ -52,3 +52,29 @@ std::streamsize DebugStream::xsputn(const char *p, std::streamsize n)
 
     return n;
 }
+
+
+BufferStream::BufferStream(std::ostream &stream, QByteArray &buffer)
+    : stream_(stream)
+    , outputBuffer_(buffer)
+{
+    oldBuffer_ = stream.rdbuf();
+    stream.rdbuf(this);
+}
+
+BufferStream::~BufferStream()
+{
+    stream_.rdbuf(oldBuffer_);
+}
+
+std::basic_streambuf<char>::int_type BufferStream::overflow(int_type v)
+{
+    outputBuffer_.append(v);
+    return v;
+}
+
+std::streamsize BufferStream::xsputn(const char *p, std::streamsize n)
+{
+    outputBuffer_.append(p, n);
+    return n;
+}

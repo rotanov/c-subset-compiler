@@ -79,8 +79,6 @@ namespace Compiler
         };
 
         int state = START;
-        unsigned long long intValue = 0;
-        float floatValue = 0.0;
         int base = 0;
 
         int i = 0;
@@ -229,18 +227,19 @@ namespace Compiler
 
         if (base != 0)
         {
+            unsigned long long intValue = 0;
             errno = 0;
             int* where = codePoints_;
             if (base == 16)
             {
                 where += 2;
             }
-            int* whereWas = where;
 
-            std::wstring str = UTF8CodePointToWString(where, 0, codePointsCount_ - 1);
+            std::wstring str = UTF8CodePointToWString(where, 0, codePointsCount_ - 2);
             wchar_t* pstr = &str[0];
+            wchar_t* whereWas = pstr;
             intValue = wcstoull(pstr, &pstr, base);
-            if (errno == ERANGE || whereWas == where)
+            if (errno == ERANGE || whereWas == pstr)
             {
                 output_.EmitInvalid(data, line_, column_);
                 return;
@@ -258,12 +257,13 @@ namespace Compiler
         }
         else
         {
+            float floatValue = 0.0;
             string floatString = "";
             floatString = UTF8CodePointToString(codePoints_, 0, i);//where - codePoints_);
-//            floatValue = DecodeFloat(floatString);
-//            output_.EmitLiteral(data, FT_FLOAT, &floatValue, sizeof(floatValue), line_, column_);
-            double doubleValue = DecodeDouble(floatString);
-            output_.EmitLiteral(data, FT_DOUBLE, &doubleValue, sizeof(doubleValue), line_, column_);
+            floatValue = DecodeFloat(floatString);
+            output_.EmitLiteral(data, FT_FLOAT, &floatValue, sizeof(floatValue), line_, column_);
+//            double doubleValue = DecodeDouble(floatString);
+//            output_.EmitLiteral(data, FT_DOUBLE, &doubleValue, sizeof(doubleValue), line_, column_);
         }
         column_ += codePointsCount_;
     }

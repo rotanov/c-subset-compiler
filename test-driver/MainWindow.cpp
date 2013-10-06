@@ -34,52 +34,16 @@ class QTextDocument;
 
 void MainWindow::OnInputTextChanged()
 {
-    try
+    QString text = ui->qpteInput->toPlainText();
+    ui->qpteOutput->clear();
+    QByteArray utf8 = text.toUtf8();
+    std::vector<char> input(utf8.size());
+    for (int i = 0; i < utf8.size(); i++)
     {
-        using namespace Compiler;
-        QString text = ui->qpteInput->toPlainText();
-        ui->qpteOutput->clear();
-        QByteArray utf8 = text.toUtf8();
-        vector<char> input(utf8.size());
-        for (int i = 0; i < utf8.size(); i++)
-        {
-            input[i] = utf8[i];
-        }
-
-    //        pretokenizer debug output
-    //        DebugPreTokenStream debugPreTokenStream;
-    //        PreTokenizer pretokenizer(input, debugPreTokenStream);
-
-
-        switch (mode_)
-        {
-        case CM_TOKENIZER:
-        {
-            DebugTokenOutputStream debugTokenOutputStream;
-            Tokenizer tokenizer(debugTokenOutputStream);
-            PreTokenizer pretokenizer(input, tokenizer);
-        }
-            break;
-
-        case CM_SIMPLE_EXPRESSION:
-        {
-            SimpleExpressionParser simpleExpressionParser;
-            Tokenizer tokenizer(simpleExpressionParser);
-            PreTokenizer pretokenizer(input, tokenizer);
-        }
-            break;
-        }
+        input[i] = utf8[i];
     }
-    catch (std::exception& e)
-    {
-        std::cerr << "ERROR: " << e.what() << std::endl;
-//        return EXIT_FAILURE;
-    }
-    catch (...)
-    {
-        std::cerr << "ERROR: unknown exception";
-//        return EXIT_FAILURE;
-    }
+    RunCompiler_(input);
+    ui->qpteOutput->appendPlainText("");
 }
 
 void MainWindow::OnOutputTextChanged()
@@ -107,9 +71,6 @@ std::map<CompilerMode, std::string> CompilerModeToTestDir =
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , mode_(CM_TOKENIZER)
-    , qlStatus_(NULL)
-    , qlLineColumn_(NULL)
 
 {
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
@@ -152,11 +113,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->qpteInput->setFont(QFont("Consolas", 12));
     ui->qpteOutput->setFont(QFont("Consolas", 12));
     ui->qpteReference->setFont(QFont("Consolas", 12));
+    ui->qpteLog->setFont(QFont("Consolas", 12));
 
     CxxHighlighter* cxxHighlighter = new CxxHighlighter(ui->qpteInput->document());
 
-    DebugStream* debugStreamCout = new DebugStream(std::cout, ui->qpteOutput);
-    DebugStream* debugStreamCerr = new DebugStream(std::cerr, ui->qpteOutput);
+    debugStreamCout_ = new DebugStream(std::cout, ui->qpteOutput);
+    debugStreamCerr_ = new DebugStream(std::cerr, ui->qpteOutput);
 
     connect(ui->qpteInput, &QPlainTextEdit::textChanged,
             this, &MainWindow::OnInputTextChanged);
@@ -171,6 +133,8 @@ MainWindow::MainWindow(QWidget *parent)
     SetMode_(mode_);
     UpdateTest_();
     showMaximized();
+
+    ui->qpteLog->hide();
 }
 
 MainWindow::~MainWindow()
@@ -224,6 +188,44 @@ void MainWindow::UpdateTest_()
 
 }
 
+void MainWindow::RunCompiler_(std::vector<char> &input)
+{
+    using namespace Compiler;
+    //        pretokenizer debug output
+    //        DebugPreTokenStream debugPreTokenStream;
+    //        PreTokenizer pretokenizer(input, debugPreTokenStream);
+
+    try
+    {
+        switch (mode_)
+        {
+        case CM_TOKENIZER:
+        {
+            DebugTokenOutputStream debugTokenOutputStream;
+            Tokenizer tokenizer(debugTokenOutputStream);
+            PreTokenizer pretokenizer(input, tokenizer);
+        }
+            break;
+
+        case CM_SIMPLE_EXPRESSION:
+        {
+            SimpleExpressionParser simpleExpressionParser;
+            Tokenizer tokenizer(simpleExpressionParser);
+            PreTokenizer pretokenizer(input, tokenizer);
+        }
+            break;
+        }
+    }
+    catch (std::exception& e)
+    {
+        std::cerr << "ERROR: " << e.what() << std::endl;
+    }
+    catch (...)
+    {
+        std::cerr << "ERROR: unknown exception";
+    }
+}
+
 void MainWindow::on_action_New_triggered()
 {
     TestInfo testInfo;
@@ -269,7 +271,85 @@ void MainWindow::on_action_Copy_Output_to_Reference_triggered()
 
 void MainWindow::on_action_Run_Tests_for_Current_Mode_triggered()
 {
-    // TODO: DO ASAP
+    if (!ui->qpteLog->isVisible())
+    {
+        ui->menu_View->actions().at(2)->trigger();
+    }
+
+    int& testIndex = testIndexes_[mode_];
+
+    QDir dir(QString().fromStdString(CompilerModeToTestDir[mode_]),
+             QString("*.t"),
+             QDir::Name | QDir::IgnoreCase,
+             QDir::Files);
+
+    QFileInfoList entryInfoList = dir.entryInfoList();
+
+    ui->qpteLog->appendPlainText("");
+    ui->qpteLog->appendPlainText(QString().fromStdString("Running tests for " + CompilerModeToString[mode_]));
+
+    std::vector<int> failedTests;
+    for (unsigned i = 0; i < tests_[mode_].size(); i++)
+    {
+        QString filename;
+        QTextStream filenameStream(&filename);
+        filenameStream << QString().fromStdString(CompilerModeToTestDir[mode_])
+                       << qSetFieldWidth(3)
+                       << qSetPadChar('0')
+                       << i
+                       << qSetFieldWidth(0);
+
+        QFile inputFile(filename + QString(".t"));
+        QFile referenceFile(filename + QString(".ref"));
+        assert(inputFile.open(QIODevice::ReadOnly | QIODevice::Text));
+        assert(referenceFile.open(QIODevice::ReadOnly | QIODevice::Text));
+
+        QByteArray inputByteArray = inputFile.readAll();
+        std::vector<char> input;
+        for (int i = 0; i < inputByteArray.size(); i++)
+        {
+            input.push_back(inputByteArray[i]);
+        }
+        QByteArray output;
+        BufferStream* coutStream = new BufferStream(std::cout, output);
+        BufferStream* cerrStream = new BufferStream(std::cerr, output);
+
+        RunCompiler_(input);
+
+        delete coutStream;
+        delete cerrStream;
+
+        QByteArray referenceByteArray = referenceFile.readAll();
+
+        if (referenceByteArray.size() == output.size())
+        {
+            for (int i = 0; i < output.size(); i++)
+            {
+                if (referenceByteArray[i] != output[i])
+                {
+                    failedTests.push_back(i);
+                    break;
+                }
+            }
+        }
+        else
+        {
+            failedTests.push_back(i);
+        }
+    }
+
+    if (failedTests.size() == 0)
+    {
+        ui->qpteLog->appendPlainText("SUCCESS. ALL TESTS PASSED.");
+    }
+    else
+    {
+        QString failedTestsString;
+        std::for_each(failedTests.begin(), failedTests.end(),
+                      [&](int testIndex) { failedTestsString.append(QString().number(testIndex) + ", "); });
+        ui->qpteLog->appendPlainText("FAIL. FAILED TESTS ARE: " + failedTestsString);
+    }
+
 }
 
 void MainWindow::on_action_Tokenizer_triggered()
@@ -297,4 +377,16 @@ void MainWindow::OnQpteInputCursorPositionChanged()
     int column = cursor.columnNumber() + 1;
     std::string text = std::to_string(line) + "-" + std::to_string(column);
     qlLineColumn_->setText(QString().fromStdString(text));
+}
+
+void MainWindow::on_action_Log_triggered(bool checked)
+{
+    if (checked)
+    {
+        ui->qpteLog->show();
+    }
+    else
+    {
+        ui->qpteLog->hide();
+    }
 }

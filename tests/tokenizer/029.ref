@@ -1,0 +1,7 @@
+...1-.12: literal abcdef array of 7 char 61626364656600
+...1-.12: punctuation OP_SEMICOLON ;
+...3-..7: literal abc array of 4 char 61626300
+...3-..7: identifier  no
+...3-.15: literal def array of 4 char 64656600
+...3-.15: punctuation OP_SEMICOLON ;
+eof

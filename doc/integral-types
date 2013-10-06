@@ -1,0 +1,22 @@
+Integral Types
+
+No literal constant may has prefix or suffix.
+    
+integer-literal is 4 byte signed int, from 0 to INT_MAX inclusive. (FT_INT)
+Literal greater than INT_MAX considered invalid.
+
+floating-literal is 4 byte float (FT_FLOAT)
+
+character-literal of
+    value = static_cast<int>(character-literal)
+    value in [0; 128) is of type signed char (FT_CHAR)
+    value in [128; INT_MAX] is of type int (FT_INT)
+    value > INT_MAX is invalid
+
+    multibyte character-literals are invalid e.g.
+        '\fff' - valid, == int 4095 (dec)
+        'ab' - invalid
+        '\t\v' - invalid
+        '\0\0' - invalid
+        '\f\f\f' - invalid
+        '\f' - valid, == char 15 (dec)
