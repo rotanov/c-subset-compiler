@@ -1,10 +1,10 @@
-preprocessing-op-or-punc 1 <
-preprocessing-op-or-punc 2 ::
-preprocessing-op-or-punc 2 <:
-preprocessing-op-or-punc 2 :>
-preprocessing-op-or-punc 2 ::
-preprocessing-op-or-punc 2 <:
-preprocessing-op-or-punc 2 ::
-whitespace-sequence 0 
-new-line 0 
+...1-..1: punctuation OP_LSQUARE <:
+...1-..3: punctuation OP_COLON :
+...1-..4: punctuation OP_LSQUARE <:
+...1-..6: punctuation OP_RSQUARE :>
+...1-..8: punctuation OP_COLON :
+...1-..9: punctuation OP_COLON :
+...1-.10: punctuation OP_LSQUARE <:
+...1-.12: punctuation OP_COLON :
+...1-.13: punctuation OP_COLON :
 eof

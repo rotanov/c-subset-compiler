@@ -1,21 +1,11 @@
-pp-number 3 0.0
-new-line 0 
-pp-number 6 0....1
-new-line 0 
-pp-number 6 0.0e+3
-new-line 0 
-pp-number 11 0.24512..E-
-new-line 0 
-pp-number 6 0...e+
-new-line 0 
-pp-number 5 0efsa
-preprocessing-op-or-punc 1 -
-new-line 0 
-pp-number 9 21412e421
-new-line 0 
-pp-number 7 241E421
-new-line 0 
-pp-number 7 12e...2
-new-line 0 
-new-line 0 
+...1-..1: literal float 0.0 00000000
+...2-..1: invalid 0....1
+...3-..1: literal float 0.0e+3 00000000
+...4-..1: invalid 0.24512..E-
+...5-..1: invalid 0...e+
+...6-..1: invalid 0efsa
+...6-..1: punctuation OP_MINUS -
+...7-..1: literal float 21412e421 FFFF7F7F
+...8-..1: literal float 241E421 FFFF7F7F
+...9-..1: invalid 12e...2
 eof

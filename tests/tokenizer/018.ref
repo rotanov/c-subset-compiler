@@ -1,6 +1,10 @@
-character-literal 4 '\''
-new-line 0 
-string-literal 4 "\""
-new-line 0 
-new-line 0 
+...1-..1: literal char '\'' 27
+...4-..1: literal " array of 2 char 2200
+...4-..1: literal char '\0' 00
+...5-..1: literal char '\1' 01
+...6-..1: literal char '\2' 02
+...7-..1: literal char '\7' 07
+...8-..1: literal char '\01' 01
+...9-..1: literal int '\200' 80000000
+..10-..1: invalid '\008'
 eof

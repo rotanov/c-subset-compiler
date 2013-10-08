@@ -224,7 +224,7 @@ namespace Compiler
             }
             else
             {
-                throw "pizdec";
+                throw "ploho";
             }
         };
 

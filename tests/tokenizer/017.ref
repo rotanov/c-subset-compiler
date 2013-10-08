@@ -12,9 +12,9 @@
 ...2-..9: literal char '\r' 0D
 ...2-.13: literal char '\t' 09
 ...2-.17: literal char '\v' 0B
-...4-..1: invalid '\x3C0'
-...4-..7: invalid '\x1D11E'
-...4-.15: invalid '\101'
+...4-..1: literal int '\x3C0' C0030000
+...4-..5: literal int '\x1D11E' 1ED10100
+...4-..9: literal char '\101' 41
 ...6-..1: invalid 'ab'
 ...7-..1: invalid 'abc'
 eof

@@ -1,3 +1,12 @@
 ...1-..1: invalid π
 ...1-..2: invalid 𝄞
+...2-..1: literal int '𝄞' 1ED10100
+...3-..1: literal int 'π' C0030000
+...4-..5: literal π𝄞 array of 7 char CF80F09D849E00
+...4-..5: punctuation OP_SEMICOLON ;
+...6-..1: literal ありがと array of 13 char E38182E3828AE3818CE381A800
+...6-..1: literal int 'あ' 42300000
+...7-..1: literal int 'り' 8A300000
+...8-..1: literal int 'が' 4C300000
+...9-..1: literal int 'と' 68300000
 eof

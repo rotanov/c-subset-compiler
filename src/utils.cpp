@@ -280,6 +280,12 @@ namespace Compiler
         int c = read[0];
         int state = 0;
 
+        int len = 0;
+        while (read[len] != 0)
+        {
+            len++;
+        }
+
         while (c != EndOfFile && c != 0)
         {
             switch (state)
@@ -309,16 +315,22 @@ namespace Compiler
                 }
                 else if (c == 'x')
                 {
-                    long int codePoint = wcstol(reinterpret_cast<wchar_t*>(read + 1),
-                                                reinterpret_cast<wchar_t**>(&read), 16);
+                    std::wstring str = UTF8CodePointToWString(read + 1, 0, len - (read + 1- where));
+                    wchar_t* p1 = &str[0];
+                    wchar_t* p2 = p1;
+                    long int codePoint = wcstol(p1, &p2, 16);
+                    read += p2 - p1 + 1;
                     write[0] = codePoint;
                     write++;
                     state = 0;
                 }
                 else
                 {
-                    long int codePoint = wcstol(reinterpret_cast<wchar_t*>(read),
-                                                reinterpret_cast<wchar_t**>(&read), 8);
+                    std::wstring str = UTF8CodePointToWString(read, 0, std::min(2, len - (read - where)));
+                    wchar_t* p1 = &str[0];
+                    wchar_t* p2 = p1;
+                    long int codePoint = wcstol(p1, &p2, 8);
+                    read += p2 - p1;
                     write[0] = codePoint;
                     write++;
                     state = 0;

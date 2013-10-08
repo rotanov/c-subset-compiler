@@ -1,1 +1,4 @@
-ERROR: utf8 invalid unit (111111xx)
+...1-..1: identifier  a
+...1-..2: invalid �
+...1-..3: identifier  b
+eof

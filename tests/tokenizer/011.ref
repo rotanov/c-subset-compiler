@@ -1,46 +1,30 @@
-string-literal 2 ""
-whitespace-sequence 0 
-string-literal 5 "foo"
-whitespace-sequence 0 
-string-literal 5 "bar"
-whitespace-sequence 0 
-string-literal 5 "baz"
-new-line 0 
-identifier 2 u7
-string-literal 5 "foo"
-whitespace-sequence 0 
-string-literal 7 u8"bar"
-whitespace-sequence 0 
-identifier 2 u9
-string-literal 5 "baz"
-new-line 0 
-new-line 0 
-identifier 1 r
-string-literal 5 "abc"
-whitespace-sequence 0 
-string-literal 6 u"abc"
-whitespace-sequence 0 
-identifier 1 t
-string-literal 5 "abc"
-new-line 0 
-identifier 1 r
-user-defined-string-literal 6 "abc"u
-user-defined-string-literal 6 "abc"t
-string-literal 5 "abc"
-new-line 0 
-new-line 0 
-identifier 1 Q
-string-literal 7 "(abc)"
-whitespace-sequence 0 
-string-literal 8 R"(abc)"
-whitespace-sequence 0 
-identifier 1 T
-string-literal 7 "(abc)"
-new-line 0 
-new-line 0 
-string-literal 6 U"ewe"
-whitespace-sequence 0 
-string-literal 6 L"moo"
-new-line 0 
-new-line 0 
+...2-..1: literal foobarbaz array of 10 char 666F6F62617262617A00
+...2-..1: identifier  u7
+...2-..9: literal foo array of 4 char 666F6F00
+...2-..9: identifier  u8
+...2-.17: literal bar array of 4 char 62617200
+...2-.17: identifier  u9
+...4-..1: literal baz array of 4 char 62617A00
+...4-..1: identifier  r
+...4-..8: literal abc array of 4 char 61626300
+...4-..8: identifier  u
+...4-.15: literal abc array of 4 char 61626300
+...4-.15: identifier  t
+...5-..1: literal abc array of 4 char 61626300
+...5-..1: identifier  r
+...5-..7: literal abc array of 4 char 61626300
+...5-..7: identifier  u
+...5-.13: literal abc array of 4 char 61626300
+...5-.13: identifier  t
+...7-..1: literal abc array of 4 char 61626300
+...7-..1: identifier  Q
+...7-.10: literal (abc) array of 6 char 286162632900
+...7-.10: identifier  R
+...7-.19: literal (abc) array of 6 char 286162632900
+...7-.19: identifier  T
+...9-..1: literal (abc) array of 6 char 286162632900
+...9-..1: identifier  U
+...9-..8: literal ewe array of 4 char 65776500
+...9-..8: identifier  L
+..11-..1: literal moo array of 4 char 6D6F6F00
 eof

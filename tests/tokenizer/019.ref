@@ -1,41 +1,12 @@
-preprocessing-op-or-punc 1 #
-identifier 7 include
-whitespace-sequence 0 
-header-name 5 <foo>
-new-line 0 
-preprocessing-op-or-punc 1 #
-identifier 7 include
-whitespace-sequence 0 
-header-name 5 "foo"
-new-line 0 
-preprocessing-op-or-punc 1 #
-identifier 10 notinclude
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 <
-identifier 3 foo
-preprocessing-op-or-punc 1 >
-new-line 0 
-preprocessing-op-or-punc 1 #
-identifier 10 notinclude
-whitespace-sequence 0 
-string-literal 5 "foo"
-new-line 0 
-identifier 9 something
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 #
-identifier 7 include
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 <
-identifier 3 foo
-preprocessing-op-or-punc 1 >
-new-line 0 
-identifier 9 something
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 #
-identifier 7 include
-whitespace-sequence 0 
-string-literal 5 "foo"
-new-line 0 
-new-line 0 
-new-line 0 
+...1-..1: literal int 00017777777777 FFFFFF7F
+...2-..1: literal int 017777777776 FEFFFF7F
+...3-..1: invalid 020000000000
+...4-..1: invalid 037777777777
+...5-..1: invalid 040000000000
+...6-..1: invalid 0000000000777777777777777777777
+...7-..1: invalid 0777777777777777777776
+...8-..1: invalid 01000000000000000000000
+...9-..1: invalid 00000000000000000001777777777777777777777
+..10-..1: invalid 01777777777777777777776
+..11-..1: invalid 02000000000000000000000
 eof

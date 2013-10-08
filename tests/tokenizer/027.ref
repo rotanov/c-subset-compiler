@@ -1,1054 +1,624 @@
-whitespace-sequence 0 
-new-line 0 
-preprocessing-op-or-punc 1 #
-identifier 7 include
-whitespace-sequence 0 
-header-name 9 <stdio.h>
-new-line 0 
-preprocessing-op-or-punc 1 #
-identifier 7 include
-whitespace-sequence 0 
-header-name 10 <stdlib.h>
-whitespace-sequence 0 
-new-line 0 
-preprocessing-op-or-punc 1 #
-identifier 6 define
-whitespace-sequence 0 
-identifier 4 TRUE
-whitespace-sequence 0 
-pp-number 1 1
-new-line 0 
-preprocessing-op-or-punc 1 #
-identifier 6 define
-whitespace-sequence 0 
-identifier 5 FALSE
-whitespace-sequence 0 
-pp-number 1 0
-new-line 0 
-identifier 3 int
-whitespace-sequence 0 
-identifier 12 get_day_code
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 (
-identifier 3 int
-whitespace-sequence 0 
-identifier 4 year
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-identifier 3 int
-whitespace-sequence 0 
-identifier 13 get_leap_year
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 (
-identifier 3 int
-whitespace-sequence 0 
-identifier 4 year
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-identifier 4 void
-whitespace-sequence 0 
-identifier 14 print_calendar
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 (
-identifier 4 FILE
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 *
-identifier 4 fout
-preprocessing-op-or-punc 1 ,
-whitespace-sequence 0 
-identifier 3 int
-whitespace-sequence 0 
-identifier 4 year
-preprocessing-op-or-punc 1 ,
-whitespace-sequence 0 
-identifier 3 int
-whitespace-sequence 0 
-identifier 8 day_code
-preprocessing-op-or-punc 1 ,
-whitespace-sequence 0 
-identifier 3 int
-whitespace-sequence 0 
-identifier 9 leap_year
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-identifier 3 int
-whitespace-sequence 0 
-identifier 8 get_year
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 (
-identifier 4 void
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-identifier 4 main
-preprocessing-op-or-punc 1 (
-preprocessing-op-or-punc 1 )
-new-line 0 
-preprocessing-op-or-punc 1 {
-new-line 0 
-whitespace-sequence 0 
-new-line 0 
-whitespace-sequence 0 
-identifier 3 int
-whitespace-sequence 0 
-identifier 4 year
-preprocessing-op-or-punc 1 ,
-whitespace-sequence 0 
-identifier 8 day_code
-preprocessing-op-or-punc 1 ,
-whitespace-sequence 0 
-identifier 9 leap_year
-preprocessing-op-or-punc 1 ;
-whitespace-sequence 0 
-new-line 0 
-whitespace-sequence 0 
-new-line 0 
-whitespace-sequence 0 
-identifier 4 FILE
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 *
-identifier 4 fout
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-new-line 0 
-whitespace-sequence 0 
-identifier 4 fout
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 =
-whitespace-sequence 0 
-identifier 5 fopen
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 (
-string-literal 14 "calendar.txt"
-preprocessing-op-or-punc 1 ,
-whitespace-sequence 0 
-string-literal 3 "w"
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-new-line 0 
-whitespace-sequence 0 
-identifier 4 year
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 =
-whitespace-sequence 0 
-identifier 8 get_year
-preprocessing-op-or-punc 1 (
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-whitespace-sequence 0 
-new-line 0 
-whitespace-sequence 0 
-new-line 0 
-whitespace-sequence 0 
-identifier 8 day_code
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 =
-whitespace-sequence 0 
-identifier 12 get_day_code
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 (
-identifier 4 year
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-new-line 0 
-whitespace-sequence 0 
-identifier 9 leap_year
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 =
-whitespace-sequence 0 
-identifier 13 get_leap_year
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 (
-identifier 4 year
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-new-line 0 
-whitespace-sequence 0 
-identifier 14 print_calendar
-preprocessing-op-or-punc 1 (
-identifier 4 fout
-preprocessing-op-or-punc 1 ,
-whitespace-sequence 0 
-identifier 4 year
-preprocessing-op-or-punc 1 ,
-whitespace-sequence 0 
-identifier 8 day_code
-preprocessing-op-or-punc 1 ,
-whitespace-sequence 0 
-identifier 9 leap_year
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-new-line 0 
-whitespace-sequence 0 
-identifier 6 printf
-preprocessing-op-or-punc 1 (
-string-literal 52 "Open up \'calendar.txt\' to see your calendar...\n"
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-new-line 0 
-whitespace-sequence 0 
-identifier 6 system
-preprocessing-op-or-punc 1 (
-string-literal 7 "pause"
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-new-line 0 
-preprocessing-op-or-punc 1 }
-new-line 0 
-whitespace-sequence 0 
-new-line 0 
-identifier 3 int
-whitespace-sequence 0 
-identifier 8 get_year
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 (
-identifier 4 void
-preprocessing-op-or-punc 1 )
-new-line 0 
-preprocessing-op-or-punc 1 {
-new-line 0 
-identifier 3 int
-whitespace-sequence 0 
-identifier 4 year
-preprocessing-op-or-punc 1 ;
-new-line 0 
-identifier 6 printf
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 (
-string-literal 16 "Enter a year: "
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-identifier 5 scanf
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 (
-string-literal 4 "%d"
-preprocessing-op-or-punc 1 ,
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 &
-identifier 4 year
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-identifier 6 return
-whitespace-sequence 0 
-identifier 4 year
-preprocessing-op-or-punc 1 ;
-new-line 0 
-preprocessing-op-or-punc 1 }
-whitespace-sequence 0 
-new-line 0 
-identifier 3 int
-whitespace-sequence 0 
-identifier 12 get_day_code
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 (
-identifier 3 int
-whitespace-sequence 0 
-identifier 4 year
-preprocessing-op-or-punc 1 )
-new-line 0 
-preprocessing-op-or-punc 1 {
-new-line 0 
-identifier 3 int
-whitespace-sequence 0 
-identifier 8 day_code
-preprocessing-op-or-punc 1 ;
-new-line 0 
-identifier 3 int
-whitespace-sequence 0 
-identifier 2 x1
-preprocessing-op-or-punc 1 ,
-whitespace-sequence 0 
-identifier 2 x2
-preprocessing-op-or-punc 1 ,
-whitespace-sequence 0 
-identifier 2 x3
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 2 x1
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 =
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 (
-identifier 4 year
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 -
-whitespace-sequence 0 
-pp-number 2 1.
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 /
-whitespace-sequence 0 
-pp-number 3 4.0
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 2 x2
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 =
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 (
-identifier 4 year
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 -
-whitespace-sequence 0 
-pp-number 2 1.
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 /
-whitespace-sequence 0 
-pp-number 4 100.
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 2 x3
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 =
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 (
-identifier 4 year
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 -
-whitespace-sequence 0 
-pp-number 2 1.
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 /
-whitespace-sequence 0 
-pp-number 4 400.
-preprocessing-op-or-punc 1 ;
-new-line 0 
-identifier 8 day_code
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 =
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 (
-identifier 4 year
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 +
-whitespace-sequence 0 
-identifier 2 x1
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 -
-whitespace-sequence 0 
-identifier 2 x2
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 +
-whitespace-sequence 0 
-identifier 2 x3
-preprocessing-op-or-punc 1 )
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 %
-pp-number 1 7
-preprocessing-op-or-punc 1 ;
-new-line 0 
-identifier 6 return
-whitespace-sequence 0 
-identifier 8 day_code
-preprocessing-op-or-punc 1 ;
-new-line 0 
-preprocessing-op-or-punc 1 }
-whitespace-sequence 0 
-new-line 0 
-identifier 3 int
-whitespace-sequence 0 
-identifier 13 get_leap_year
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 (
-identifier 3 int
-whitespace-sequence 0 
-identifier 4 year
-preprocessing-op-or-punc 1 )
-new-line 0 
-preprocessing-op-or-punc 1 {
-new-line 0 
-whitespace-sequence 0 
-new-line 0 
-whitespace-sequence 0 
-new-line 0 
-identifier 2 if
-preprocessing-op-or-punc 1 (
-identifier 4 year
-preprocessing-op-or-punc 1 %
-whitespace-sequence 0 
-pp-number 1 4
-preprocessing-op-or-punc 2 ==
-pp-number 1 0
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 &&
-whitespace-sequence 0 
-identifier 4 year
-preprocessing-op-or-punc 1 %
-pp-number 3 100
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 !=
-whitespace-sequence 0 
-pp-number 1 0
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 ||
-whitespace-sequence 0 
-identifier 4 year
-preprocessing-op-or-punc 1 %
-pp-number 3 400
-preprocessing-op-or-punc 2 ==
-pp-number 1 0
-preprocessing-op-or-punc 1 )
-new-line 0 
-whitespace-sequence 0 
-identifier 6 return
-whitespace-sequence 0 
-identifier 4 TRUE
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 4 else
-whitespace-sequence 0 
-identifier 6 return
-whitespace-sequence 0 
-identifier 5 FALSE
-preprocessing-op-or-punc 1 ;
-whitespace-sequence 0 
-new-line 0 
-whitespace-sequence 0 
-new-line 0 
-preprocessing-op-or-punc 1 }
-new-line 0 
-identifier 4 void
-whitespace-sequence 0 
-identifier 14 print_calendar
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 (
-identifier 4 FILE
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 *
-identifier 4 fout
-preprocessing-op-or-punc 1 ,
-whitespace-sequence 0 
-identifier 3 int
-whitespace-sequence 0 
-identifier 4 year
-preprocessing-op-or-punc 1 ,
-whitespace-sequence 0 
-identifier 3 int
-whitespace-sequence 0 
-identifier 8 day_code
-preprocessing-op-or-punc 1 ,
-whitespace-sequence 0 
-identifier 3 int
-whitespace-sequence 0 
-identifier 9 leap_year
-preprocessing-op-or-punc 1 )
-whitespace-sequence 0 
-new-line 0 
-preprocessing-op-or-punc 1 {
-new-line 0 
-whitespace-sequence 0 
-identifier 3 int
-whitespace-sequence 0 
-identifier 13 days_in_month
-preprocessing-op-or-punc 1 ,
-whitespace-sequence 0 
-new-line 0 
-whitespace-sequence 0 
-identifier 3 day
-preprocessing-op-or-punc 1 ,
-whitespace-sequence 0 
-new-line 0 
-whitespace-sequence 0 
-identifier 5 month
-preprocessing-op-or-punc 1 ;
-whitespace-sequence 0 
-new-line 0 
-whitespace-sequence 0 
-identifier 7 fprintf
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 (
-identifier 4 fout
-preprocessing-op-or-punc 1 ,
-string-literal 23 "                   %d"
-preprocessing-op-or-punc 1 ,
-whitespace-sequence 0 
-identifier 4 year
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 3 for
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 (
-whitespace-sequence 0 
-identifier 5 month
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 =
-whitespace-sequence 0 
-pp-number 1 1
-preprocessing-op-or-punc 1 ;
-whitespace-sequence 0 
-identifier 5 month
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 <=
-whitespace-sequence 0 
-pp-number 2 12
-preprocessing-op-or-punc 1 ;
-whitespace-sequence 0 
-identifier 5 month
-preprocessing-op-or-punc 2 ++
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 )
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 {
-new-line 0 
-whitespace-sequence 0 
-identifier 6 switch
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 (
-whitespace-sequence 0 
-identifier 5 month
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 )
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 {
-whitespace-sequence 0 
-new-line 0 
-whitespace-sequence 0 
-identifier 4 case
-whitespace-sequence 0 
-pp-number 1 1
-preprocessing-op-or-punc 1 :
-new-line 0 
-whitespace-sequence 0 
-identifier 7 fprintf
-preprocessing-op-or-punc 1 (
-identifier 4 fout
-preprocessing-op-or-punc 1 ,
-string-literal 13 "\n\nJanuary"
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 13 days_in_month
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 =
-whitespace-sequence 0 
-pp-number 2 31
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 5 break
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 4 case
-whitespace-sequence 0 
-pp-number 1 2
-preprocessing-op-or-punc 1 :
-new-line 0 
-whitespace-sequence 0 
-identifier 7 fprintf
-preprocessing-op-or-punc 1 (
-identifier 4 fout
-preprocessing-op-or-punc 1 ,
-string-literal 14 "\n\nFebruary"
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 13 days_in_month
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 =
-whitespace-sequence 0 
-identifier 9 leap_year
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 ?
-whitespace-sequence 0 
-pp-number 2 29
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 :
-whitespace-sequence 0 
-pp-number 2 28
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 5 break
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 4 case
-whitespace-sequence 0 
-pp-number 1 3
-preprocessing-op-or-punc 1 :
-new-line 0 
-whitespace-sequence 0 
-identifier 7 fprintf
-preprocessing-op-or-punc 1 (
-identifier 4 fout
-preprocessing-op-or-punc 1 ,
-whitespace-sequence 0 
-string-literal 11 "\n\nMarch"
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 13 days_in_month
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 =
-whitespace-sequence 0 
-pp-number 2 31
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 5 break
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 4 case
-whitespace-sequence 0 
-pp-number 1 4
-preprocessing-op-or-punc 1 :
-new-line 0 
-whitespace-sequence 0 
-identifier 7 fprintf
-preprocessing-op-or-punc 1 (
-identifier 4 fout
-preprocessing-op-or-punc 1 ,
-string-literal 11 "\n\nApril"
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 13 days_in_month
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 =
-whitespace-sequence 0 
-pp-number 2 30
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 5 break
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 4 case
-whitespace-sequence 0 
-pp-number 1 5
-preprocessing-op-or-punc 1 :
-new-line 0 
-whitespace-sequence 0 
-identifier 7 fprintf
-preprocessing-op-or-punc 1 (
-identifier 4 fout
-preprocessing-op-or-punc 1 ,
-string-literal 9 "\n\nMay"
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 13 days_in_month
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 =
-whitespace-sequence 0 
-pp-number 2 31
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 5 break
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 4 case
-whitespace-sequence 0 
-pp-number 1 6
-preprocessing-op-or-punc 1 :
-new-line 0 
-whitespace-sequence 0 
-identifier 7 fprintf
-preprocessing-op-or-punc 1 (
-identifier 4 fout
-preprocessing-op-or-punc 1 ,
-string-literal 10 "\n\nJune"
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 13 days_in_month
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 =
-whitespace-sequence 0 
-pp-number 2 30
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 5 break
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 4 case
-whitespace-sequence 0 
-pp-number 1 7
-preprocessing-op-or-punc 1 :
-new-line 0 
-whitespace-sequence 0 
-identifier 7 fprintf
-preprocessing-op-or-punc 1 (
-identifier 4 fout
-preprocessing-op-or-punc 1 ,
-string-literal 10 "\n\nJuly"
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 13 days_in_month
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 =
-whitespace-sequence 0 
-pp-number 2 31
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 5 break
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 4 case
-whitespace-sequence 0 
-pp-number 1 8
-preprocessing-op-or-punc 1 :
-new-line 0 
-whitespace-sequence 0 
-identifier 7 fprintf
-preprocessing-op-or-punc 1 (
-identifier 4 fout
-preprocessing-op-or-punc 1 ,
-string-literal 12 "\n\nAugust"
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 13 days_in_month
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 =
-whitespace-sequence 0 
-pp-number 2 31
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 5 break
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 4 case
-whitespace-sequence 0 
-pp-number 1 9
-preprocessing-op-or-punc 1 :
-new-line 0 
-whitespace-sequence 0 
-identifier 7 fprintf
-preprocessing-op-or-punc 1 (
-identifier 4 fout
-preprocessing-op-or-punc 1 ,
-string-literal 15 "\n\nSeptember"
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 13 days_in_month
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 =
-whitespace-sequence 0 
-pp-number 2 30
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 5 break
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 4 case
-whitespace-sequence 0 
-pp-number 2 10
-preprocessing-op-or-punc 1 :
-new-line 0 
-whitespace-sequence 0 
-identifier 7 fprintf
-preprocessing-op-or-punc 1 (
-identifier 4 fout
-preprocessing-op-or-punc 1 ,
-string-literal 13 "\n\nOctober"
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 13 days_in_month
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 =
-whitespace-sequence 0 
-pp-number 2 31
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 5 break
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 4 case
-whitespace-sequence 0 
-pp-number 2 11
-preprocessing-op-or-punc 1 :
-new-line 0 
-whitespace-sequence 0 
-identifier 7 fprintf
-preprocessing-op-or-punc 1 (
-identifier 4 fout
-preprocessing-op-or-punc 1 ,
-string-literal 14 "\n\nNovember"
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 13 days_in_month
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 =
-whitespace-sequence 0 
-pp-number 2 30
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 5 break
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 4 case
-whitespace-sequence 0 
-pp-number 2 12
-preprocessing-op-or-punc 1 :
-new-line 0 
-whitespace-sequence 0 
-identifier 7 fprintf
-preprocessing-op-or-punc 1 (
-identifier 4 fout
-preprocessing-op-or-punc 1 ,
-string-literal 14 "\n\nDecember"
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 13 days_in_month
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 =
-whitespace-sequence 0 
-pp-number 2 31
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 5 break
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 }
-new-line 0 
-whitespace-sequence 0 
-identifier 7 fprintf
-preprocessing-op-or-punc 1 (
-identifier 4 fout
-preprocessing-op-or-punc 1 ,
-string-literal 41 "\n\nSun  Mon  Tue  Wed  Thu  Fri  Sat\n"
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-new-line 0 
-whitespace-sequence 0 
-identifier 3 for
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 (
-whitespace-sequence 0 
-identifier 3 day
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 =
-whitespace-sequence 0 
-pp-number 1 1
-preprocessing-op-or-punc 1 ;
-whitespace-sequence 0 
-identifier 3 day
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 <=
-whitespace-sequence 0 
-pp-number 1 1
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 +
-whitespace-sequence 0 
-identifier 8 day_code
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 *
-whitespace-sequence 0 
-pp-number 1 5
-preprocessing-op-or-punc 1 ;
-whitespace-sequence 0 
-identifier 3 day
-preprocessing-op-or-punc 2 ++
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 )
-new-line 0 
-whitespace-sequence 0 
-identifier 7 fprintf
-preprocessing-op-or-punc 1 (
-identifier 4 fout
-preprocessing-op-or-punc 1 ,
-string-literal 3 " "
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-new-line 0 
-whitespace-sequence 0 
-identifier 3 for
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 (
-whitespace-sequence 0 
-identifier 3 day
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 =
-whitespace-sequence 0 
-pp-number 1 1
-preprocessing-op-or-punc 1 ;
-whitespace-sequence 0 
-identifier 3 day
-whitespace-sequence 0 
-preprocessing-op-or-punc 2 <=
-whitespace-sequence 0 
-identifier 13 days_in_month
-preprocessing-op-or-punc 1 ;
-whitespace-sequence 0 
-identifier 3 day
-preprocessing-op-or-punc 2 ++
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 )
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 {
-new-line 0 
-whitespace-sequence 0 
-identifier 7 fprintf
-preprocessing-op-or-punc 1 (
-identifier 4 fout
-preprocessing-op-or-punc 1 ,
-string-literal 5 "%2d"
-preprocessing-op-or-punc 1 ,
-whitespace-sequence 0 
-identifier 3 day
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 2 if
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 (
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 (
-whitespace-sequence 0 
-identifier 3 day
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 +
-whitespace-sequence 0 
-identifier 8 day_code
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 )
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 %
-whitespace-sequence 0 
-pp-number 1 7
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 >
-whitespace-sequence 0 
-pp-number 1 0
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 )
-whitespace-sequence 0 
-new-line 0 
-whitespace-sequence 0 
-new-line 0 
-whitespace-sequence 0 
-identifier 7 fprintf
-preprocessing-op-or-punc 1 (
-identifier 4 fout
-preprocessing-op-or-punc 1 ,
-string-literal 5 "   "
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-identifier 4 else
-whitespace-sequence 0 
-new-line 0 
-whitespace-sequence 0 
-identifier 7 fprintf
-preprocessing-op-or-punc 1 (
-identifier 4 fout
-preprocessing-op-or-punc 1 ,
-whitespace-sequence 0 
-string-literal 5 "\n "
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 )
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 }
-new-line 0 
-whitespace-sequence 0 
-new-line 0 
-whitespace-sequence 0 
-identifier 8 day_code
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 =
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 (
-whitespace-sequence 0 
-identifier 8 day_code
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 +
-whitespace-sequence 0 
-identifier 13 days_in_month
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 )
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 %
-whitespace-sequence 0 
-pp-number 1 7
-preprocessing-op-or-punc 1 ;
-new-line 0 
-whitespace-sequence 0 
-preprocessing-op-or-punc 1 }
-new-line 0 
-preprocessing-op-or-punc 1 }
-new-line 0 
+...6-..1: invalid #
+...6-..2: identifier  include
+...6-.10: punctuation OP_LT <
+...6-.11: identifier  stdio
+...6-.16: punctuation OP_DOT .
+...6-.17: identifier  h
+...6-.18: punctuation OP_GT >
+...7-..1: invalid #
+...7-..2: identifier  include
+...7-.10: punctuation OP_LT <
+...7-.11: identifier  stdlib
+...7-.17: punctuation OP_DOT .
+...7-.18: identifier  h
+...7-.19: punctuation OP_GT >
+...8-..1: invalid #
+...8-..2: identifier  define
+...8-..9: identifier  TRUE
+...8-.14: literal int 1 01000000
+...9-..1: invalid #
+...9-..2: identifier  define
+...9-..9: identifier  FALSE
+...9-.15: literal int 0 00000000
+..10-..1: keyword KW_INT int
+..10-..5: identifier  get_day_code
+..10-.18: punctuation OP_LPAREN (
+..10-.19: keyword KW_INT int
+..10-.23: identifier  year
+..10-.27: punctuation OP_RPAREN )
+..10-.28: punctuation OP_SEMICOLON ;
+..11-..1: keyword KW_INT int
+..11-..5: identifier  get_leap_year
+..11-.19: punctuation OP_LPAREN (
+..11-.20: keyword KW_INT int
+..11-.24: identifier  year
+..11-.28: punctuation OP_RPAREN )
+..11-.29: punctuation OP_SEMICOLON ;
+..12-..1: keyword KW_VOID void
+..12-..6: identifier  print_calendar
+..12-.21: punctuation OP_LPAREN (
+..12-.22: identifier  FILE
+..12-.27: punctuation OP_STAR *
+..12-.28: identifier  fout
+..12-.32: punctuation OP_COMMA ,
+..12-.34: keyword KW_INT int
+..12-.38: identifier  year
+..12-.42: punctuation OP_COMMA ,
+..12-.44: keyword KW_INT int
+..12-.48: identifier  day_code
+..12-.56: punctuation OP_COMMA ,
+..12-.58: keyword KW_INT int
+..12-.62: identifier  leap_year
+..12-.71: punctuation OP_RPAREN )
+..12-.72: punctuation OP_SEMICOLON ;
+..13-..1: keyword KW_INT int
+..13-..5: identifier  get_year
+..13-.14: punctuation OP_LPAREN (
+..13-.15: keyword KW_VOID void
+..13-.19: punctuation OP_RPAREN )
+..13-.20: punctuation OP_SEMICOLON ;
+..14-..1: identifier  main
+..14-..5: punctuation OP_LPAREN (
+..14-..6: punctuation OP_RPAREN )
+..15-..1: punctuation OP_LBRACE {
+..17-..4: keyword KW_INT int
+..17-..8: identifier  year
+..17-.12: punctuation OP_COMMA ,
+..17-.14: identifier  day_code
+..17-.22: punctuation OP_COMMA ,
+..17-.24: identifier  leap_year
+..17-.33: punctuation OP_SEMICOLON ;
+..19-..4: identifier  FILE
+..19-..9: punctuation OP_STAR *
+..19-.10: identifier  fout
+..19-.14: punctuation OP_SEMICOLON ;
+..21-..4: identifier  fout
+..21-..9: punctuation OP_ASS =
+..21-.11: identifier  fopen
+..21-.17: punctuation OP_LPAREN (
+..21-.32: literal calendar.txt array of 13 char 63616C656E6461722E74787400
+..21-.32: punctuation OP_COMMA ,
+..21-.37: literal w array of 2 char 7700
+..21-.37: punctuation OP_RPAREN )
+..21-.38: punctuation OP_SEMICOLON ;
+..23-..4: identifier  year
+..23-..9: punctuation OP_ASS =
+..23-.11: identifier  get_year
+..23-.19: punctuation OP_LPAREN (
+..23-.20: punctuation OP_RPAREN )
+..23-.21: punctuation OP_SEMICOLON ;
+..25-..4: identifier  day_code
+..25-.13: punctuation OP_ASS =
+..25-.15: identifier  get_day_code
+..25-.28: punctuation OP_LPAREN (
+..25-.29: identifier  year
+..25-.33: punctuation OP_RPAREN )
+..25-.34: punctuation OP_SEMICOLON ;
+..27-..4: identifier  leap_year
+..27-.14: punctuation OP_ASS =
+..27-.16: identifier  get_leap_year
+..27-.30: punctuation OP_LPAREN (
+..27-.31: identifier  year
+..27-.35: punctuation OP_RPAREN )
+..27-.36: punctuation OP_SEMICOLON ;
+..29-..4: identifier  print_calendar
+..29-.18: punctuation OP_LPAREN (
+..29-.19: identifier  fout
+..29-.23: punctuation OP_COMMA ,
+..29-.25: identifier  year
+..29-.29: punctuation OP_COMMA ,
+..29-.31: identifier  day_code
+..29-.39: punctuation OP_COMMA ,
+..29-.41: identifier  leap_year
+..29-.50: punctuation OP_RPAREN )
+..29-.51: punctuation OP_SEMICOLON ;
+..31-..4: identifier  printf
+..31-.10: punctuation OP_LPAREN (
+..31-.60: literal Open up 'calendar.txt' to see your calendar...
+ array of 48 char 4F70656E207570202763616C656E6461722E7478742720746F2073656520796F75722063616C656E6461722E2E2E0A00
+..31-.60: punctuation OP_RPAREN )
+..31-.61: punctuation OP_SEMICOLON ;
+..33-..4: identifier  system
+..33-.10: punctuation OP_LPAREN (
+..33-.18: literal pause array of 6 char 706175736500
+..33-.18: punctuation OP_RPAREN )
+..33-.19: punctuation OP_SEMICOLON ;
+..35-..1: punctuation OP_RBRACE }
+..37-..1: keyword KW_INT int
+..37-..5: identifier  get_year
+..37-.14: punctuation OP_LPAREN (
+..37-.15: keyword KW_VOID void
+..37-.19: punctuation OP_RPAREN )
+..38-..1: punctuation OP_LBRACE {
+..39-..1: keyword KW_INT int
+..39-..5: identifier  year
+..39-..9: punctuation OP_SEMICOLON ;
+..40-..1: identifier  printf
+..40-..8: punctuation OP_LPAREN (
+..40-.25: literal Enter a year:  array of 15 char 456E746572206120796561723A2000
+..40-.25: punctuation OP_RPAREN )
+..40-.26: punctuation OP_SEMICOLON ;
+..41-..1: identifier  scanf
+..41-..7: punctuation OP_LPAREN (
+..41-.12: literal %d array of 3 char 256400
+..41-.12: punctuation OP_COMMA ,
+..41-.14: punctuation OP_AMP &
+..41-.15: identifier  year
+..41-.19: punctuation OP_RPAREN )
+..41-.20: punctuation OP_SEMICOLON ;
+..42-..1: keyword KW_RETURN return
+..42-..8: identifier  year
+..42-.12: punctuation OP_SEMICOLON ;
+..43-..1: punctuation OP_RBRACE }
+..44-..1: keyword KW_INT int
+..44-..5: identifier  get_day_code
+..44-.18: punctuation OP_LPAREN (
+..44-.19: keyword KW_INT int
+..44-.23: identifier  year
+..44-.27: punctuation OP_RPAREN )
+..45-..1: punctuation OP_LBRACE {
+..46-..1: keyword KW_INT int
+..46-..5: identifier  day_code
+..46-.13: punctuation OP_SEMICOLON ;
+..47-..1: keyword KW_INT int
+..47-..5: identifier  x1
+..47-..7: punctuation OP_COMMA ,
+..47-..9: identifier  x2
+..47-.11: punctuation OP_COMMA ,
+..47-.13: identifier  x3
+..47-.15: punctuation OP_SEMICOLON ;
+..48-..2: identifier  x1
+..48-..5: punctuation OP_ASS =
+..48-..7: punctuation OP_LPAREN (
+..48-..8: identifier  year
+..48-.13: punctuation OP_MINUS -
+..48-.15: literal float 1. 0000803F
+..48-.17: punctuation OP_RPAREN )
+..48-.18: punctuation OP_DIV /
+..48-.20: literal float 4.0 00008040
+..48-.23: punctuation OP_SEMICOLON ;
+..49-..2: identifier  x2
+..49-..5: punctuation OP_ASS =
+..49-..7: punctuation OP_LPAREN (
+..49-..8: identifier  year
+..49-.13: punctuation OP_MINUS -
+..49-.15: literal float 1. 0000803F
+..49-.17: punctuation OP_RPAREN )
+..49-.18: punctuation OP_DIV /
+..49-.20: literal float 100. 0000C842
+..49-.24: punctuation OP_SEMICOLON ;
+..50-..2: identifier  x3
+..50-..5: punctuation OP_ASS =
+..50-..7: punctuation OP_LPAREN (
+..50-..8: identifier  year
+..50-.13: punctuation OP_MINUS -
+..50-.15: literal float 1. 0000803F
+..50-.17: punctuation OP_RPAREN )
+..50-.18: punctuation OP_DIV /
+..50-.20: literal float 400. 0000C843
+..50-.24: punctuation OP_SEMICOLON ;
+..51-..1: identifier  day_code
+..51-.10: punctuation OP_ASS =
+..51-.12: punctuation OP_LPAREN (
+..51-.13: identifier  year
+..51-.18: punctuation OP_PLUS +
+..51-.20: identifier  x1
+..51-.23: punctuation OP_MINUS -
+..51-.25: identifier  x2
+..51-.28: punctuation OP_PLUS +
+..51-.30: identifier  x3
+..51-.32: punctuation OP_RPAREN )
+..51-.34: punctuation OP_MOD %
+..51-.35: literal int 7 07000000
+..51-.36: punctuation OP_SEMICOLON ;
+..52-..1: keyword KW_RETURN return
+..52-..8: identifier  day_code
+..52-.16: punctuation OP_SEMICOLON ;
+..53-..1: punctuation OP_RBRACE }
+..54-..1: keyword KW_INT int
+..54-..5: identifier  get_leap_year
+..54-.19: punctuation OP_LPAREN (
+..54-.20: keyword KW_INT int
+..54-.24: identifier  year
+..54-.28: punctuation OP_RPAREN )
+..55-..1: punctuation OP_LBRACE {
+..58-..1: keyword KW_IF if
+..58-..3: punctuation OP_LPAREN (
+..58-..4: identifier  year
+..58-..8: punctuation OP_MOD %
+..58-.10: literal int 4 04000000
+..58-.11: punctuation OP_EQ ==
+..58-.13: literal int 0 00000000
+..58-.15: punctuation OP_LAND &&
+..58-.18: identifier  year
+..58-.22: punctuation OP_MOD %
+..58-.23: literal int 100 64000000
+..58-.27: punctuation OP_NE !=
+..58-.30: literal int 0 00000000
+..58-.32: punctuation OP_LOR ||
+..58-.35: identifier  year
+..58-.39: punctuation OP_MOD %
+..58-.40: literal int 400 90010000
+..58-.43: punctuation OP_EQ ==
+..58-.45: literal int 0 00000000
+..58-.46: punctuation OP_RPAREN )
+..59-..4: keyword KW_RETURN return
+..59-.11: identifier  TRUE
+..59-.15: punctuation OP_SEMICOLON ;
+..60-..4: keyword KW_ELSE else
+..60-..9: keyword KW_RETURN return
+..60-.16: identifier  FALSE
+..60-.21: punctuation OP_SEMICOLON ;
+..62-..1: punctuation OP_RBRACE }
+..63-..1: keyword KW_VOID void
+..63-..6: identifier  print_calendar
+..63-.21: punctuation OP_LPAREN (
+..63-.22: identifier  FILE
+..63-.27: punctuation OP_STAR *
+..63-.28: identifier  fout
+..63-.32: punctuation OP_COMMA ,
+..63-.34: keyword KW_INT int
+..63-.38: identifier  year
+..63-.42: punctuation OP_COMMA ,
+..63-.44: keyword KW_INT int
+..63-.48: identifier  day_code
+..63-.56: punctuation OP_COMMA ,
+..63-.58: keyword KW_INT int
+..63-.62: identifier  leap_year
+..63-.71: punctuation OP_RPAREN )
+..64-..1: punctuation OP_LBRACE {
+..65-..2: keyword KW_INT int
+..65-..7: identifier  days_in_month
+..65-.20: punctuation OP_COMMA ,
+..67-.10: identifier  day
+..67-.13: punctuation OP_COMMA ,
+..68-.10: identifier  month
+..68-.15: punctuation OP_SEMICOLON ;
+..69-..6: identifier  fprintf
+..69-.14: punctuation OP_LPAREN (
+..69-.15: identifier  fout
+..69-.19: punctuation OP_COMMA ,
+..69-.43: literal                    %d array of 22 char 20202020202020202020202020202020202020256400
+..69-.43: punctuation OP_COMMA ,
+..69-.45: identifier  year
+..69-.49: punctuation OP_RPAREN )
+..69-.50: punctuation OP_SEMICOLON ;
+..70-..6: keyword KW_FOR for
+..70-.10: punctuation OP_LPAREN (
+..70-.12: identifier  month
+..70-.18: punctuation OP_ASS =
+..70-.20: literal int 1 01000000
+..70-.21: punctuation OP_SEMICOLON ;
+..70-.23: identifier  month
+..70-.29: punctuation OP_LE <=
+..70-.32: literal int 12 0C000000
+..70-.34: punctuation OP_SEMICOLON ;
+..70-.36: identifier  month
+..70-.41: punctuation OP_INC ++
+..70-.44: punctuation OP_RPAREN )
+..70-.46: punctuation OP_LBRACE {
+..71-.11: keyword KW_SWITCH switch
+..71-.18: punctuation OP_LPAREN (
+..71-.20: identifier  month
+..71-.26: punctuation OP_RPAREN )
+..71-.28: punctuation OP_LBRACE {
+..72-.11: keyword KW_CASE case
+..72-.16: literal int 1 01000000
+..72-.17: punctuation OP_COLON :
+..73-.16: identifier  fprintf
+..73-.23: punctuation OP_LPAREN (
+..73-.24: identifier  fout
+..73-.28: punctuation OP_COMMA ,
+..73-.41: literal 
+
+January array of 10 char 0A0A4A616E7561727900
+..73-.41: punctuation OP_RPAREN )
+..73-.42: punctuation OP_SEMICOLON ;
+..74-.16: identifier  days_in_month
+..74-.30: punctuation OP_ASS =
+..74-.32: literal int 31 1F000000
+..74-.34: punctuation OP_SEMICOLON ;
+..75-.16: keyword KW_BREAK break
+..75-.21: punctuation OP_SEMICOLON ;
+..76-.11: keyword KW_CASE case
+..76-.16: literal int 2 02000000
+..76-.17: punctuation OP_COLON :
+..77-.16: identifier  fprintf
+..77-.23: punctuation OP_LPAREN (
+..77-.24: identifier  fout
+..77-.28: punctuation OP_COMMA ,
+..77-.42: literal 
+
+February array of 11 char 0A0A466562727561727900
+..77-.42: punctuation OP_RPAREN )
+..77-.43: punctuation OP_SEMICOLON ;
+..78-.16: identifier  days_in_month
+..78-.30: punctuation OP_ASS =
+..78-.32: identifier  leap_year
+..78-.42: punctuation OP_QMARK ?
+..78-.44: literal int 29 1D000000
+..78-.47: punctuation OP_COLON :
+..78-.49: literal int 28 1C000000
+..78-.51: punctuation OP_SEMICOLON ;
+..79-.16: keyword KW_BREAK break
+..79-.21: punctuation OP_SEMICOLON ;
+..80-.11: keyword KW_CASE case
+..80-.16: literal int 3 03000000
+..80-.17: punctuation OP_COLON :
+..81-.16: identifier  fprintf
+..81-.23: punctuation OP_LPAREN (
+..81-.24: identifier  fout
+..81-.28: punctuation OP_COMMA ,
+..81-.40: literal 
+
+March array of 8 char 0A0A4D6172636800
+..81-.40: punctuation OP_RPAREN )
+..81-.41: punctuation OP_SEMICOLON ;
+..82-.16: identifier  days_in_month
+..82-.30: punctuation OP_ASS =
+..82-.32: literal int 31 1F000000
+..82-.34: punctuation OP_SEMICOLON ;
+..83-.16: keyword KW_BREAK break
+..83-.21: punctuation OP_SEMICOLON ;
+..84-.11: keyword KW_CASE case
+..84-.16: literal int 4 04000000
+..84-.17: punctuation OP_COLON :
+..85-.16: identifier  fprintf
+..85-.23: punctuation OP_LPAREN (
+..85-.24: identifier  fout
+..85-.28: punctuation OP_COMMA ,
+..85-.39: literal 
+
+April array of 8 char 0A0A417072696C00
+..85-.39: punctuation OP_RPAREN )
+..85-.40: punctuation OP_SEMICOLON ;
+..86-.16: identifier  days_in_month
+..86-.30: punctuation OP_ASS =
+..86-.32: literal int 30 1E000000
+..86-.34: punctuation OP_SEMICOLON ;
+..87-.16: keyword KW_BREAK break
+..87-.21: punctuation OP_SEMICOLON ;
+..88-.11: keyword KW_CASE case
+..88-.16: literal int 5 05000000
+..88-.17: punctuation OP_COLON :
+..89-.16: identifier  fprintf
+..89-.23: punctuation OP_LPAREN (
+..89-.24: identifier  fout
+..89-.28: punctuation OP_COMMA ,
+..89-.37: literal 
+
+May array of 6 char 0A0A4D617900
+..89-.37: punctuation OP_RPAREN )
+..89-.38: punctuation OP_SEMICOLON ;
+..90-.16: identifier  days_in_month
+..90-.30: punctuation OP_ASS =
+..90-.32: literal int 31 1F000000
+..90-.34: punctuation OP_SEMICOLON ;
+..91-.16: keyword KW_BREAK break
+..91-.21: punctuation OP_SEMICOLON ;
+..92-.11: keyword KW_CASE case
+..92-.16: literal int 6 06000000
+..92-.17: punctuation OP_COLON :
+..93-.16: identifier  fprintf
+..93-.23: punctuation OP_LPAREN (
+..93-.24: identifier  fout
+..93-.28: punctuation OP_COMMA ,
+..93-.38: literal 
+
+June array of 7 char 0A0A4A756E6500
+..93-.38: punctuation OP_RPAREN )
+..93-.39: punctuation OP_SEMICOLON ;
+..94-.16: identifier  days_in_month
+..94-.30: punctuation OP_ASS =
+..94-.32: literal int 30 1E000000
+..94-.34: punctuation OP_SEMICOLON ;
+..95-.16: keyword KW_BREAK break
+..95-.21: punctuation OP_SEMICOLON ;
+..96-.11: keyword KW_CASE case
+..96-.16: literal int 7 07000000
+..96-.17: punctuation OP_COLON :
+..97-.16: identifier  fprintf
+..97-.23: punctuation OP_LPAREN (
+..97-.24: identifier  fout
+..97-.28: punctuation OP_COMMA ,
+..97-.38: literal 
+
+July array of 7 char 0A0A4A756C7900
+..97-.38: punctuation OP_RPAREN )
+..97-.39: punctuation OP_SEMICOLON ;
+..98-.16: identifier  days_in_month
+..98-.30: punctuation OP_ASS =
+..98-.32: literal int 31 1F000000
+..98-.34: punctuation OP_SEMICOLON ;
+..99-.16: keyword KW_BREAK break
+..99-.21: punctuation OP_SEMICOLON ;
+.100-.11: keyword KW_CASE case
+.100-.16: literal int 8 08000000
+.100-.17: punctuation OP_COLON :
+.101-.16: identifier  fprintf
+.101-.23: punctuation OP_LPAREN (
+.101-.24: identifier  fout
+.101-.28: punctuation OP_COMMA ,
+.101-.40: literal 
+
+August array of 9 char 0A0A41756775737400
+.101-.40: punctuation OP_RPAREN )
+.101-.41: punctuation OP_SEMICOLON ;
+.102-.16: identifier  days_in_month
+.102-.30: punctuation OP_ASS =
+.102-.32: literal int 31 1F000000
+.102-.34: punctuation OP_SEMICOLON ;
+.103-.16: keyword KW_BREAK break
+.103-.21: punctuation OP_SEMICOLON ;
+.104-.11: keyword KW_CASE case
+.104-.16: literal int 9 09000000
+.104-.17: punctuation OP_COLON :
+.105-.16: identifier  fprintf
+.105-.23: punctuation OP_LPAREN (
+.105-.24: identifier  fout
+.105-.28: punctuation OP_COMMA ,
+.105-.43: literal 
+
+September array of 12 char 0A0A53657074656D62657200
+.105-.43: punctuation OP_RPAREN )
+.105-.44: punctuation OP_SEMICOLON ;
+.106-.16: identifier  days_in_month
+.106-.30: punctuation OP_ASS =
+.106-.32: literal int 30 1E000000
+.106-.34: punctuation OP_SEMICOLON ;
+.107-.16: keyword KW_BREAK break
+.107-.21: punctuation OP_SEMICOLON ;
+.108-.11: keyword KW_CASE case
+.108-.16: literal int 10 0A000000
+.108-.18: punctuation OP_COLON :
+.109-.16: identifier  fprintf
+.109-.23: punctuation OP_LPAREN (
+.109-.24: identifier  fout
+.109-.28: punctuation OP_COMMA ,
+.109-.41: literal 
+
+October array of 10 char 0A0A4F63746F62657200
+.109-.41: punctuation OP_RPAREN )
+.109-.42: punctuation OP_SEMICOLON ;
+.110-.16: identifier  days_in_month
+.110-.30: punctuation OP_ASS =
+.110-.32: literal int 31 1F000000
+.110-.34: punctuation OP_SEMICOLON ;
+.111-.16: keyword KW_BREAK break
+.111-.21: punctuation OP_SEMICOLON ;
+.112-.11: keyword KW_CASE case
+.112-.16: literal int 11 0B000000
+.112-.18: punctuation OP_COLON :
+.113-.16: identifier  fprintf
+.113-.23: punctuation OP_LPAREN (
+.113-.24: identifier  fout
+.113-.28: punctuation OP_COMMA ,
+.113-.42: literal 
+
+November array of 11 char 0A0A4E6F76656D62657200
+.113-.42: punctuation OP_RPAREN )
+.113-.43: punctuation OP_SEMICOLON ;
+.114-.16: identifier  days_in_month
+.114-.30: punctuation OP_ASS =
+.114-.32: literal int 30 1E000000
+.114-.34: punctuation OP_SEMICOLON ;
+.115-.16: keyword KW_BREAK break
+.115-.21: punctuation OP_SEMICOLON ;
+.116-.11: keyword KW_CASE case
+.116-.16: literal int 12 0C000000
+.116-.18: punctuation OP_COLON :
+.117-.16: identifier  fprintf
+.117-.23: punctuation OP_LPAREN (
+.117-.24: identifier  fout
+.117-.28: punctuation OP_COMMA ,
+.117-.42: literal 
+
+December array of 11 char 0A0A446563656D62657200
+.117-.42: punctuation OP_RPAREN )
+.117-.43: punctuation OP_SEMICOLON ;
+.118-.16: identifier  days_in_month
+.118-.30: punctuation OP_ASS =
+.118-.32: literal int 31 1F000000
+.118-.34: punctuation OP_SEMICOLON ;
+.119-.16: keyword KW_BREAK break
+.119-.21: punctuation OP_SEMICOLON ;
+.120-.11: punctuation OP_RBRACE }
+.121-.11: identifier  fprintf
+.121-.18: punctuation OP_LPAREN (
+.121-.19: identifier  fout
+.121-.23: punctuation OP_COMMA ,
+.121-.63: literal 
+
+Sun  Mon  Tue  Wed  Thu  Fri  Sat
+ array of 37 char 0A0A53756E20204D6F6E202054756520205765642020546875202046726920205361740A00
+.121-.63: punctuation OP_RPAREN )
+.121-.64: punctuation OP_SEMICOLON ;
+.123-.11: keyword KW_FOR for
+.123-.15: punctuation OP_LPAREN (
+.123-.17: identifier  day
+.123-.21: punctuation OP_ASS =
+.123-.23: literal int 1 01000000
+.123-.24: punctuation OP_SEMICOLON ;
+.123-.26: identifier  day
+.123-.30: punctuation OP_LE <=
+.123-.33: literal int 1 01000000
+.123-.35: punctuation OP_PLUS +
+.123-.37: identifier  day_code
+.123-.46: punctuation OP_STAR *
+.123-.48: literal int 5 05000000
+.123-.49: punctuation OP_SEMICOLON ;
+.123-.51: identifier  day
+.123-.54: punctuation OP_INC ++
+.123-.57: punctuation OP_RPAREN )
+.124-.16: identifier  fprintf
+.124-.23: punctuation OP_LPAREN (
+.124-.24: identifier  fout
+.124-.28: punctuation OP_COMMA ,
+.124-.33: literal   array of 2 char 2000
+.124-.33: punctuation OP_RPAREN )
+.124-.34: punctuation OP_SEMICOLON ;
+.126-.11: keyword KW_FOR for
+.126-.15: punctuation OP_LPAREN (
+.126-.17: identifier  day
+.126-.21: punctuation OP_ASS =
+.126-.23: literal int 1 01000000
+.126-.24: punctuation OP_SEMICOLON ;
+.126-.26: identifier  day
+.126-.30: punctuation OP_LE <=
+.126-.33: identifier  days_in_month
+.126-.46: punctuation OP_SEMICOLON ;
+.126-.48: identifier  day
+.126-.51: punctuation OP_INC ++
+.126-.54: punctuation OP_RPAREN )
+.126-.56: punctuation OP_LBRACE {
+.127-.16: identifier  fprintf
+.127-.23: punctuation OP_LPAREN (
+.127-.24: identifier  fout
+.127-.28: punctuation OP_COMMA ,
+.127-.34: literal %2d array of 4 char 25326400
+.127-.34: punctuation OP_COMMA ,
+.127-.36: identifier  day
+.127-.40: punctuation OP_RPAREN )
+.127-.41: punctuation OP_SEMICOLON ;
+.128-.16: keyword KW_IF if
+.128-.19: punctuation OP_LPAREN (
+.128-.21: punctuation OP_LPAREN (
+.128-.23: identifier  day
+.128-.27: punctuation OP_PLUS +
+.128-.29: identifier  day_code
+.128-.38: punctuation OP_RPAREN )
+.128-.40: punctuation OP_MOD %
+.128-.42: literal int 7 07000000
+.128-.44: punctuation OP_GT >
+.128-.46: literal int 0 00000000
+.128-.48: punctuation OP_RPAREN )
+.130-.21: identifier  fprintf
+.130-.28: punctuation OP_LPAREN (
+.130-.29: identifier  fout
+.130-.33: punctuation OP_COMMA ,
+.130-.40: literal     array of 4 char 20202000
+.130-.40: punctuation OP_RPAREN )
+.130-.41: punctuation OP_SEMICOLON ;
+.131-.16: keyword KW_ELSE else
+.132-.21: identifier  fprintf
+.132-.28: punctuation OP_LPAREN (
+.132-.29: identifier  fout
+.132-.33: punctuation OP_COMMA ,
+.132-.40: literal 
+  array of 3 char 0A2000
+.132-.40: punctuation OP_RPAREN )
+.132-.41: punctuation OP_SEMICOLON ;
+.133-.11: punctuation OP_RBRACE }
+.135-.11: identifier  day_code
+.135-.20: punctuation OP_ASS =
+.135-.22: punctuation OP_LPAREN (
+.135-.24: identifier  day_code
+.135-.33: punctuation OP_PLUS +
+.135-.35: identifier  days_in_month
+.135-.49: punctuation OP_RPAREN )
+.135-.51: punctuation OP_MOD %
+.135-.53: literal int 7 07000000
+.135-.54: punctuation OP_SEMICOLON ;
+.136-..6: punctuation OP_RBRACE }
+.137-..1: punctuation OP_RBRACE }
 eof

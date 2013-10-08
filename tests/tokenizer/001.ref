@@ -1,3 +1,12 @@
-1-1: literal  char 'f' 66
-2-1: literal  int '\x100' 00010000
-
+...1-..1: literal char '?' 3F
+...2-..1: literal char '"' 22
+...3-..1: literal char '\\' 5C
+...4-..1: literal char '\'' 27
+...5-..1: literal char '\"' 22
+...6-..1: literal char 'f' 66
+...7-..1: literal char '\xf' 0F
+...8-..1: literal int '\xff' FF000000
+...9-..1: literal int '\x100' 00010000
+..10-..1: invalid 'foo'
+..10-..6: identifier  oo
+ERROR: newline in character literal

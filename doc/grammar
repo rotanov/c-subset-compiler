@@ -110,5 +110,113 @@ expression:
 
 // constant-expression:
 //    conditional-expression
-
+--------------------------------------------------------------------------------
 Declarations
+
+declaration:
+    declaration-specifiers init-declarator-list ';'
+
+declaration-specifiers:
+    type-specifier {declaration-specifiers}
+    type-qualifier {declaration-specifiers}
+
+type-specifier:
+    'void'
+    'char'
+    'int'
+    'float'
+
+type-qualifier:
+    'const'
+
+init-declarator-list:
+    declarator
+    declarator '=' initializer
+
+declarator:
+    {pointer} direct-declarator
+
+direct-declarator:
+    identifier
+    '(' declarator ')'
+    direct-declarator '[' {type-qualifier-list} {assignment-expression} ']'
+    direct-declarator '[' {type-qualifier-list} '*' ']'
+    direct-declarator '(' parameter-list ')'
+    direct-declarator '(' {identifier-list} ')'
+
+pointer:
+    '*' {type-qualifier}
+    '*' {type-qualifier} pointer
+
+parameter-list:
+    parameter-declaration
+    parameter-list ',' parameter-declaration
+
+parameter-declaration:
+        declaration-specifiers declarator
+        declaration-specifiers {abstract-declarator}
+
+identifier-list:
+    identifier
+    identifier-list ',' identifier
+
+
+Type Names
+
+type-name:
+//    spec возникли вопросы где-то в этом районе
+
+Initialization
+
+Statements and Blocks
+
+statement:
+    compound-statement
+    expression-statement
+    selection-statement
+    iteration-statement
+    jump-statement
+
+compound-statement:
+    '{' {block-item-list} '}'
+
+block-item-list:
+    block-item
+    block-item-list block-item
+
+block-item:
+    declaration
+    statement
+
+expression-statement:
+    {expression} ';'
+
+selection-statement:
+    'if' '(' expression ')' statement
+    'if' '(' expression ')' statement 'else' statement
+
+iteration-statement:
+    'while' '(' expression ')' statement
+    'do' statement 'while' '(' expression ')' ';'
+    'for' '(' {expression} ';' {expression} ';' {expression} ')' statement
+
+jump-statement:
+
+
+
+
+
+
+    'continue' ';'
+    'break' ';'
+    'return' {expression} ';'
+
+Function definition
+
+function-definition:
+    declaration-specifiers declarator {declaration-list} compound-statement
+// declaration-list !!!
+declaration-list:
+    declaration
+    declaration-list declaration
+
