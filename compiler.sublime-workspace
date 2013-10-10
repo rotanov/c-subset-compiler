@@ -1,0 +1,1068 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"exc",
+				"exclusive-OR-expression"
+			],
+			[
+				"unar",
+				"unary-operator"
+			],
+			[
+				"floa",
+				"floating-literal"
+			],
+			[
+				"for",
+				"fori	for i,v in ipairs()"
+			],
+			[
+				"Spr",
+				"SpriteId"
+			],
+			[
+				"s",
+				"sym	Uint16"
+			],
+			[
+				"min",
+				"min"
+			],
+			[
+				"b",
+				"beginend	$1.begin(), $1.end()"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 61.0,
+		"selected_items":
+		[
+			[
+				"lower",
+				"Convert Case: Lower Case"
+			],
+			[
+				"INSTPA",
+				"Package Control: Install Package"
+			],
+			[
+				"C++",
+				"Set Syntax: C++"
+			],
+			[
+				"hex lit",
+				"Hex Viewer: Toggle Endianness (Big|Little)"
+			],
+			[
+				"inst pack",
+				"Package Control: Install Package"
+			],
+			[
+				"inst packa",
+				"Package Control: Install Package"
+			],
+			[
+				"diff",
+				"FileDiffs: Menu"
+			],
+			[
+				"instpa",
+				"Package Control: Install Package"
+			],
+			[
+				"hex",
+				"Hex Viewer: Toggle Hex View"
+			],
+			[
+				"set synt HT",
+				"Set Syntax: HTML (Tcl)"
+			],
+			[
+				"instpac",
+				"Package Control: Install Package"
+			],
+			[
+				"lua",
+				"Set Syntax: Lua Dev"
+			],
+			[
+				"json",
+				"Pretty JSON: Reformat (Pretty Print) JSON"
+			],
+			[
+				"batch",
+				"Set Syntax: Batch File"
+			],
+			[
+				"lua dev",
+				"Set Syntax: Lua Dev"
+			],
+			[
+				"lua d",
+				"Set Syntax: Lua Dev"
+			],
+			[
+				"instpack",
+				"Package Control: Install Package"
+			],
+			[
+				"syn bat",
+				"Set Syntax: Batch File"
+			],
+			[
+				"synjson",
+				"Set Syntax: JSON"
+			],
+			[
+				"syn jso",
+				"Set Syntax: JSON"
+			],
+			[
+				"syn json",
+				"Set Syntax: SJSON"
+			],
+			[
+				"syn j",
+				"Set Syntax: JSON"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Upgrade Package"
+			],
+			[
+				"packli",
+				"Package Control: List Packages"
+			],
+			[
+				"inspack",
+				"Package Control: Install Package"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"tasks",
+				"Tasks: Cancel"
+			],
+			[
+				"Tasks",
+				"Tasks: Archive"
+			],
+			[
+				"c++",
+				"Set Syntax: C++"
+			],
+			[
+				"unf",
+				"Code Folding: Unfold All"
+			],
+			[
+				"ww",
+				"Word Wrap: Toggle"
+			],
+			[
+				"add fol",
+				"Project: Add Folder"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"ipacka",
+				"Package Control: Install Package"
+			],
+			[
+				"pack insta",
+				"Package Control: Install Package"
+			],
+			[
+				"color",
+				"Color picker"
+			],
+			[
+				"install package",
+				"Package Control: Install Package"
+			],
+			[
+				"INSTAL",
+				"Package Control: Install Package"
+			],
+			[
+				"packin",
+				"Package Control: Install Package"
+			],
+			[
+				"css",
+				"Set Syntax: CSS"
+			],
+			[
+				"packa",
+				"Package Control: Install Package"
+			],
+			[
+				"sjson",
+				"Set Syntax: SJSON"
+			],
+			[
+				"installP",
+				"Package Control: Install Package"
+			],
+			[
+				"scala",
+				"Set Syntax: Scala"
+			],
+			[
+				"s bat",
+				"Set Syntax: Batch File"
+			],
+			[
+				"synta bat",
+				"Set Syntax: Batch File"
+			],
+			[
+				"plain",
+				"Set Syntax: Plain Text"
+			],
+			[
+				"toglmenu",
+				"View: Toggle Menu"
+			],
+			[
+				"to",
+				"View: Toggle Menu"
+			],
+			[
+				"togglemen",
+				"View: Toggle Menu"
+			],
+			[
+				"xml",
+				"Set Syntax: XML"
+			],
+			[
+				"upper",
+				"Convert Case: Upper Case"
+			],
+			[
+				"open",
+				"View: Toggle Open Files in Side Bar"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"jso",
+				"Set Syntax: JSON"
+			],
+			[
+				"C+",
+				"Set Syntax: C++"
+			],
+			[
+				"markdown",
+				"Markdown Preview: preview in Browser"
+			],
+			[
+				"markdow",
+				"Markdown Preview: preview in Sublime Text"
+			],
+			[
+				"mark",
+				"Markdown Preview: preview in Browser"
+			],
+			[
+				"toggle",
+				"View: Toggle Menu"
+			],
+			[
+				"Preview in bro",
+				"Markdown Preview: preview in Browser"
+			],
+			[
+				"mark pre bro",
+				"Markdown Preview: preview in Browser"
+			],
+			[
+				"bro",
+				"Markdown Preview: preview in Browser"
+			],
+			[
+				"brower",
+				"Markdown Preview: preview in Browser"
+			],
+			[
+				"cheatsh",
+				"Markdown Preview: open Markdown Cheat sheet"
+			],
+			[
+				"mabr",
+				"Markdown Preview: preview in Browser"
+			],
+			[
+				"Markdow",
+				"Markdown Preview: preview in Browser"
+			],
+			[
+				"toggle men",
+				"View: Toggle Menu"
+			],
+			[
+				"package Con Dis",
+				"Package Control: Disable Package"
+			],
+			[
+				"install pac",
+				"Package Control: Install Package"
+			],
+			[
+				"txt",
+				"Set Syntax: Plain Text"
+			],
+			[
+				"log",
+				"Set Syntax: LaTeX Log"
+			],
+			[
+				"pa",
+				"Package Control: Remove Package"
+			],
+			[
+				"makef",
+				"Set Syntax: Makefile"
+			],
+			[
+				"jq",
+				"Set Syntax: jQuery (JavaScript)"
+			],
+			[
+				"install package ",
+				"Package Control: Install Package"
+			],
+			[
+				"installPackage ",
+				"Package Control: Install Package"
+			],
+			[
+				"installpa",
+				"Package Control: Install Package"
+			],
+			[
+				"install pack",
+				"Package Control: Install Package"
+			],
+			[
+				"installPa",
+				"Package Control: Install Package"
+			],
+			[
+				"mako",
+				"Set Syntax: HTML (Mako)"
+			],
+			[
+				"brack",
+				"Bracket Highlighter: Match Brackets"
+			],
+			[
+				"html",
+				"HTML: Encode Special Characters"
+			],
+			[
+				"emmet",
+				"Emmet: Expand Abbreviation"
+			],
+			[
+				"Pack ins",
+				"Package Control: Install Package"
+			],
+			[
+				"user",
+				"Preferences: Settings - User"
+			],
+			[
+				"mak",
+				"Markdown Preview: preview in Browser"
+			],
+			[
+				"clang",
+				"Preferences: SublimeClang Settings – Default"
+			],
+			[
+				"sublim",
+				"Preferences: SublimeClang Settings – User"
+			],
+			[
+				"pack up",
+				"Package Control: Upgrade Package"
+			],
+			[
+				"mard",
+				"Markdown Preview: preview in Browser"
+			],
+			[
+				"asm",
+				"Set Syntax: Assembly x86 Intel (FASM)"
+			],
+			[
+				"package insta",
+				"Package Control: Install Package"
+			],
+			[
+				"markdo",
+				"Markdown Preview: preview in Browser"
+			],
+			[
+				"markd",
+				"Markdown Preview: preview in Browser"
+			],
+			[
+				"makio",
+				"Markdown Preview: preview in Browser"
+			],
+			[
+				"package ins",
+				"Package Control: Install Package"
+			],
+			[
+				"pack in",
+				"Package Control: Install Package"
+			],
+			[
+				"sy C++",
+				"Set Syntax: C++"
+			]
+		],
+		"width": 450.0
+	},
+	"console":
+	{
+		"height": 160.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/D/dev/compiler/doc/simple-expression-grammar",
+		"/D/dev/compiler/doc/lexical-grammar.txt",
+		"/D/dev/compiler/doc/integral-types",
+		"/D/dev/compiler/doc/grammar",
+		"/D/dev/compiler/tests/simple-expression-parser/000.t",
+		"/H/dev/epicfail/src/to_draw_list.txt",
+		"/H/dev/epicfail/src/zadrawch@conference.jabber.ru-Log.txt",
+		"/H/dev/epicfail/doc/todo.txt",
+		"/C/portableApplications/miranda-ng-v0.93.5_x64/Profiles/Satana/Logs/Jabber.ru/shinkai_project@conference.jabber.ru.log",
+		"/D/dev/compiler/tests/tokenizer/032.ref",
+		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/450-string-literal-concat.ref",
+		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/300-integer-limits.t",
+		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/300-hex-limits.t",
+		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/300-floating-suffix.t",
+		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/250-ud-strchar.t",
+		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/250-string-literal.t",
+		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/200-octal-limits.t",
+		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/200-character-literal.t",
+		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/200-basic-integer-suffix.t",
+		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/200-basic-floating.t",
+		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/100-simple.t",
+		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/100-integer-zero.t",
+		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/100-integer-zero.ref",
+		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/450-string-literal-concat.t",
+		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/500-plus-ud-suffix.t",
+		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/500-plus-ud-suffix.ref",
+		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/700-hard-string-concat.t",
+		"/D/dev/cppgm/dev/cppgm-starter-kits/pa1/tests/200-charname-allowed.t",
+		"/D/dev/cppgm/dev/cppgm-starter-kits/pa1/tests/200-charname-allowed.ref",
+		"/D/dev/cppgm/dev/cppgm-starter-kits/pa1/tests/100-utf8.ref",
+		"/D/dev/cppgm/dev/cppgm-starter-kits/pa1/tests/100-utf8.t",
+		"/D/dev/cppgm/dev/cppgm-starter-kits/pa1/tests/100-raw-string-literal.t",
+		"/D/dev/whiterra/repo/bin/res/json/resources.json",
+		"/D/dev/compiler/doc/tasks.todo",
+		"/D/dev/compiler/doc/tree-output-design.txt",
+		"/D/dev/compiler/doc/test-driver.txt",
+		"/D/dev/compiler/doc/se-important-cases.txt",
+		"/D/dev/compiler/scripts/run_scanner_tests.bat",
+		"/C/Users/mapho_000/Downloads/qq31-parenthesis/qq31-parenthesis/highlighter.cpp",
+		"/C/Users/mapho_000/Downloads/qq31-parenthesis/qq31-parenthesis/textedit.cpp",
+		"/C/Users/mapho_000/Downloads/qq31-parenthesis/qq31-parenthesis/textedit.h",
+		"/C/portableApplications/miranda-ng-v0.93.5_x64/Profiles/Satana/Logs/Jabber.ru/redrawch@conference.jabber.ru.log",
+		"/D/dev/whiterra/repo/rtr-ng.sublime-project",
+		"/D/dev/whiterra/repo/rtr-ng.sublime-workspace",
+		"/H/dev/#Finished/Calculator/src/MathParser.pas",
+		"//Emily/dev/compiler/src/ITokenStream.hpp",
+		"//Emily/dev/compiler/src/Constants.hpp",
+		"//Emily/dev/compiler/src/pretokenizer.hpp",
+		"//Emily/dev/compiler/doc/tasks.todo",
+		"//Emily/dev/compiler/doc/lexical-grammar.txt",
+		"/C/portableApplications/miranda-ng-v0.93.5_x64/Profiles/Satana/Logs/Freenode/#qt - FreeNode.log",
+		"/C/Users/mapho_000/Desktop/し.txt",
+		"/D/dev/whiterra/repo/bin/error.log",
+		"/C/Users/mapho_000/Desktop/json/json/resources.json",
+		"/D/dev/whiterra/repo/bin/res/json/_resources.json",
+		"/D/dev/whiterra/repo/editor/deploy-step.bat",
+		"/D/dev/whiterra/repo/game/deploy-step.bat",
+		"/D/dev/whiterra/repo/deploy.bat",
+		"/D/dev/whiterra/ROADS_of_ROME_NG/error.log",
+		"/D/dev/compiler/bin/log.txt",
+		"/D/cppgm/dev/cppgm-dev/common/Tokenizer.hpp",
+		"/D/cppgm/dev/cppgm-dev/common/DebugPPTokenStream.hpp",
+		"/D/dev/whiterra/repo/src/fx_cCaustic.cpp",
+		"/D/dev/compiler/doc/grammar.txt",
+		"/D/cppgm/dev/cppgm-dev/pptoken/pptoken.cpp",
+		"/D/cppgm/dev/cppgm-dev/common/Constants.hpp",
+		"/D/cppgm/dev/cppgm-dev/common/PostTokenStream.cpp",
+		"/D/cppgm/dev/cppgm-dev/tests/900-real-world.t",
+		"/D/dev/compiler/tests/100-a.t",
+		"/D/dev/whiterra/repo/bin/res/json/Levels/test-case.json",
+		"/D/dev/whiterra/repo/build/error.log",
+		"/D/dev/whiterra/repo/bin/qlog.log",
+		"/C/Users/Public/Desktop/desktop.ini",
+		"/C/Users/mapho_000/Desktop/し.txt.hex",
+		"/D/cppgm/dev/cppgm-dev/tests/500-isspace-code-point-wrong.t",
+		"/D/cppgm/dev/cppgm-dev/tests/100-raw-string-literal.t",
+		"/D/cppgm/dev/cppgm-dev/tests/100-partial-string-literal.t",
+		"/D/cppgm/dev/cppgm-dev/tests/100-partial-comment.t",
+		"/D/cppgm/dev/cppgm-dev/common/PostTokenStream.hpp",
+		"/D/cppgm/dev/cppgm-dev/common/DebugPostTokenOutputStream.hpp",
+		"/D/dev/compiler/debugtokenoutputstream.hpp",
+		"/D/cppgm/dev/cppgm-dev/common/Utils.hpp",
+		"/D/cppgm/dev/cppgm-dev/common/Utils.cpp",
+		"/D/cppgm/dev/cppgm-dev/common/IPPTokenStream.hpp",
+		"/D/dev/compiler/ipretokenstream.hpp",
+		"/D/dev/compiler/tokenizer.cpp",
+		"/D/dev/compiler/unicode.hpp",
+		"/D/dev/compiler/unicode.cpp",
+		"/D/dev/compiler/tests/100-empty.t",
+		"/D/cppgm/dev/cppgm-dev/tests/100-character-literals.t",
+		"/D/cppgm/dev/cppgm-dev/tests/100-a.ref",
+		"/D/cppgm/dev/cppgm-dev/tests/100-a.t",
+		"/D/cppgm/dev/cppgm-dev/tests/000-my-tests.t",
+		"/D/dev/deku2d-engine/trunk/Engine/SharedSettings.pri",
+		"/D/dev/whiterra/repo/game/game.pro",
+		"/D/dev/deku2d-engine/trunk/Demos/Sandbox/Sandbox.pro",
+		"/D/cppgm/dev/cppgm-dev/pptoken/pptoken.pro",
+		"/D/dev/compiler/main.cpp",
+		"/D/dev/build-compiler-gcc_4_8-Release/release/(成年コミック) [雑誌] COMIC アンスリウム (Anthurium) Vol.2 2013年06月号/test.cpp",
+		"/D/dev/whiterra/rtr-res/xml/xml/resources.xml",
+		"/C/Users/mapho_000/Downloads/ktt7.tar/ktt7/ktt7/Tokenizer.hpp",
+		"/D/cppgm/dev/cppgm-dev/posttoken/posttoken.pro",
+		"/C/Users/mapho_000/Downloads/ktt7.tar/ktt7/ktt7/PostTokenStream.cpp",
+		"/D/cppgm/dev/cppgm-dev/pptoken/pptoken-ref",
+		"/D/cppgm/dev/cppgm-dev/posttoken/posttoken",
+		"/D/cppgm/dev/cppgm-dev/cppgm.pro",
+		"/D/cppgm/dev/cppgm-starter-kits/pa1/tests/100-raw-string-literal.t",
+		"/C/portableApplications/miranda-ng-v0.93.5_x64/Profiles/Satana/Logs/Jabber.ru/zadrawch@conference.jabber.ru.log",
+		"/D/dev/whiterra/repo/bin/res/json/Levels/templates.json",
+		"/C/Users/mapho_000/Desktop/json/json/Levels/templates.json",
+		"/D/dev/whiterra/repo/bin/game.ini",
+		"/C/Users/mapho_000/Desktop/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af",
+		"/C/Users/mapho_000/Desktop/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af (1).tar/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af (1)/(1).tar/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af",
+		"/C/portableApplications/miranda-ng-v0.93.5_x64/Profiles/Satana/Logs/Jabber.ru/s@anoos.pyos.net.log",
+		"/C/Users/mapho_000/Desktop/ru.json",
+		"/D/dev/whiterra/repo/game/Makefile",
+		"/D/dev/whiterra/repo/game/Makefile.Debug",
+		"/D/dev/hotlava/HotSource_wx/HotEngine/Common/DirectX/DxRenderSystem.cpp",
+		"/D/dev/whiterra/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af/build-test/RSEngine/src/win32/graph.cpp",
+		"/D/dev/whiterra/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af/build-test/RSEngine/src/gmemory.cpp",
+		"/C/Users/mapho_000/AppData/Local/Temp/main-7837fa.sh",
+		"/C/Users/mapho_000/AppData/Local/Temp/main-7837fa.cpp",
+		"/C/Program Files (x86)/LLVM 3.4.svn/tools/msbuild/install.bat",
+		"/D/dev/zlib/zlib-1.2.7-win32.vcxproj",
+		"/D/dev/whiterra/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af/build-test/otherlib/zlib/zlib-vs2012.vcxproj",
+		"/D/dev/whiterra/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af/build-test/otherlib/zlib/zlib-vs2012.sln",
+		"/D/dev/whiterra/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af/build-test/otherlib/zlib/win32/README-WIN32.txt",
+		"/C/Users/mapho_000/Downloads/jpegsr6/jpeg-6b/install.doc"
+	],
+	"find":
+	{
+		"height": 34.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+			"D:\\cppgm\\dev\\cppgm-dev\\common",
+			"D:\\dev\\whiterra\\RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af\\build-test\\RSEngine\\src",
+			"D:\\dev\\hotlava\\HotSource_wx\\HotEngine\\Common",
+			"D:\\dev\\whiterra\\repo\\bin\\res\\json\\Levels",
+			"D:\\dev\\_work\\code\\HotCharts\\src",
+			"D:\\dev\\hotlava\\HotSource_wx\\HotEngine\\Common",
+			"C:\\Users\\mapho_000\\Downloads\\pa1-2\\work\\src",
+			"D:\\dev\\whiterra\\repo\\bin\\res\\json",
+			"D:\\dev\\hotlava\\HotSource_wx\\HotEngine\\Common",
+			"D:\\dev\\hotlava\\HotSource_wx\\HotBox\\Common",
+			"D:\\taken-from-work\\core\\ZombieBowling_iPad\\Main\\Src",
+			"D:\\taken-from-work\\core\\ZombieBowling_iPad\\Main\\Src\\screens",
+			"G:\\app\\Miranda_old\\Profiles\\Logs\\archived",
+			"G:\\app\\Miranda\\Profiles\\Satana\\Logs",
+			"D:\\dev\\whiterra\\repo",
+			"D:\\dev\\whiterra\\rtr-res\\xml\\xml",
+			"D:\\dev\\hotlava\\HotSource_wx\\HotStudio\\Common",
+			"D:\\dev\\hotlava\\HotSource_wx\\HotEngine\\Common",
+			"D:\\dev\\whiterra\\rtr-res\\xml\\xml",
+			"D:\\dev\\qt5\\qttools\\src\\designer\\src",
+			"D:\\dev\\qt5\\qttools\\src\\designer\\src\\components\\propertyeditor",
+			"D:\\dev\\qt5\\qttools\\src\\designer",
+			"D:\\dev\\qt5\\qttools\\src\\designer\\src\\lib\\sdk",
+			"D:\\dev\\qt5\\qtbase\\include\\QtDesigner",
+			"D:\\dev\\qt5\\qtbase\\include\\QtDesigner\\5.0.1\\QtDesigner\\private",
+			"D:\\dev\\qt-creator\\src\\plugins\\designer",
+			"D:\\dev\\hotlava\\HotSource_wx\\HotEngine\\Common",
+			"D:\\dev\\whiterra\\NorthernTale2",
+			"D:\\dev\\whiterra\\repo\\",
+			"D:\\dev\\whiterra\\repo\\src",
+			"D:\\dev\\whiterra\\NorthernTale2\\src\\editor\\MapEditor",
+			"D:\\dev\\whiterra\\NorthernTale2\\src\\editor\\MapEditor\\MapEditorView",
+			"D:\\dev\\whiterra\\NorthernTale2\\src\\editor\\MapEditor\\MapEditor",
+			"D:\\dev\\hotlava\\HotSource_wx",
+			"D:\\dev\\hotlava\\",
+			"D:\\dev\\hotlava",
+			"D:\\dev\\hotlava\\HotSource_wx\\HotEngine",
+			"D:\\dev\\hotlava\\HotSource_wx",
+			"D:\\dev\\whiterra\\NorthernTale2-mod\\src\\game",
+			"D:\\dev\\whiterra\\NorthernTale2-mod\\proj",
+			"D:\\dev\\hotlava\\mm4-main-ipad-free",
+			"D:\\dev\\hotlava\\7-wonders-v",
+			"D:\\dev\\hotlava\\7-wonders-iv",
+			"D:\\dev\\hotlava\\7-wonders-iv\\Main_iPad",
+			"D:\\dev\\HotSource_wx\\HotEngine",
+			"D:\\dev\\_work\\code\\Pickers",
+			"D:\\dev\\HotSource_wx\\HotEngine\\Common",
+			"D:\\dev\\HotSource_wx\\HotSource",
+			"D:\\dev\\HotSource_wx\\",
+			"D:\\dev\\HotSource_wx\\HotEngine\\Common",
+			"D:\\dev\\qt5"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"'\\)",
+			"э\\)",
+			"\\)",
+			")",
+			"primary-expression",
+			"exression",
+			"argument-expression-list",
+			"initializer-list",
+			"primary-expression",
+			"cast-expression",
+			"constant-expression",
+			"пидарасы",
+			"character-literal",
+			"floya.*http",
+			"rgho",
+			"ELSE",
+			"IF",
+			"FOR",
+			"rem",
+			"cd",
+			"CD",
+			"ECHO",
+			"string-literal",
+			"literal",
+			"_wa",
+			"boat",
+			"Qt",
+			"wacom ",
+			"wacom cons",
+			"wacom",
+			"PushString",
+			"FlushAdjacentStringLiterals",
+			"(.*)",
+			"\\{.*,(.*)\\},",
+			"StringToTokenTypeMap",
+			"key",
+			"keyw",
+			"IPP",
+			"Match",
+			"MatchPref",
+			"source_",
+			"SimpleEscapeSequence_Replacements",
+			"Boat",
+			"boat",
+			"oct8cat.*joined",
+			"oct8",
+			"joined",
+			"neko",
+			"tako",
+			"wacom",
+			"consume",
+			"flag",
+			"boatstat",
+			"8",
+			"дофам",
+			"Path",
+			"127",
+			"Debug\\|Win32",
+			"\"Debug|Win32\"",
+			"Debug|Win32",
+			"instal",
+			"conf",
+			"1_01",
+			"xsDstSign",
+			"xTex",
+			"grDraw",
+			"COLOROP",
+			"Material",
+			"sVBO",
+			"inlDrawSprite",
+			"grDraw",
+			"Dx",
+			"grDraw",
+			"inlineRender",
+			"vbo",
+			"inlDrawSprite",
+			"CSprite",
+			"lpSpr",
+			"sCustomMaterial",
+			"stage",
+			"TEXTUREBLEND_MASK",
+			"libc",
+			"/NODEFAULTLIB",
+			"MDd",
+			".lib",
+			"Water",
+			"ktt7.*ktt4.*\\?",
+			"\n",
+			" ",
+			"no-texture",
+			",",
+			"lousy.*седь",
+			"воронеж",
+			"OnHoverEn",
+			"IDPREF",
+			"plus",
+			"twitch",
+			"twitch.tv",
+			"twitch.tv/",
+			"Лагерь",
+			"BUILD",
+			"\"Effects\"",
+			"Images",
+			"Effec",
+			"Image",
+			"\"Images\"",
+			"Imag",
+			"(.*\"Name\": \")Images\"",
+			"(.*\"Name\": \")Images\",",
+			"Effects",
+			"\\{\\n.*\"Children\": \\[\\],\\n.*\"Name\": \"Effects\"\\n.*\\},\\n",
+			"                        {\n                            \"Children\": [],\n                            \"Name\": \"Effects\"\n                        },",
+			"Effec",
+			"HAPPY",
+			"PORTER",
+			"Happy",
+			".*\"(.*)\">(.*)<.*",
+			"\"(.*)\">(.*)<",
+			"centerOn",
+			"Zoom",
+			"LEVEL",
+			"\"\\b(\\w)(.*?)\":",
+			",(.*?)[ \\t]*?=[ \\t]*?\"(.*?)\"[ \\t]*",
+			"/>",
+			"[ \\t]*<(.*?)[ \\t]",
+			"ROPE",
+			"Framedelay",
+			"Frames_per_sequence"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+			"\\1,",
+			"\\1",
+			"\\1Visual\"",
+			"\\1Visual\",",
+			"\"\\1\": \"\\2\",",
+			"\"\\u\\1\\2\":",
+			",\\n\"\\1\": \"\\2\",",
+			"},",
+			"{ \"@type\": \"\\1\",",
+			"FrameDelay",
+			"FramesPerSequence",
+			"\"\\u\\1\\2\":",
+			",\\n\"\\1\": \"\\2\",",
+			"},",
+			"{ \"@type\": \"\\1\",",
+			"\"\\u\\1\\2\":",
+			",\\n\"\\1\": \"\\2\",",
+			"},",
+			"{ \"@type\": \"\\1\",",
+			"FramesPerSequence",
+			"",
+			"FrameDelay",
+			"\"\\u\\1\\2\":",
+			",\\n\"\\1\": \"\\2\",",
+			"},",
+			"{ \"@type\": \"\\1\",",
+			"\"\\u\\1\\2\":",
+			",\\n\"\\1\": \"\\2\",",
+			"},",
+			"{ \"@type\": \"\\1\",",
+			"FrameDelay",
+			"FramesPerSequence",
+			"},",
+			"\"\\u\\1\\2\":",
+			",\\n\"\\1\": \"\\2\",",
+			"},",
+			"{ \"@type\": \"\\1\",",
+			"}",
+			"\"\\u\\1\\2\":",
+			",\\n\"\\1\": \"\\2\",",
+			"},",
+			"{ \"@type\": \"\\1\",",
+			"",
+			"\nindentation",
+			"\\1\nindentation",
+			"\nindentation",
+			"// nice support of n-spaces  I'm going to stick with spaces for all\nindentation",
+			"",
+			"\"\\u\\1\\2\":",
+			",\\n\"\\1\": \"\\2\",",
+			"},",
+			"{ \"@type\": \"\\1\",",
+			"\"\\u\\1\\2\":",
+			"},",
+			",\\n\"\\1\": \"\\2\",",
+			",\"\\1\": \"\\2\",",
+			"\"\\1\": \"\\2\",",
+			"},",
+			"{ \"@type\": \"\\1\",",
+			"\"\\1\": \"\\2\",\\n",
+			"\"\\1\": \"\\2\",",
+			"\\",
+			"",
+			"../src/",
+			"",
+			"../src/",
+			"\\\\",
+			"\\t\\t\\\\",
+			"\\t\\\\"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 38.0
+	},
+	"input":
+	{
+		"height": 45.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": false,
+	"output.clang":
+	{
+		"height": 130.0
+	},
+	"output.exec":
+	{
+		"height": 132.0
+	},
+	"output.hex_viewer_inspector":
+	{
+		"height": 184.0
+	},
+	"replace":
+	{
+		"height": 68.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"reso.json",
+				"bin/res/json/resources.json"
+			],
+			[
+				"templates.json",
+				"bin/res/json/Levels/templates.json"
+			],
+			[
+				"res",
+				"bin/res/json/resources.json"
+			],
+			[
+				"caustcpp",
+				"src/fx_cCaustic.cpp"
+			],
+			[
+				"resour",
+				"bin/res/json/resources.json"
+			],
+			[
+				"causth",
+				"src/fx_cCaustic.h"
+			],
+			[
+				"mapcobh",
+				"src/map_cObject.h"
+			],
+			[
+				"mapcobj",
+				"src/map_cObject.cpp"
+			],
+			[
+				"caus",
+				"src/fx_cCaustic.cpp"
+			],
+			[
+				"cgamefac.h",
+				"src/game_cgamefacade.h"
+			],
+			[
+				"todo",
+				"doc/tasks.todo"
+			],
+			[
+				"reso",
+				"bin/res/json/resources.json"
+			],
+			[
+				"resources.json",
+				"bin/res/json/resources.json"
+			],
+			[
+				"resjson",
+				"bin/res/json/resources.json"
+			],
+			[
+				"thou",
+				"doc/thoughts.txt"
+			],
+			[
+				"qlog",
+				"build/build/qlog.log"
+			],
+			[
+				"fx_pyro",
+				"src/fx_PyroEffects.cpp"
+			],
+			[
+				"gtimer",
+				"3rd/engine/inc/gtimer.h"
+			],
+			[
+				"doc/th",
+				"doc/thoughts.txt"
+			],
+			[
+				"core_wndutils",
+				"src/core_wndUtils.h"
+			],
+			[
+				"cmenuf",
+				"src/menu_cMenuFacade.h"
+			],
+			[
+				"cmenuefaca",
+				"src/menu_cMenuFacade.cpp"
+			],
+			[
+				"gutil.h",
+				"3rd/engine/inc/gutil.h"
+			],
+			[
+				"kindlemainjava",
+				"HotSource_wx/HotSource_android_mk/proj_mm4_kindle_free/src/com/mumbojumbo/hotbox/Main.java"
+			],
+			[
+				"mmmain.java",
+				"HotSource_wx/HotSource_android_mk/proj_mm2/src/com/mumbojumbo/hotbox/Main.java"
+			],
+			[
+				"amazon",
+				"HotSource_wx/HotEngine/Platforms/Android/AmazonStore.cpp"
+			],
+			[
+				"androidmk.mk",
+				"HotSource_wx/HotSource_android_mk/jni/Shared.mk"
+			],
+			[
+				".cpp",
+				"HotSource_wx/HotStudio/Common/Pch.cpp"
+			],
+			[
+				"views",
+				"hellboard/views.py"
+			],
+			[
+				"views.py",
+				"hellboard/views.py"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 180.0,
+	"status_bar_visible": true
+}

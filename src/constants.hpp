@@ -176,6 +176,8 @@ namespace Compiler
         TT_INVALID,
         TT_LITERAL_ARRAY,
         TT_EOF,
+        // surrogate
+        TT_START_PARSE,
     };
 
     enum EFundamentalType

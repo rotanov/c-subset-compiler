@@ -8,6 +8,8 @@
 #include <algorithm>
 #include <cassert>
 
+#include <boost/bind.hpp>
+
 namespace Compiler
 {
 //------------------------------------------------------------------------------
@@ -36,10 +38,100 @@ namespace Compiler
 //------------------------------------------------------------------------------
     ExpressionParser::ExpressionParser()
     {
-        stateStack_.push_back(PS_UNARY_EXPRESSION);
+        parseCoroutine_ = boost::move(Coroutine(boost::bind(&ExpressionParser::ParseExpression_, this, _1), Token(TT_START_PARSE)));
     }
 
-//------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
+    ASTNode* ExpressionParser::ParseExpression_(Coroutine::caller_type& caller)
+    {
+        parseExpressionCallDepth_++;
+        ASTNode* left = ParseTerm_(caller);
+        Token token = WaitForTokenReady_(caller);
+
+        if (token == OP_PLUS
+                || token == OP_MINUS)
+        {
+            while (token == OP_PLUS
+                    || token == OP_MINUS)
+            {
+                left = new ASTNode(token, left, ParseTerm_(caller));
+                token = WaitForTokenReady_(caller);
+            }
+        }
+
+        tokenStack_.push_back(token);
+        if (parseExpressionCallDepth_ > 1)
+        {
+            parseExpressionCallDepth_--;
+            return left;
+        }
+        else
+        {
+            nodeStack_.push_back(left);
+            if (token == TT_EOF)
+            {
+                FlushOutput_();
+            }
+            else
+            {
+                parseExpressionCallDepth_--;
+                ParseExpression_(caller);
+            }
+        }
+
+        return left;
+    }
+
+    ASTNode* ExpressionParser::ParseTerm_(Coroutine::caller_type& caller)
+    {
+        ASTNode* left = ParseFactor_(caller);
+        Token token = WaitForTokenReady_(caller);
+
+        while (token == OP_STAR
+                || token == OP_DIV)
+        {
+            left = new ASTNode(token, left, ParseFactor_(caller));
+            token = WaitForTokenReady_(caller);
+        }
+        tokenStack_.push_back(token);
+        return left;
+    }
+
+    ASTNode* ExpressionParser::ParseFactor_(Coroutine::caller_type& caller)
+    {
+        Token token = WaitForTokenReady_(caller);
+
+        if (token == TT_LITERAL
+                || token == TT_IDENTIFIER)
+        {
+            return new ASTNode(token);
+        }
+        else if (token == OP_LPAREN)
+        {
+            ASTNode* r = ParseExpression_(caller);
+
+            token = WaitForTokenReady_(caller);
+            if (token != OP_RPAREN)
+            {
+                delete r;
+                std::stringstream ss;
+                ss << "closing parenthesis ')' expected at" << token.line << "-" << token.column;
+                throw std::logic_error(ss.str());
+            }
+            return r;
+        }
+        else if (token == TT_EOF)
+        {
+            FlushOutput_();
+            throw std::logic_error("empty expression");
+        }
+        else
+        {
+            FlushOutput_();
+            ThrowInvalidTokenError_(token);
+        }
+    }
+
     void ExpressionParser::ThrowInvalidTokenError_(const ExpressionParser::Token &token)
     {
         std::stringstream ss;
@@ -192,143 +284,31 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    void ExpressionParser::StackTopToNode_()
+    void ExpressionParser::ResumeParse_(const ExpressionParser::Token& token)
     {
-        if (nodeStack_.size() < 2)
-        {
-            if (nodeStack_.size() == 1
-                && tokenStack_.back() == OP_LBRACE)
-            {
-                throw std::logic_error("parentheses mismatch");
-            }
-            throw std::logic_error("operator or operand expected");
-        }
-        Token topToken = tokenStack_.back();
-        tokenStack_.pop_back();
-        ASTNode* right = nodeStack_.back();
-        nodeStack_.pop_back();
-        ASTNode* left = nodeStack_.back();
-        nodeStack_.pop_back();
-        ASTNode* node = new ASTNode(topToken, left, right);
-        nodeStack_.push_back(node);
+        parseCoroutine_(token);
     }
 
 //------------------------------------------------------------------------------
-    void ExpressionParser::PushToken_(const Token& token)
+    ExpressionParser::Token ExpressionParser::WaitForTokenReady_(Coroutine::caller_type& caller)
     {
-        auto GetPrecedence = [](const Token tt) -> int
+        Token token;
+        if (tokenStack_.empty())
         {
-            if (TokenTypeToPrecedence.find(tt.type) != TokenTypeToPrecedence.end())
-            {
-                return TokenTypeToPrecedence.at(tt.type);
-            }
-            else
-            {
-                throw "pizdec";
-            }
-        };
-
-        EParsingState state = stateStack_.back();
-        stateStack_.pop_back();
-
-        switch (state)
-        {
-        case PS_UNARY_EXPRESSION:
-        {
-            if (token == TT_LITERAL
-                || token == TT_IDENTIFIER
-                || token == TT_LITERAL_ARRAY)
-            {
-                nodeStack_.push_back(new ASTNode(token));
-                stateStack_.push_back(PS_BINARY_EXPRESSION);
-            }
-            else if (token == OP_LPAREN)
-            {
-                tokenStack_.push_back(token);
-                stateStack_.push_back(PS_UNARY_EXPRESSION);
-            }
-            else if (UnaryOperators.count(token.type) != 0)
-            {
-                tokenStack_.push_back(token);
-                stateStack_.push_back(PS_UNARY_EXPRESSION);
-            }
-            else if (token == TT_EOF)
-            {
-                FlushOutput_();
-            }
-            else
-            {
-                ThrowInvalidTokenError_(token);
-            }
-            break;
+            caller();
+            token = caller.get();
         }
-
-        case PS_BINARY_EXPRESSION:
+        else
         {
-            if (token == TT_LITERAL
-                || token == TT_IDENTIFIER
-                || token == OP_LPAREN)
-            {
-                FlushOutput_();
-                stateStack_.push_back(PS_UNARY_EXPRESSION);
-                PushToken_(token);
-            }
-            else if (TokenTypeToPrecedence.find(token.type) != TokenTypeToPrecedence.end())
-            {
-                while (!tokenStack_.empty()
-                       && (TokenTypeToPrecedence.find(token.type) != TokenTypeToPrecedence.end()
-                           && ((TokenTypeToRightAssociativity.count(token.type) == 0
-                                && GetPrecedence(token) == GetPrecedence(tokenStack_.back()))
-                               || (GetPrecedence(token) > GetPrecedence(tokenStack_.back())))))
-                {
-                    StackTopToNode_();
-                }
-                tokenStack_.push_back(token);
-                stateStack_.push_back(PS_UNARY_EXPRESSION);
-            }
-            else if (token == OP_RPAREN)
-            {
-                while (!tokenStack_.empty()
-                       && tokenStack_.back().type != OP_LPAREN)
-                {
-                    Token top = tokenStack_.back();
-                    StackTopToNode_();
-                }
-
-                if (tokenStack_.empty())
-                {
-                    FlushOutput_();
-                    std::stringstream ss;
-                    ss << "unexpected parenthesis ')' at" << token.line << "-" << token.column;
-                    throw std::logic_error(ss.str());
-                }
-
-                tokenStack_.pop_back();
-                stateStack_.push_back(PS_BINARY_EXPRESSION);
-            }
-            else if (token == TT_EOF)
-            {
-                FlushOutput_();
-                stateStack_.push_back(PS_UNARY_EXPRESSION);
-            }
-            else
-            {
-                ThrowInvalidTokenError_(token);
-            }
-            break;
+            token = tokenStack_.back();
+            tokenStack_.pop_back();
         }
-
-        }
+        return token;
     }
 
 //------------------------------------------------------------------------------
     void ExpressionParser::FlushOutput_()
     {
-        while (!tokenStack_.empty())
-        {
-            StackTopToNode_();
-        }
-
         while (!nodeStack_.empty())
         {
             PrintAST_(nodeStack_.back());
@@ -356,7 +336,7 @@ namespace Compiler
 
         if (TokenTypeToPrecedence.find(token_type) != TokenTypeToPrecedence.end())
         {
-            PushToken_(token);
+            ResumeParse_(token);
         }
         else
         {
@@ -368,7 +348,7 @@ namespace Compiler
     void ExpressionParser::EmitIdentifier(const string &source, const int line, const int column)
     {
         Token token(TT_IDENTIFIER, source, line, column);
-        PushToken_(token);
+        ResumeParse_(token);
     }
 
 //------------------------------------------------------------------------------
@@ -378,7 +358,7 @@ namespace Compiler
                                              const int line, const int column)
     {
         Token token(TT_LITERAL, source, line, column);
-        PushToken_(token);
+        ResumeParse_(token);
     }
 
 //------------------------------------------------------------------------------
@@ -396,7 +376,7 @@ namespace Compiler
     void ExpressionParser::EmitEof(const int line, const int column)
     {
         Token token(TT_EOF, "", line, column);
-        PushToken_(token);
+        ResumeParse_(token);
     }
 
 //------------------------------------------------------------------------------
@@ -408,6 +388,12 @@ namespace Compiler
         , value(value)
         , line(line)
         , column(column)
+    {
+
+    }
+
+    ExpressionToken::ExpressionToken(const ETokenType& type)
+        :type(type)
     {
 
     }

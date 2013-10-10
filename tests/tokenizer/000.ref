@@ -19,4 +19,13 @@
 ..13-.16: punctuation OP_DIV /
 ..13-.18: identifier  test5
 ..14-..1: identifier  test6
+..15-..1: identifier  months
+..15-..8: punctuation OP_COLON :
+..15-.81: literal يناير_فبراير_مارس_أبريل_ماي_يونيو_يوليوز_غشت_شتنبر_أكتوبر_نونبر_دجنبر array of 128 char D98AD986D8A7D98AD8B15FD981D8A8D8B1D8A7D98AD8B15FD985D8A7D8B1D8B35FD8A3D8A8D8B1D98AD9845FD985D8A7D98A5FD98AD988D986D98AD9885FD98AD988D984D98AD988D8B25FD8BAD8B4D8AA5FD8B4D8AAD986D8A8D8B15FD8A3D983D8AAD988D8A8D8B15FD986D988D986D8A8D8B15FD8AFD8ACD986D8A8D8B100
+..15-.81: punctuation OP_DOT .
+..15-.82: identifier  split
+..15-.87: punctuation OP_LPAREN (
+..15-.91: literal _ array of 2 char 5F00
+..15-.91: punctuation OP_RPAREN )
+..15-.92: punctuation OP_COMMA ,
 eof

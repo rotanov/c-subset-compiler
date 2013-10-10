@@ -8,6 +8,10 @@ QMAKE_CXXFLAGS += -std=c++11
 
 DESTDIR = ../bin
 
+INCLUDEPATH += $$(INCLUDE)
+
+DEFINES += BOOST_ALL_NO_LIB
+
 INCLUDEPATH += ../src
 
 CONFIG(debug, debug|release) {
@@ -17,6 +21,14 @@ CONFIG(debug, debug|release) {
 } else {
     TARGET = test-driver-release
 }
+
+LIBS += \
+    -LD:/dev/boost_1_54_0/stage/lib \
+    -lboost_system-mgw48-mt-s-1_54 \
+    -lboost_regex-mgw48-mt-s-1_54 \
+    -lboost_coroutine-mgw48-mt-s-1_54 \
+    -lboost_context-mgw48-mt-1_54 \
+
 
 
 SOURCES += main.cpp\
