@@ -39,13 +39,46 @@
 	},
 	"buffers":
 	[
+		{
+			"contents": "            else if (TokenTypeToPrecedence.find(token.type) != TokenTypeToPrecedence.end())\n            {\n                while (!tokenStack_.empty()\n                       && (TokenTypeToPrecedence.find(token.type) != TokenTypeToPrecedence.end()\n                           && ((TokenTypeToRightAssociativity.count(token.type) == 0\n                                && GetPrecedence(token) == GetPrecedence(tokenStack_.back()))\n                               || (GetPrecedence(token) > GetPrecedence(tokenStack_.back())))))\n                {\n                    StackTopToNode_();\n                }\n                tokenStack_.push_back(token);\n                stateStack_.push_back(PS_UNARY_EXPRESSION);\n            }",
+			"settings":
+			{
+				"buffer_size": 716,
+				"line_ending": "Windows",
+				"name": "else if (TokenTypeToPrecedence.find(to"
+			}
+		}
 	],
 	"build_system": "",
 	"command_palette":
 	{
-		"height": 61.0,
+		"height": 236.0,
 		"selected_items":
 		[
+			[
+				"lua",
+				"Set Syntax: Lua"
+			],
+			[
+				"upgrapack",
+				"Package Control: Upgrade Package"
+			],
+			[
+				"upgapa",
+				"Package Control: Upgrade Package"
+			],
+			[
+				"uppack",
+				"Package Control: Upgrade Package"
+			],
+			[
+				"packli",
+				"Package Control: List Packages"
+			],
+			[
+				"C++",
+				"Set Syntax: C++"
+			],
 			[
 				"lower",
 				"Convert Case: Lower Case"
@@ -53,10 +86,6 @@
 			[
 				"INSTPA",
 				"Package Control: Install Package"
-			],
-			[
-				"C++",
-				"Set Syntax: C++"
 			],
 			[
 				"hex lit",
@@ -89,10 +118,6 @@
 			[
 				"instpac",
 				"Package Control: Install Package"
-			],
-			[
-				"lua",
-				"Set Syntax: Lua Dev"
 			],
 			[
 				"json",
@@ -137,10 +162,6 @@
 			[
 				"Package Control: ",
 				"Package Control: Upgrade Package"
-			],
-			[
-				"packli",
-				"Package Control: List Packages"
 			],
 			[
 				"inspack",
@@ -460,12 +481,16 @@
 	},
 	"file_history":
 	[
+		"/C/Users/mapho_000/Desktop/библграфпоиск.txt",
+		"/C/portableApplications/miranda-ng-v0.93.5_x64/Profiles/Satana/Logs/Jabber.ru/zadrawch@conference.jabber.ru.log",
+		"/H/dev/epicfail/src/to_draw_list.txt",
+		"/D/dev/compiler/tests/expression-parser/000.t",
+		"/D/dev/compiler/tests/expression-parser/001.t",
 		"/D/dev/compiler/doc/simple-expression-grammar",
 		"/D/dev/compiler/doc/lexical-grammar.txt",
 		"/D/dev/compiler/doc/integral-types",
 		"/D/dev/compiler/doc/grammar",
 		"/D/dev/compiler/tests/simple-expression-parser/000.t",
-		"/H/dev/epicfail/src/to_draw_list.txt",
 		"/H/dev/epicfail/src/zadrawch@conference.jabber.ru-Log.txt",
 		"/H/dev/epicfail/doc/todo.txt",
 		"/C/portableApplications/miranda-ng-v0.93.5_x64/Profiles/Satana/Logs/Jabber.ru/shinkai_project@conference.jabber.ru.log",
@@ -567,7 +592,6 @@
 		"/D/cppgm/dev/cppgm-dev/posttoken/posttoken",
 		"/D/cppgm/dev/cppgm-dev/cppgm.pro",
 		"/D/cppgm/dev/cppgm-starter-kits/pa1/tests/100-raw-string-literal.t",
-		"/C/portableApplications/miranda-ng-v0.93.5_x64/Profiles/Satana/Logs/Jabber.ru/zadrawch@conference.jabber.ru.log",
 		"/D/dev/whiterra/repo/bin/res/json/Levels/templates.json",
 		"/C/Users/mapho_000/Desktop/json/json/Levels/templates.json",
 		"/D/dev/whiterra/repo/bin/game.ini",
@@ -584,10 +608,7 @@
 		"/C/Users/mapho_000/AppData/Local/Temp/main-7837fa.cpp",
 		"/C/Program Files (x86)/LLVM 3.4.svn/tools/msbuild/install.bat",
 		"/D/dev/zlib/zlib-1.2.7-win32.vcxproj",
-		"/D/dev/whiterra/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af/build-test/otherlib/zlib/zlib-vs2012.vcxproj",
-		"/D/dev/whiterra/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af/build-test/otherlib/zlib/zlib-vs2012.sln",
-		"/D/dev/whiterra/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af/build-test/otherlib/zlib/win32/README-WIN32.txt",
-		"/C/Users/mapho_000/Downloads/jpegsr6/jpeg-6b/install.doc"
+		"/D/dev/whiterra/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af/build-test/otherlib/zlib/zlib-vs2012.vcxproj"
 	],
 	"find":
 	{
@@ -656,6 +677,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"black",
 			"'\\)",
 			"э\\)",
 			"\\)",
@@ -782,8 +804,7 @@
 			"/>",
 			"[ \\t]*<(.*?)[ \\t]",
 			"ROPE",
-			"Framedelay",
-			"Frames_per_sequence"
+			"Framedelay"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -870,8 +891,82 @@
 	"groups":
 	[
 		{
+			"selected": 0,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"settings":
+					{
+						"buffer_size": 716,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								716
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"auto_name": "else if (TokenTypeToPrecedence.find(to",
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
 			]
 		}
 	],
