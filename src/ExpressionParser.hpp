@@ -70,14 +70,22 @@ namespace Compiler
     private:
         std::vector<Token> tokenStack_;
         std::vector<ASTNode*> nodeStack_;
-        std::vector<ASTNode*> returnValues_;
-        std::vector<ASTNode*> nodes_;
         Coroutine parseCoroutine_;
         int parseExpressionCallDepth_ = 0;
 
+        ASTNode* ParsePrimaryExpression_(Coroutine::caller_type& caller);
+        ASTNode* ParseBinaryOperator_(Coroutine::caller_type& caller);
+//        ASTNode* ParseTerm_(Coroutine::caller_type& caller);
         ASTNode* ParseExpression_(Coroutine::caller_type& caller);
-        ASTNode* ParseTerm_(Coroutine::caller_type& caller);
-        ASTNode* ParseFactor_(Coroutine::caller_type& caller);
+        ASTNode* ParseAssignmentExpression_(Coroutine::caller_type& caller);
+        ASTNode* ParseUnaryExpression_(Coroutine::caller_type& caller);
+        ASTNode* ParseConditionalExpression_(Coroutine::caller_type& caller);
+        ASTNode* ParsePostfixExpression_(Coroutine::caller_type& caller);
+
+
+        bool IsBinaryOperator_(const Token& token);
+        bool IsAssignmentOperator_(const Token& token);
+        bool IsUnaryOperator_(const Token& token);
 
         void ThrowInvalidTokenError_(const Token& token);
         void PrintAST_(ASTNode* root) const;

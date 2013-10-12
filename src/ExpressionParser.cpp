@@ -41,11 +41,66 @@ namespace Compiler
         parseCoroutine_ = boost::move(Coroutine(boost::bind(&ExpressionParser::ParseExpression_, this, _1), Token(TT_START_PARSE)));
     }
 
-    //------------------------------------------------------------------------------
-    ASTNode* ExpressionParser::ParseExpression_(Coroutine::caller_type& caller)
+//------------------------------------------------------------------------------
+    ASTNode* ExpressionParser::ParsePrimaryExpression_(Coroutine::caller_type& caller)
+    {
+        Token token = WaitForTokenReady_(caller);
+        switch(token.type)
+        {
+            case TT_IDENTIFIER:
+            case TT_LITERAL:
+            {
+                return new ASTNode(token);
+                break;
+            }
+
+            case OP_LPAREN:
+            {
+                ASTNode* r = ParseExpression_(caller);
+
+                token = WaitForTokenReady_(caller);
+                if (token != OP_RPAREN)
+                {
+                    delete r;
+                    std::stringstream ss;
+                    ss << "closing parenthesis ')' expected at" << token.line << "-" << token.column;
+                    throw std::logic_error(ss.str());
+                }
+                return r;
+                break;
+            }
+
+            case TT_EOF:
+            {
+                FlushOutput_();
+                break;
+            }
+
+            default:
+            {
+                FlushOutput_();
+                ThrowInvalidTokenError_(token);
+                break;
+            }
+        }
+    }
+
+//------------------------------------------------------------------------------
+    ASTNode* ExpressionParser::ParseBinaryOperator_(Coroutine::caller_type& caller)
     {
         parseExpressionCallDepth_++;
-        ASTNode* left = ParseTerm_(caller);
+        ASTNode* left = NULL;
+
+        if (!nodeStack_.empty())
+        {
+            left = nodeStack_.back();
+            nodeStack_.pop_back();
+        }
+        else
+        {
+            left = ParseUnaryExpression_(caller);
+        }
+
         Token token = WaitForTokenReady_(caller);
 
         if (token == OP_PLUS
@@ -54,7 +109,7 @@ namespace Compiler
             while (token == OP_PLUS
                     || token == OP_MINUS)
             {
-                left = new ASTNode(token, left, ParseTerm_(caller));
+                left = new ASTNode(token, left, ParseBinaryOperator_(caller));
                 token = WaitForTokenReady_(caller);
             }
         }
@@ -75,63 +130,224 @@ namespace Compiler
             else
             {
                 parseExpressionCallDepth_--;
-                ParseExpression_(caller);
+                ParseBinaryOperator_(caller);
             }
         }
 
         return left;
     }
 
-    ASTNode* ExpressionParser::ParseTerm_(Coroutine::caller_type& caller)
+//    ASTNode* ExpressionParser::ParseTerm_(Coroutine::caller_type& caller)
+//    {
+//        ASTNode* left = ParseFactor_(caller);
+//        Token token = WaitForTokenReady_(caller);
+
+//        while (token == OP_STAR
+//                || token == OP_DIV)
+//        {
+//            left = new ASTNode(token, left, ParseFactor_(caller));
+//            token = WaitForTokenReady_(caller);
+//        }
+//        tokenStack_.push_back(token);
+//        return left;
+//    }
+
+//------------------------------------------------------------------------------
+    ASTNode*ExpressionParser::ParseExpression_(Coroutine::caller_type& caller)
     {
-        ASTNode* left = ParseFactor_(caller);
+        ASTNode* node = ParseAssignmentExpression_(caller);
         Token token = WaitForTokenReady_(caller);
-
-        while (token == OP_STAR
-                || token == OP_DIV)
+        while (token == OP_COMMA)
         {
-            left = new ASTNode(token, left, ParseFactor_(caller));
-            token = WaitForTokenReady_(caller);
+            node = new ASTNode(token, node, ParseAssignmentExpression_(caller));
         }
-        tokenStack_.push_back(token);
-        return left;
-    }
-
-    ASTNode* ExpressionParser::ParseFactor_(Coroutine::caller_type& caller)
-    {
-        Token token = WaitForTokenReady_(caller);
-
-        if (token == TT_LITERAL
-                || token == TT_IDENTIFIER)
-        {
-            return new ASTNode(token);
-        }
-        else if (token == OP_LPAREN)
-        {
-            ASTNode* r = ParseExpression_(caller);
-
-            token = WaitForTokenReady_(caller);
-            if (token != OP_RPAREN)
-            {
-                delete r;
-                std::stringstream ss;
-                ss << "closing parenthesis ')' expected at" << token.line << "-" << token.column;
-                throw std::logic_error(ss.str());
-            }
-            return r;
-        }
-        else if (token == TT_EOF)
+        if (token == TT_EOF)
         {
             FlushOutput_();
-            throw std::logic_error("empty expression");
         }
         else
         {
-            FlushOutput_();
+            nodeStack_.push_back(token);
             ThrowInvalidTokenError_(token);
         }
     }
 
+//------------------------------------------------------------------------------
+    ASTNode* ExpressionParser::ParseAssignmentExpression_(Coroutine::caller_type& caller)
+    {
+        ASTNode* node = ParseUnaryExpression_(caller);
+        Token token = WaitForTokenReady_(caller);
+        if (IsBinaryOperator_(token))
+        {
+            // return node, so ParseBinOp will get it
+            // return token(binop) as well
+            tokenStack_.push_back(token);
+            nodeStack_.push_back(node);
+            return ParseConditionalExpression_(caller);
+        }
+        else if (IsAssignmentOperator_(token))
+        {
+            return new ASTNode(token, node, ParseAssignmentExpression_(caller));
+        }
+        else if (token == TT_EOF)
+        {
+            FlushOutput_();
+        }
+        else
+        {
+            tokenStack_.push_back(token);
+//            ThrowInvalidTokenError_(token);
+        }
+    }
+
+//------------------------------------------------------------------------------
+    ASTNode* ExpressionParser::ParseUnaryExpression_(Coroutine::caller_type& caller)
+    {
+        Token token = WaitForTokenReady_(caller);
+
+        if (IsUnaryOperator_(token)
+            || token == OP_INC
+            || token == OP_DEC)
+        {
+            return new ASTNode(token, ParsePostfixExpression_(caller), NULL);
+        }
+        else
+        {
+            tokenStack_.push_back(token);
+            return ParsePostfixExpression_(caller);
+        }
+    }
+
+//------------------------------------------------------------------------------
+    ASTNode* ExpressionParser::ParseConditionalExpression_(Coroutine::caller_type& caller)
+    {
+        ASTNode* node = ParseBinaryOperator_(caller);
+        Token token = WaitForTokenReady_(caller);
+        if (token == OP_QMARK)
+        {
+            node = new ASTNode(token, node, ParseExpression_(caller));
+            token = WaitForTokenReady_(caller);
+            if (token == OP_COLON)
+            {
+                return new ASTNode(token, node, ParseConditionalExpression_(caller));
+            }
+            else
+            {
+                // colon missing
+                ThrowInvalidTokenError_(token);
+            }
+        }
+        else
+        {
+            tokenStack_.push_back(token);
+            return node;
+        }
+    }
+
+//------------------------------------------------------------------------------
+    ASTNode* ExpressionParser::ParsePostfixExpression_(Coroutine::caller_type& caller)
+    {
+        ASTNode* node = ParsePrimaryExpression_(caller);
+        Token token = WaitForTokenReady_(caller);
+
+        while (true)
+        {
+//            bool flag = true;
+            switch (token.type)
+            {
+                case OP_LSQUARE:
+                {
+                    // postfix-expression '[' expression ']'
+                    node = new ASTNode(token, node, ParseExpression_(caller));
+                    token = WaitForTokenReady_(caller);
+                    if (token != OP_RSQUARE)
+                    {
+                        // expecting ']'
+                        ThrowInvalidTokenError_(token);
+                    }
+                    break;
+                }
+
+                case OP_LPAREN:
+                {
+                    // postfix-expression '(' {expression} ')' // argument-expression-list
+                    token = WaitForTokenReady_(caller);
+                    if (token != OP_RPAREN)
+                    {
+                        node = new ASTNode(token, node, ParseExpression_(caller));
+                        token = WaitForTokenReady_(caller);
+                        if (token != OP_RPAREN)
+                        {
+                            // expecting ')'
+                            ThrowInvalidTokenError_(token);
+                        }
+                    }
+                    break;
+                }
+
+                case OP_DOT:
+                case OP_ARROW:
+                {
+                    // postfix-expression '.' identifier
+                    // postfix-expression '->' identifier
+                    Token identifierToken = WaitForTokenReady_(caller);
+                    if (identifierToken == TT_IDENTIFIER)
+                    {
+                        node = new ASTNode(token, node, new ASTNode(identifierToken));
+                    }
+                    break;
+                }
+
+                case OP_INC:
+                case OP_DEC:
+                {
+                    // postfix-expression '++'
+                    // postfix-expression '--'
+                    node = new ASTNode(token, node, ParsePostfixExpression_(caller));
+                    break;
+                }
+
+                default:
+                {
+                    // primary-expression
+                    tokenStack_.push_back(token);
+                    return node;
+                    break;
+                }
+            }
+        }
+    }
+
+//------------------------------------------------------------------------------
+    bool ExpressionParser::IsBinaryOperator_(const ExpressionParser::Token& token)
+    {
+        return token == OP_PLUS
+               || token == OP_MINUS
+               || token == OP_STAR
+               || token == OP_DIV;
+    }
+
+//------------------------------------------------------------------------------
+    bool ExpressionParser::IsAssignmentOperator_(const ExpressionParser::Token& token)
+    {
+        return token == OP_ASS
+               || token == OP_STARASS
+               || token == OP_BANDASS
+               || token == OP_DIVASS;
+    }
+
+//------------------------------------------------------------------------------
+    bool ExpressionParser::IsUnaryOperator_(const ExpressionParser::Token& token)
+    {
+        return token == OP_AMP
+               || token == OP_STAR
+               || token == OP_PLUS
+               || token == OP_MINUS
+               || token == OP_NE
+               || token == OP_LNOT;
+    }
+
+//------------------------------------------------------------------------------
     void ExpressionParser::ThrowInvalidTokenError_(const ExpressionParser::Token &token)
     {
         std::stringstream ss;

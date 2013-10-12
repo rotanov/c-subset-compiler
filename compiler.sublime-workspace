@@ -40,12 +40,54 @@
 	"buffers":
 	[
 		{
-			"contents": "            else if (TokenTypeToPrecedence.find(token.type) != TokenTypeToPrecedence.end())\n            {\n                while (!tokenStack_.empty()\n                       && (TokenTypeToPrecedence.find(token.type) != TokenTypeToPrecedence.end()\n                           && ((TokenTypeToRightAssociativity.count(token.type) == 0\n                                && GetPrecedence(token) == GetPrecedence(tokenStack_.back()))\n                               || (GetPrecedence(token) > GetPrecedence(tokenStack_.back())))))\n                {\n                    StackTopToNode_();\n                }\n                tokenStack_.push_back(token);\n                stateStack_.push_back(PS_UNARY_EXPRESSION);\n            }",
+			"contents": "\n\n\n\n\n\n\n\n\n\nelse if (TokenTypeToPrecedence.find(token.type) != TokenTypeToPrecedence.end())\n{\n    while (!tokenStack_.empty()\n           && (TokenTypeToPrecedence.find(token.type) != TokenTypeToPrecedence.end()\n               && ((TokenTypeToRightAssociativity.count(token.type) == 0\n                    && GetPrecedence(token) == GetPrecedence(tokenStack_.back()))\n                   || (GetPrecedence(token) > GetPrecedence(tokenStack_.back())))))\n    {\n        StackTopToNode_();\n    }\n    tokenStack_.push_back(token);\n    stateStack_.push_back(PS_UNARY_EXPRESSION);\n}",
 			"settings":
 			{
-				"buffer_size": 716,
+				"buffer_size": 570,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "Кэширование\n\nКэш память бывает инклюзивная и эксклюзивная.\n\nwrite through режим чего-то там\nа иначе write back (delayed write)\n\nMTRR\n\ncache coherency\n\nMESI\n\nNUMA Non Unified Memory Architecture\n\nPrefetching\n\nMemory Barriers\nMemory Ordering Control\nWeak Memory Ordering\n\nSFence\nLFence\nMFence\n\nCISC\nRISC\nVLIW\nEPIC\n\n1. Fetching\n2. Decode -> micro ops\n    1. Length Determination\n    2. \n...\n\nExecution Units\nRetire Buffer\n\nBranch Prediction\n\nBPB - Branch Prediction Buffer\nBTB - Branch Target Buffer\n\n\n\n\n\n\n\n\n\n\n\n",
+			"settings":
+			{
+				"buffer_size": 508,
 				"line_ending": "Windows",
-				"name": "else if (TokenTypeToPrecedence.find(to"
+				"name": "Кэширование"
+			}
+		},
+		{
+			"file": "/D/dev/compiler/doc/grammar",
+			"settings":
+			{
+				"buffer_size": 5401,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "a[a[2]](a)",
+			"settings":
+			{
+				"buffer_size": 10,
+				"line_ending": "Windows",
+				"name": "a[a[2]](a)"
+			}
+		},
+		{
+			"file": "/D/dev/compiler/tests/expression-parser/000.t",
+			"settings":
+			{
+				"buffer_size": 5,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "Reduction:\n\n\n\n\n\n\n\n\n\nunary-expression:\n    postfix-expression\n    '++' unary-expression\n    '--' unary-expression\n    unary-operator unary-expression\n\nbinary-expression:\n    unary-expression\n    binary-expression binary-operator unary-expression\n\nconditional-expression:\n    binary-expression\n    binary-expression '?' expression ':' conditional-expression\n\nassignment-expression:\n    conditional-expression\n    unary-expression assignment-operator assignment-expression",
+			"settings":
+			{
+				"buffer_size": 469,
+				"line_ending": "Windows",
+				"name": "Reduction:"
 			}
 		}
 	],
@@ -677,6 +719,9 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"assoc",
+			"multiplicative",
+			"expression",
 			"black",
 			"'\\)",
 			"э\\)",
@@ -801,10 +846,7 @@
 			"LEVEL",
 			"\"\\b(\\w)(.*?)\":",
 			",(.*?)[ \\t]*?=[ \\t]*?\"(.*?)\"[ \\t]*",
-			"/>",
-			"[ \\t]*<(.*?)[ \\t]",
-			"ROPE",
-			"Framedelay"
+			"/>"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -891,28 +933,27 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 3,
 			"sheets":
 			[
 				{
 					"buffer": 0,
 					"settings":
 					{
-						"buffer_size": 716,
+						"buffer_size": 570,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								716
+								410,
+								423
 							]
 						],
 						"settings":
 						{
 							"BracketHighlighterBusy": false,
-							"auto_name": "else if (TokenTypeToPrecedence.find(to",
 							"bh_regions":
 							[
 								"bh_regex",
@@ -960,6 +1001,367 @@
 							"syntax": "Packages/C++/C++.tmLanguage",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"settings":
+					{
+						"buffer_size": 508,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								496,
+								496
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"auto_name": "Кэширование",
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 221.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/D/dev/compiler/doc/grammar",
+					"settings":
+					{
+						"buffer_size": 5401,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2989,
+								2999
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 0.99,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1561.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"settings":
+					{
+						"buffer_size": 10,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								10,
+								10
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"auto_name": "a[a[2]](a)",
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "/D/dev/compiler/tests/expression-parser/000.t",
+					"settings":
+					{
+						"buffer_size": 5,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5,
+								5
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/Perl/Perl.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"settings":
+					{
+						"buffer_size": 469,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								148,
+								38
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"auto_name": "Reduction:",
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -1023,6 +1425,10 @@
 		"height": 0.0,
 		"selected_items":
 		[
+			[
+				"gramm",
+				"doc/grammar"
+			],
 			[
 				"reso.json",
 				"bin/res/json/resources.json"
