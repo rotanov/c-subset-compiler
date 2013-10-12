@@ -22,3 +22,5 @@
 /vc110.pdb
 /test-driver/release
 /compiler.pro.user
+
+/bin/test-driver-release.exe
