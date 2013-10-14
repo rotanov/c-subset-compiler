@@ -4,7 +4,6 @@
 #include <exception>
 #include <cassert>
 
-#include "constants.hpp"
 #include "unicode.hpp"
 
 namespace Compiler
@@ -237,7 +236,7 @@ namespace Compiler
     int MatchEscapeSequence(int *where)
     {
         int c = where[0];
-        if (SimpleEscapeSequence_CodePoints.count(c) > 0)
+        if (simpleEscapeSequence_CodePoints.count(c) > 0)
         {
             return 1;
         }
@@ -253,7 +252,7 @@ namespace Compiler
         else if (c == 'x')
         {
             int i = 0;
-            while (HexadecimalCharachters.count(where[i + 1]) != 0)
+            while (hexadecimalCharachters.count(where[i + 1]) != 0)
             {
                 i++;
             }
@@ -306,9 +305,9 @@ namespace Compiler
                 break;
             //------------------------------------------------------------------------------
             case 1:
-                if (SimpleEscapeSequence_CodePoints.count(c) > 0)
+                if (simpleEscapeSequence_CodePoints.count(c) > 0)
                 {
-                    write[0] = SimpleEscapeSequence_Replacements.find(c)->second;
+                    write[0] = simpleEscapeSequence_Replacements.find(c)->second;
                     write++;
                     state = 0;
                     read++;
@@ -350,7 +349,7 @@ namespace Compiler
         for (int i = 0; i < 4; i++)
         {
             int c = *(where + i);
-            if (HexadecimalCharachters.count(c) == 0)
+            if (hexadecimalCharachters.count(c) == 0)
             {
                 return 0;
             }
@@ -394,6 +393,77 @@ namespace Compiler
     string UTF8CodePointToString(const int *source, size_t size)
     {
         return UTF8CodePointToString(source, 0, size);
+    }
+
+//------------------------------------------------------------------------------
+    std::string TokenTypeToString(const ETokenType tokenType)
+    {
+        if (punctuationTypeToStringMap.find(tokenType) != punctuationTypeToStringMap.end())
+        {
+            return punctuationTypeToStringMap.at(tokenType);
+        }
+        else if (keywordTypeToStringMap.find(tokenType) != keywordTypeToStringMap.end())
+        {
+            return keywordTypeToStringMap.at(tokenType);
+        }
+        else if (otherTokenTypeToStringMap.find(tokenType) != otherTokenTypeToStringMap.end())
+        {
+            return otherTokenTypeToStringMap.at(tokenType);
+        }
+        else
+        {
+            throw std::runtime_error("TokenTypeToString: invalid token");
+        }
+    }
+
+//------------------------------------------------------------------------------
+    bool IsUnaryOperator(const ETokenType& tokenType)
+    {
+        return tokenType == OP_AMP
+                || tokenType == OP_STAR
+                || tokenType == OP_PLUS
+                || tokenType == OP_MINUS
+                || tokenType == OP_COMPL
+                || tokenType == OP_LNOT;
+    }
+
+//------------------------------------------------------------------------------
+    bool IsAssignmentOperator(const ETokenType& tokenType)
+    {
+        return tokenType == OP_ASS
+                || tokenType == OP_STARASS
+                || tokenType == OP_DIVASS
+                || tokenType == OP_MODASS
+                || tokenType == OP_PLUSASS
+                || tokenType == OP_MINUSASS
+                || tokenType == OP_LSHIFTASS
+                || tokenType == OP_RSHIFTASS
+                || tokenType == OP_BANDASS
+                || tokenType == OP_XORASS
+                || tokenType == OP_BORASS;
+    }
+
+//------------------------------------------------------------------------------
+    bool IsBinaryOperator(const ETokenType& tokenType)
+    {
+        return tokenType == OP_STAR
+                || tokenType == OP_DIV
+                || tokenType == OP_MOD
+                || tokenType == OP_PLUS
+                || tokenType == OP_MINUS
+                || tokenType == OP_LSHIFT
+                || tokenType == OP_RSHIFT
+                || tokenType == OP_LT
+                || tokenType == OP_GT
+                || tokenType == OP_LE
+                || tokenType == OP_GE
+                || tokenType == OP_EQ
+                || tokenType == OP_NE
+                || tokenType == OP_AMP
+                || tokenType == OP_XOR
+                || tokenType == OP_BOR
+                || tokenType == OP_LAND
+                || tokenType == OP_LOR;
     }
 
 

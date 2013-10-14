@@ -60,10 +60,10 @@ namespace Compiler
             {
                 if (MatchPrefix("??", i))
                 {
-                    if (TrigraphReplacement.find(i[2]) != TrigraphReplacement.end())
+                    if (trigraphReplacement.find(i[2]) != trigraphReplacement.end())
                     {
 
-                        j[0] = TrigraphReplacement.find(i[2])->second;
+                        j[0] = trigraphReplacement.find(i[2])->second;
                         i += 3;
                         j++;
                         continue;
@@ -194,7 +194,7 @@ namespace Compiler
                     for (int i = spaceUntilEof; i > 0; i--)
                     {
                         string s = UTF8CodePointToString(source_, pos_, pos_ + i - 1);
-                        if (Punctuation[i - 1].count(s) > 0)
+                        if (punctuation[i - 1].count(s) > 0)
                         {
                             output_.EmitPunctuation(s);
                             pos_ += i;

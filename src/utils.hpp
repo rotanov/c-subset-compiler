@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "constants.hpp"
+
 namespace Compiler
 {
     using std::vector;
@@ -51,6 +53,13 @@ namespace Compiler
     // returns true if at least one prefix matched
     // if s == "u|ul|uLL" then first match returned keep that in mind
     int MatchPrefixes(const string& s, int* where);
+
+    std::string TokenTypeToString(const ETokenType tokenType);
+
+    // TODO: implement this three in terms of unordered_set or switch()
+    bool IsUnaryOperator(const ETokenType& tokenType);
+    bool IsAssignmentOperator(const ETokenType& tokenType);
+    bool IsBinaryOperator(const ETokenType& tokenType);
 
     class PostTokenError : public std::exception
     {

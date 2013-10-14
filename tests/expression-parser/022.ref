@@ -1,1 +1,5 @@
-ERROR: unexpected token at 1-1
++
+|
+a
+
+ERROR: unexpected token OP_RPAREN : ")" at 1-3

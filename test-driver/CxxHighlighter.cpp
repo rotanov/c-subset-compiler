@@ -10,7 +10,7 @@ CxxHighlighter::CxxHighlighter(QTextDocument *parent)
     keywordFormat.setForeground(Qt::darkBlue);
     keywordFormat.setFontWeight(QFont::Bold);
     QStringList keywordPatterns;
-    for (const auto& keyword : Compiler::StringToKeywordTypeMap)
+    for (const auto& keyword : Compiler::stringToKeywordTypeMap)
     {
         keywordPatterns << (QString("\\b") + QString().fromStdString(keyword.first) + QString("\\b"));
     }

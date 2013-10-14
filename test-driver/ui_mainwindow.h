@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.1.1
+** Created by: Qt User Interface Compiler version 5.1.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -166,7 +166,7 @@ public:
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
         action_New->setText(QApplication::translate("MainWindow", "&New", 0));
-        action_New->setShortcut(QApplication::translate("MainWindow", "Ctrl+A", 0));
+        action_New->setShortcut(QApplication::translate("MainWindow", "Ctrl+Q", 0));
         action_Save->setText(QApplication::translate("MainWindow", "&Save", 0));
         action_Save->setShortcut(QApplication::translate("MainWindow", "Ctrl+S", 0));
         action_Next->setText(QApplication::translate("MainWindow", "&Next", 0));

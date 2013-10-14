@@ -17,12 +17,12 @@ namespace Compiler
 
     constexpr int EndOfFile = -1;
 
-    const unordered_set<int> SimpleEscapeSequence_CodePoints =
+    const unordered_set<int> simpleEscapeSequence_CodePoints =
     {
         '\'', '"', '?', '\\', 'a', 'b', 'f', 'n', 'r', 't', 'v',
     };
 
-    const unordered_map<int, int> SimpleEscapeSequence_Replacements =
+    const unordered_map<int, int> simpleEscapeSequence_Replacements =
     {
         {'\'', '\''},
         {'"', '"'},
@@ -37,13 +37,13 @@ namespace Compiler
         {'v', '\v'},
     };
 
-    const unordered_set<int> HexadecimalCharachters =
+    const unordered_set<int> hexadecimalCharachters =
     {
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd',
         'e', 'f', 'A', 'B', 'C', 'D', 'E', 'F',
     };
 
-    const unordered_map<int, int> TrigraphReplacement =
+    const unordered_map<int, int> trigraphReplacement =
     {
         {'=', '#',},
         {'/', '\\',},
@@ -56,32 +56,32 @@ namespace Compiler
         {'-', '~',},
     };
 
-    const unordered_set<string> Punctuation4 =
+    const unordered_set<string> punctuation4 =
     {
         "%:%:",
     };
 
-    const unordered_set<string> Punctuation3 =
+    const unordered_set<string> punctuation3 =
     {
         "<<=", ">>=", "...",
     };
 
-    const unordered_set<string> Punctuation2 =
+    const unordered_set<string> punctuation2 =
     {
         "+=", "-=", "*=", "/=", "%=", "^=", "&=", "|=", "<<", ">>", "<=", ">=",
         "&&", "==", "!=", "||", "++", "--", "->", "##", "<:", ":>", "<%", "%>",
         "%:",
     };
 
-    const unordered_set<string> Punctuation1 =
+    const unordered_set<string> punctuation1 =
     {
         "{", "}", "[", "]", "#", "(", ")", ";", ":", "?", ".", "+", "-", "*",
         "/", "%", "^", "&", "|", "~", "!", "=", "<", ">", ",",
     };
 
-    const vector<unordered_set<string>> Punctuation =
+    const vector<unordered_set<string>> punctuation =
     {
-        Punctuation1, Punctuation2, Punctuation3, Punctuation4,
+        punctuation1, punctuation2, punctuation3, punctuation4,
     };
 
     // token type enum for
@@ -176,8 +176,6 @@ namespace Compiler
         TT_INVALID,
         TT_LITERAL_ARRAY,
         TT_EOF,
-        // surrogate
-        TT_START_PARSE,
     };
 
     enum EFundamentalType
@@ -225,7 +223,7 @@ namespace std
 
 namespace Compiler
 {
-    const unordered_map<string, ETokenType> StringToKeywordTypeMap =
+    const unordered_map<string, ETokenType> stringToKeywordTypeMap =
     {
         // keywords
         {"auto", KW_AUTO},
@@ -263,7 +261,7 @@ namespace Compiler
         {"while", KW_WHILE},
     };
 
-    const unordered_map<string, ETokenType> StringToPunctuationTypeMap =
+    const unordered_map<string, ETokenType> stringToPunctuationTypeMap =
     {
         // operators/punctuation
         {"{", OP_LBRACE},
@@ -319,7 +317,7 @@ namespace Compiler
     };
 
     // map of enum to string
-    const map<ETokenType, string> KeywordTypeToStringMap =
+    const map<ETokenType, string> keywordTypeToStringMap =
     {
         {KW_AUTO, "KW_AUTO"},
         {KW_BREAK, "KW_BREAK"},
@@ -356,7 +354,7 @@ namespace Compiler
         {KW_WHILE, "KW_WHILE"},
     };
 
-    const map<ETokenType, string> PunctuationTypeToStringMap =
+    const map<ETokenType, string> punctuationTypeToStringMap =
     {
         {OP_LBRACE, "OP_LBRACE"},
         {OP_RBRACE, "OP_RBRACE"},
@@ -406,8 +404,17 @@ namespace Compiler
         {OP_ARROW, "OP_ARROW"},
     };
 
+    const map<ETokenType, string> otherTokenTypeToStringMap =
+    {
+        {TT_IDENTIFIER, "TT_IDENTIFIER"},
+        {TT_LITERAL, "TT_LITERAL"},
+        {TT_INVALID, "TT_INVALID"},
+        {TT_LITERAL_ARRAY, "TT_LITERAL_ARRAY"},
+        {TT_EOF, "TT_EOF"},
+    };
+
     // convert EFundamentalType to a source code
-    const unordered_map<EFundamentalType, string> FundamentalTypeToStringMap
+    const unordered_map<EFundamentalType, string> fundamentalTypeToStringMap
     {
         {FT_CHAR, "char"},
         {FT_INT, "int"},
@@ -415,7 +422,7 @@ namespace Compiler
         {FT_DOUBLE, "double"},
     };
 
-    const unordered_set<ETokenType> TokenTypeToRightAssociativity =
+    const unordered_set<ETokenType> tokenTypeToRightAssociativity =
     {
         OP_ASS,
         OP_STARASS,
@@ -433,7 +440,7 @@ namespace Compiler
         // also Unary 	 right to left 	 ++  --  +  -  !  ~  &  *  //(type_name)  C++: sizeof new delete
     };
 
-    const unordered_set<ETokenType> UnaryOperators =
+    const unordered_set<ETokenType> unaryOperators =
     {
         OP_INC,
         OP_DEC,
@@ -445,59 +452,35 @@ namespace Compiler
         OP_STAR,
     };
 
-    const unordered_map<ETokenType, int> TokenTypeToPrecedence =
+    const unordered_map<ETokenType, int> binaryOperatorTypeToPrecedence =
     {
-        {OP_LPAREN, 0},
-        {OP_RPAREN, 0},
-        {OP_LSQUARE, 0},
-        {OP_RSQUARE, 0},
-        {OP_DOT, 0},
-        {OP_ARROW, 0},
-        // Unary ++  --  +  -  !  ~  &  *  (type_name)  C++: sizeof new delete
-        {OP_STAR, 2},
-        {OP_DIV, 2},
-        {OP_MOD, 2},
+        {OP_STAR, 9},
+        {OP_DIV, 9},
+        {OP_MOD, 9},
         //
-        {OP_PLUS, 3},
-        {OP_MINUS, 3},
+        {OP_PLUS, 8},
+        {OP_MINUS, 8},
         //
-        {OP_LSHIFT, 4},
-        {OP_RSHIFT, 4},
+        {OP_LSHIFT, 7},
+        {OP_RSHIFT, 7},
         //
-        {OP_LT, 5},
-        {OP_GT, 5},
-        {OP_LE, 5},
-        {OP_GE, 5},
+        {OP_LT, 6},
+        {OP_GT, 6},
+        {OP_LE, 6},
+        {OP_GE, 6},
         //
-        {OP_EQ, 6},
-        {OP_NE, 6},
+        {OP_EQ, 5},
+        {OP_NE, 5},
         //
-        {OP_AMP, 7},
+        {OP_AMP, 4},
         //
-        {OP_XOR, 8},
+        {OP_XOR, 3},
         //
-        {OP_BOR, 9},
+        {OP_BOR, 2},
         //
-        {OP_LAND, 10},
+        {OP_LAND, 1},
         //
-        {OP_LOR, 11},
-        // conditional
-        {OP_QMARK, 12},
-        {OP_COLON, 12},
-        //
-        {OP_ASS, 13},
-        {OP_STARASS, 13},
-        {OP_DIVASS, 13},
-        {OP_MODASS, 13},
-        {OP_PLUSASS, 13},
-        {OP_MINUSASS, 13},
-        {OP_LSHIFTASS, 13},
-        {OP_RSHIFTASS, 13},
-        {OP_BANDASS, 13},
-        {OP_XORASS, 13},
-        {OP_BORASS, 13},
-        //
-        {OP_COMMA, 14},
+        {OP_LOR, 0},
     };
 
 } // namespace Compiler

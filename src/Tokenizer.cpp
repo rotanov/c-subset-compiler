@@ -48,13 +48,13 @@ namespace Compiler
     {
         FlushAdjacentStringLiterals_();
         string utf8Data = UTF8CodePointToString(data, size);
-        if (StringToKeywordTypeMap.find(utf8Data) != StringToKeywordTypeMap.end())
+        if (stringToKeywordTypeMap.find(utf8Data) != stringToKeywordTypeMap.end())
         {
-            output_.EmitKeyword(utf8Data, StringToKeywordTypeMap.find(utf8Data)->second, line_, column_);
+            output_.EmitKeyword(utf8Data, stringToKeywordTypeMap.find(utf8Data)->second, line_, column_);
         }
-        else if (StringToPunctuationTypeMap.find(utf8Data) != StringToPunctuationTypeMap.end())
+        else if (stringToPunctuationTypeMap.find(utf8Data) != stringToPunctuationTypeMap.end())
         {
-            output_.EmitPunctuation(utf8Data, StringToPunctuationTypeMap.find(utf8Data)->second, line_, column_);
+            output_.EmitPunctuation(utf8Data, stringToPunctuationTypeMap.find(utf8Data)->second, line_, column_);
         }
         else
         {
@@ -160,7 +160,7 @@ namespace Compiler
             {
                 base = 16;
                 int j = i;
-                while(HexadecimalCharachters.count(where[0]) == 1)
+                while(hexadecimalCharachters.count(where[0]) == 1)
                 {
                     i++;
                     where = codePoints_ + i;
@@ -340,9 +340,9 @@ namespace Compiler
     void Tokenizer::EmitPunctuation(const string &data)
     {
         FlushAdjacentStringLiterals_();
-        if (StringToPunctuationTypeMap.find(data) != StringToPunctuationTypeMap.end())
+        if (stringToPunctuationTypeMap.find(data) != stringToPunctuationTypeMap.end())
         {
-            output_.EmitPunctuation(data, StringToPunctuationTypeMap.find(data)->second, line_, column_);
+            output_.EmitPunctuation(data, stringToPunctuationTypeMap.find(data)->second, line_, column_);
         }
         else
         {

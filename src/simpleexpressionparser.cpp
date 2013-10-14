@@ -218,9 +218,9 @@ namespace Compiler
     {
         auto GetPrecedence = [](const Token tt) -> int
         {
-            if (TokenTypeToPrecedence.find(tt.type) != TokenTypeToPrecedence.end())
+            if (binaryOperatorTypeToPrecedence.find(tt.type) != binaryOperatorTypeToPrecedence.end())
             {
-                return TokenTypeToPrecedence.at(tt.type);
+                return binaryOperatorTypeToPrecedence.at(tt.type);
             }
             else
             {
@@ -277,7 +277,7 @@ namespace Compiler
                             || tokenStack_.back().type == OP_DIV
                             || tokenStack_.back().type == OP_PLUS
                             || tokenStack_.back().type == OP_MINUS)
-                           && ((TokenTypeToRightAssociativity.count(token.type) == 0
+                           && ((tokenTypeToRightAssociativity.count(token.type) == 0
                             && GetPrecedence(token) == GetPrecedence(tokenStack_.back()))
                            || (GetPrecedence(token) > GetPrecedence(tokenStack_.back())))))
                 {

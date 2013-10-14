@@ -8,17 +8,14 @@ QMAKE_CXXFLAGS += -std=c++11
 
 DESTDIR = ../bin
 
-#LIBS += $$(LIB)
-
 INCLUDE = $$(INCLUDE)
-message($$INCLUDE)
-INCLUDEPATH += $$replace(INCLUDE, ;, " ")
-message($$INCLUDEPATH)
-#message($$replace(INCLUDEPATH, ;, " "))
+INCLUDEPATH += $$split(INCLUDE, ;)
 
-#INCLUDEPATH += C:/dev/boost_1_54_0
+LIB = $$(LIB)
+LIB = $$split(LIB, ;)
+for(path, LIB):LIBS += -L$${path}
 
-#message(INCLUDEPATH)
+#!build_pass:message($$LIBS)
 
 DEFINES += BOOST_ALL_NO_LIB
 
@@ -33,13 +30,10 @@ CONFIG(debug, debug|release) {
 }
 
 LIBS += \
-    -LC:/dev/boost_1_54_0/stage/lib \
     -lboost_system-mgw48-mt-s-1_54 \
     -lboost_regex-mgw48-mt-s-1_54 \
     -lboost_coroutine-mgw48-mt-s-1_54 \
     -lboost_context-mgw48-mt-1_54 \
-
-
 
 SOURCES += main.cpp\
         MainWindow.cpp \

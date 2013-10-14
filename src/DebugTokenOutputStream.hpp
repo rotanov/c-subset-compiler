@@ -32,7 +32,7 @@ namespace Compiler
                          const int line, const int column)
         {
             cout << FormatPos_(line, column) << "keyword "
-                 << KeywordTypeToStringMap.at(token_type) << " " << source << endl;
+                 << keywordTypeToStringMap.at(token_type) << " " << source << endl;
         }
 
         // output: <line>-<column>: punctuation <token_type> <source>
@@ -40,7 +40,7 @@ namespace Compiler
                              const int line, const int column)
         {
             cout << FormatPos_(line, column) << "punctuation "
-                 << PunctuationTypeToStringMap.at(token_type) << " " << source <<  endl;
+                 << punctuationTypeToStringMap.at(token_type) << " " << source <<  endl;
         }
 
         // output: <line>-<column>: identifier <source>
@@ -53,7 +53,7 @@ namespace Compiler
         void EmitLiteral(const string& source, EFundamentalType type, const void* data,
                          size_t nbytes, const int line, const int column)
         {
-            cout << FormatPos_(line, column) << "literal " << FundamentalTypeToStringMap.at(type)
+            cout << FormatPos_(line, column) << "literal " << fundamentalTypeToStringMap.at(type)
                  << " " << source << " " << HexDump(data, nbytes) << endl;
         }
 
@@ -63,7 +63,7 @@ namespace Compiler
                               const int line, const int column)
         {
             cout << FormatPos_(line, column) << "literal " << source << " array of "
-                 << num_elements << " " << FundamentalTypeToStringMap.at(type)
+                 << num_elements << " " << fundamentalTypeToStringMap.at(type)
                  << " " << HexDump(data, nbytes) << endl;
         }
 

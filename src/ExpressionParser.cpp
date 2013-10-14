@@ -10,6 +10,8 @@
 
 #include <boost/bind.hpp>
 
+#include "utils.hpp"
+
 namespace Compiler
 {
 //------------------------------------------------------------------------------
@@ -38,7 +40,30 @@ namespace Compiler
 //------------------------------------------------------------------------------
     ExpressionParser::ExpressionParser()
     {
-        parseCoroutine_ = boost::move(Coroutine(boost::bind(&ExpressionParser::ParseExpression_, this, _1), Token(TT_START_PARSE)));
+        parseCoroutine_ = boost::move(Coroutine(boost::bind(&ExpressionParser::ParseTopLevelExpression_, this, _1), Token()));
+    }
+
+//------------------------------------------------------------------------------
+    ASTNode* ExpressionParser::ParseTopLevelExpression_(Coroutine::caller_type& caller)
+    {
+        while (true)
+        {
+//            nodeStack_.push_back(ParseExpression_(caller));
+            PrintAST_(ParseExpression_(caller));
+            std::cout << std::endl << std::endl;
+
+            if (tokenStack_.empty())
+            {
+                throw std::runtime_error("token stack empty");
+            }
+            else if (tokenStack_.back() == TT_EOF)
+            {
+                break;
+            }
+
+        };
+
+        FlushOutput_();
     }
 
 //------------------------------------------------------------------------------
@@ -70,106 +95,64 @@ namespace Compiler
                 break;
             }
 
-            case TT_EOF:
-            {
-                FlushOutput_();
-                break;
-            }
+//            case TT_EOF:
+//            {
+//                FlushOutput_();
+//                break;
+//            }
 
             default:
             {
-                FlushOutput_();
+//                FlushOutput_();
                 ThrowInvalidTokenError_(token);
+                tokenStack_.push_back(token);
+                return NULL;
                 break;
             }
         }
     }
 
 //------------------------------------------------------------------------------
-    ASTNode* ExpressionParser::ParseBinaryOperator_(Coroutine::caller_type& caller)
+    ASTNode* ExpressionParser::ParseBinaryOperator_(Coroutine::caller_type& caller, int priority)
     {
-        parseExpressionCallDepth_++;
         ASTNode* left = NULL;
 
-        if (!nodeStack_.empty())
+        if (nodeStack_.empty())
+        {
+            left = ParseUnaryExpression_(caller);
+        }
+        else
         {
             left = nodeStack_.back();
             nodeStack_.pop_back();
         }
-        else
-        {
-            left = ParseUnaryExpression_(caller);
-        }
 
         Token token = WaitForTokenReady_(caller);
 
-        if (token == OP_PLUS
-                || token == OP_MINUS)
+        while (binaryOperatorTypeToPrecedence.find(token.type) != binaryOperatorTypeToPrecedence.end()
+               && binaryOperatorTypeToPrecedence.at(token.type) >= priority)
         {
-            while (token == OP_PLUS
-                    || token == OP_MINUS)
-            {
-                left = new ASTNode(token, left, ParseBinaryOperator_(caller));
-                token = WaitForTokenReady_(caller);
-            }
+            left = new ASTNode(token, left, ParseBinaryOperator_(caller, binaryOperatorTypeToPrecedence.at(token.type) + 1));
+            token = WaitForTokenReady_(caller);
         }
 
         tokenStack_.push_back(token);
-        if (parseExpressionCallDepth_ > 1)
-        {
-            parseExpressionCallDepth_--;
-            return left;
-        }
-        else
-        {
-            nodeStack_.push_back(left);
-            if (token == TT_EOF)
-            {
-                FlushOutput_();
-            }
-            else
-            {
-                parseExpressionCallDepth_--;
-                ParseBinaryOperator_(caller);
-            }
-        }
-
         return left;
     }
 
-//    ASTNode* ExpressionParser::ParseTerm_(Coroutine::caller_type& caller)
-//    {
-//        ASTNode* left = ParseFactor_(caller);
-//        Token token = WaitForTokenReady_(caller);
-
-//        while (token == OP_STAR
-//                || token == OP_DIV)
-//        {
-//            left = new ASTNode(token, left, ParseFactor_(caller));
-//            token = WaitForTokenReady_(caller);
-//        }
-//        tokenStack_.push_back(token);
-//        return left;
-//    }
-
 //------------------------------------------------------------------------------
-    ASTNode*ExpressionParser::ParseExpression_(Coroutine::caller_type& caller)
+    ASTNode* ExpressionParser::ParseExpression_(Coroutine::caller_type& caller)
     {
         ASTNode* node = ParseAssignmentExpression_(caller);
         Token token = WaitForTokenReady_(caller);
         while (token == OP_COMMA)
         {
             node = new ASTNode(token, node, ParseAssignmentExpression_(caller));
+            token = WaitForTokenReady_(caller);
         }
-        if (token == TT_EOF)
-        {
-            FlushOutput_();
-        }
-        else
-        {
-            nodeStack_.push_back(token);
-            ThrowInvalidTokenError_(token);
-        }
+
+        tokenStack_.push_back(token);
+        return node;
     }
 
 //------------------------------------------------------------------------------
@@ -177,27 +160,24 @@ namespace Compiler
     {
         ASTNode* node = ParseUnaryExpression_(caller);
         Token token = WaitForTokenReady_(caller);
-        if (IsBinaryOperator_(token))
+        if (IsAssignmentOperator(token.type))
         {
+            return new ASTNode(token, node, ParseAssignmentExpression_(caller));
+        }
+        else
+        {
+            // if (IsBinaryOperator_(token))
             // return node, so ParseBinOp will get it
             // return token(binop) as well
             tokenStack_.push_back(token);
             nodeStack_.push_back(node);
             return ParseConditionalExpression_(caller);
         }
-        else if (IsAssignmentOperator_(token))
-        {
-            return new ASTNode(token, node, ParseAssignmentExpression_(caller));
-        }
-        else if (token == TT_EOF)
-        {
-            FlushOutput_();
-        }
-        else
-        {
-            tokenStack_.push_back(token);
-//            ThrowInvalidTokenError_(token);
-        }
+//        else
+//        {
+//            tokenStack_.push_back(token);
+//            return node;
+//        }
     }
 
 //------------------------------------------------------------------------------
@@ -205,11 +185,24 @@ namespace Compiler
     {
         Token token = WaitForTokenReady_(caller);
 
-        if (IsUnaryOperator_(token)
+        if (IsUnaryOperator(token.type)
             || token == OP_INC
             || token == OP_DEC)
         {
-            return new ASTNode(token, ParsePostfixExpression_(caller), NULL);
+            ASTNode* node = new ASTNode(token);
+            ASTNode* root = node;
+            token = WaitForTokenReady_(caller);
+            while (IsUnaryOperator(token.type)
+                   || token == OP_INC
+                   || token == OP_DEC)
+            {
+                node->SetLeft(new ASTNode(token));
+                node = node->GetLeft();
+                token = WaitForTokenReady_(caller);
+            }
+            tokenStack_.push_back(token);
+            node->SetLeft(ParsePostfixExpression_(caller));
+            return root;
         }
         else
         {
@@ -221,15 +214,16 @@ namespace Compiler
 //------------------------------------------------------------------------------
     ASTNode* ExpressionParser::ParseConditionalExpression_(Coroutine::caller_type& caller)
     {
-        ASTNode* node = ParseBinaryOperator_(caller);
+        ASTNode* node = ParseBinaryOperator_(caller, 0);
         Token token = WaitForTokenReady_(caller);
         if (token == OP_QMARK)
         {
-            node = new ASTNode(token, node, ParseExpression_(caller));
-            token = WaitForTokenReady_(caller);
-            if (token == OP_COLON)
+            ASTNode* leftSubNode = ParseExpression_(caller);
+            Token colonToken = WaitForTokenReady_(caller);
+            if (colonToken == OP_COLON)
             {
-                return new ASTNode(token, node, ParseConditionalExpression_(caller));
+                return new ASTNode(token, node, new ASTNode(colonToken, leftSubNode,
+                    ParseConditionalExpression_(caller)));
             }
             else
             {
@@ -265,16 +259,19 @@ namespace Compiler
                         // expecting ']'
                         ThrowInvalidTokenError_(token);
                     }
+                    token = WaitForTokenReady_(caller);
                     break;
                 }
 
                 case OP_LPAREN:
                 {
                     // postfix-expression '(' {expression} ')' // argument-expression-list
+                    Token prevToken = token;
                     token = WaitForTokenReady_(caller);
                     if (token != OP_RPAREN)
                     {
-                        node = new ASTNode(token, node, ParseExpression_(caller));
+                        tokenStack_.push_back(token);
+                        node = new ASTNode(prevToken, node, ParseExpression_(caller));
                         token = WaitForTokenReady_(caller);
                         if (token != OP_RPAREN)
                         {
@@ -282,6 +279,11 @@ namespace Compiler
                             ThrowInvalidTokenError_(token);
                         }
                     }
+                    else
+                    {
+                        node = new ASTNode(token, node, NULL);
+                    }
+                    token = WaitForTokenReady_(caller);
                     break;
                 }
 
@@ -295,6 +297,11 @@ namespace Compiler
                     {
                         node = new ASTNode(token, node, new ASTNode(identifierToken));
                     }
+                    else
+                    {
+                        ThrowInvalidTokenError_(identifierToken, "identifier expected");
+                    }
+                    token = WaitForTokenReady_(caller);
                     break;
                 }
 
@@ -303,7 +310,13 @@ namespace Compiler
                 {
                     // postfix-expression '++'
                     // postfix-expression '--'
-                    node = new ASTNode(token, node, ParsePostfixExpression_(caller));
+                    while (token == OP_INC
+                           || token == OP_DEC)
+                    {
+                        node = new ASTNode(token, node, NULL);
+//                        node = new ASTNode(token, node, ParsePostfixExpression_(caller));
+                        token = WaitForTokenReady_(caller);
+                    }
                     break;
                 }
 
@@ -319,39 +332,15 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    bool ExpressionParser::IsBinaryOperator_(const ExpressionParser::Token& token)
-    {
-        return token == OP_PLUS
-               || token == OP_MINUS
-               || token == OP_STAR
-               || token == OP_DIV;
-    }
-
-//------------------------------------------------------------------------------
-    bool ExpressionParser::IsAssignmentOperator_(const ExpressionParser::Token& token)
-    {
-        return token == OP_ASS
-               || token == OP_STARASS
-               || token == OP_BANDASS
-               || token == OP_DIVASS;
-    }
-
-//------------------------------------------------------------------------------
-    bool ExpressionParser::IsUnaryOperator_(const ExpressionParser::Token& token)
-    {
-        return token == OP_AMP
-               || token == OP_STAR
-               || token == OP_PLUS
-               || token == OP_MINUS
-               || token == OP_NE
-               || token == OP_LNOT;
-    }
-
-//------------------------------------------------------------------------------
-    void ExpressionParser::ThrowInvalidTokenError_(const ExpressionParser::Token &token)
+    void ExpressionParser::ThrowInvalidTokenError_(const ExpressionParser::Token &token, const std::string& descriptionText)
     {
         std::stringstream ss;
-        ss << "unexpected token at " << token.line << "-" << token.column;
+        ss << "unexpected token " << TokenTypeToString(token.type) << " : \""
+           << token.value << "\" at " << token.line << "-" << token.column;
+        if (!descriptionText.empty())
+        {
+            ss << ", " << descriptionText;
+        }
         throw std::logic_error(ss.str());
     }
 
@@ -397,6 +386,28 @@ namespace Compiler
                     offsetByDepth[depth] += next->token.value.size() + spaceCount;
                     return next->token.value.size();
                 }
+                else if ((next->GetLeft() != NULL && next->GetRight() == NULL)
+                         || (next->GetLeft() == NULL && next->GetRight() != NULL))
+                {
+                    assert(print != NULL);
+                    ASTNode* validNode = next->GetLeft() != NULL ? next->GetLeft() : next->GetRight();
+                    print->left = new PrintTreeNode;
+
+                    depth++;
+                    unsigned leftLength = f(next->GetLeft(), print->left, estimate);
+
+                    int maxLeft = *std::max_element(offsetByDepth.begin() + depth, offsetByDepth.end());
+
+                    depth--;
+
+
+                    print->text = std::string(spaceCount, ' ')
+                                  + next->token.value;
+                    print->depth = depth;
+                    offsetByDepth[depth] += next->token.value.size() + spaceCount;
+
+                    return maxLeft;
+                }
                 else
                 {
                     print->left = new PrintTreeNode;
@@ -414,7 +425,8 @@ namespace Compiler
 
                     print->text = std::string(spaceCount, ' ')
                                   + next->token.value
-                                  + std::string(maxLeft + spacing - estimate - (next->token.value.size() - 1), '-');
+                                  + std::string(maxLeft + spacing - estimate
+                                                - (next->token.value.size() - 1), '-');
                     print->depth = depth;
                     offsetByDepth[depth] += next->token.value.size() + maxLeft + spacing - estimate + spaceCount - (next->token.value.size() - 1);
 
@@ -459,12 +471,15 @@ namespace Compiler
                 for (auto node : line)
                 {
                     if (node->left == NULL
-                            || node->right == NULL)
+                        && node->right == NULL)
                     {
                         std::cout << std::string(node->text.size(), ' ');
                         continue;
                     }
+
+                    bool singleLeaf = node->left == NULL || node->right == NULL;
                     bool flag = false;
+
                     for (int i = 0; i < node->text.size(); i++)
                     {
                         if (!flag)
@@ -483,7 +498,14 @@ namespace Compiler
                         {
                             if (i == node->text.size() - 1)
                             {
-                                std::cout << '|';
+                                if (!singleLeaf)
+                                {
+                                    std::cout << '|';
+                                }
+                                else
+                                {
+                                    std::cout << ' ';
+                                }
                             }
                             else
                             {
@@ -525,11 +547,10 @@ namespace Compiler
 //------------------------------------------------------------------------------
     void ExpressionParser::FlushOutput_()
     {
-        while (!nodeStack_.empty())
+        for (auto& node : nodeStack_)
         {
-            PrintAST_(nodeStack_.back());
-            nodeStack_.pop_back();
-            std::cout << std::endl << std::endl;
+            PrintAST_(node);
+            std::cout << std::endl;
         }
     }
 
@@ -548,9 +569,17 @@ namespace Compiler
 //------------------------------------------------------------------------------
     void ExpressionParser::EmitPunctuation(const string &source, ETokenType token_type, const int line, const int column)
     {
+        const unordered_set<ETokenType> disallowedPunctuation =
+        {
+            OP_DOTS,
+            OP_LBRACE,
+            OP_RBRACE,
+            OP_SEMICOLON,
+        };
+
         Token token(token_type, source, line, column);
 
-        if (TokenTypeToPrecedence.find(token_type) != TokenTypeToPrecedence.end())
+        if (disallowedPunctuation.find(token_type) == disallowedPunctuation.end())
         {
             ResumeParse_(token);
         }

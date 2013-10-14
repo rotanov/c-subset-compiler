@@ -6,4 +6,4 @@
 |  |   
 a  b
 
-ERROR: unexpected token at 1-12
+ERROR: unexpected token OP_RPAREN : ")" at 1-12

@@ -231,6 +231,14 @@ void MainWindow::RunCompiler_(std::vector<char> &input)
     {
         std::cerr << "ERROR: " << e.what() << std::endl;
     }
+    catch (boost::coroutines::detail::forced_unwind)
+    {
+        throw;
+    }
+    catch (boost::coroutines::detail::forced_unwind&)
+    {
+        throw;
+    }
     catch (...)
     {
         std::cerr << "ERROR: unknown exception";
