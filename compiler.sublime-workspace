@@ -47,6 +47,23 @@
 				"line_ending": "Windows",
 				"name": "Кэширование"
 			}
+		},
+		{
+			"contents": "Лекция. Курс компиляторов.\n\nРазбор объявлений и выражений.\nТаблица символов.\n\nclass SymTable\n{\n    Symbols\n}\n\n\nclass SymVariable : Symbol\n{\n    \n}\n\nclass SymType: Symbol\n{\n    \n}\n\nclass SymFunction: Symbol\n{\n    params\n    locals\n    body - Operator : Statement : Node (Assignment, Expression)\n}\n\nоператоры:\nwhile\n{\n    cond: Expression\n    body: Statement\n}\n\nRepeat -//-\n\nif : statement\n{\n    cond: Expression\n    body1: Statement\n    body2: Statement\n    (EmptyStatement)\n}\n\nfor : statement\n{\n    e[3] : Expression\n}\n\nbreak, continue, return\n\n!!!\nBlock : statement\n{\n    symtable\n    statements\n}\n\n\nParse возвращает указатель на таблицу символов, которая содержит глобальные\nпеременные.\n\nЗадача:  реализовать вот это.\n\nСтэк таблиц символов\n0. Окружение (char, int float, printf etc)\n1. Global Symbol Table\n2. ...\n\nОперации со стэком таблиц символов:\n1. искать символ (нельзя переопределеять то что на самом верхнем уровне)\n2. добавлять символ\n(категории таблиц символов: пространства имён структур и переменных не конфликтуют\nнапример)\n\nИмя структуры, тэг, тэгдеф???\nСразу объявление переменной.\n\nВозможнные трудности (си):\nРазбор типов данных.\nТрюки: (проблема в том что мы не можем легко конструировать тип по частям\nв языке си: int a[10] массив из десяти чисел,  int* a[10] - массив из 10 указателей\n, int (*a)[10] указатель на массив из 10 символов)\nПроблема в том, что мы как бы разобрали часть выражения:\n    int a[10][21]; массив из десяти элементов, каждый из которых является массивом из 20 элементов, каждый\n    из которых имеет тип int. Проблема в том, что объявление типа далеко от того\n    момента, когда мы пониманием, что мы находимся в объявлении массива массивов.\n\n1. Создавать типы заглушки. вместо типа, когда непонятно, какой тип. Потом подставляем\nкогда становится ясно что за тип.\n2. Можно сжирать квадратные скобки в цикле. Но надо будет нарушить концепцию рекурсивного спуска+\nДля функций, которые возвращают массив, указатель на массив или массив указателей на функции, которые возвращают массив. \n3. Можно пытаться применить трюк конструирования структуры данных на обратном ходе рекурсии.\nВсё равно понядобятся промежуточные типы или удаление чего-то там.\n\n\nСборка мусора:\n1. Аккуратный конструктор и деструктор (нетривиально, потому что может быть много ссылок на объект и \nбольше одного пути, который попадает в одну и ту же точку. Избежать double delete)\n2. РефКаунт \n\nSymType : SymArray { elementType может быть массивом }\n\nМы не будем реализовывать класс алгоритмов для выделения памяти.\nОбращаться к операционной системе для выделением памяти плохо.\n\n\nщ",
+			"settings":
+			{
+				"buffer_size": 2588,
+				"line_ending": "Windows",
+				"name": "Лекция. Курс компиляторов."
+			}
+		},
+		{
+			"file": "/D/dev/compiler/doc/grammar",
+			"settings":
+			{
+				"buffer_size": 5401,
+				"line_ending": "Windows"
+			}
 		}
 	],
 	"build_system": "",
@@ -481,6 +498,12 @@
 	},
 	"file_history":
 	[
+		"/D/dev/compiler/src/Parser.hpp",
+		"/D/dev/compiler/src/Parser.cpp",
+		"/D/dev/compiler/src/utils.cpp",
+		"/D/dev/compiler/src/constants.hpp",
+		"/C/dev/boost_1_54_0/libs/context/src/asm/jump_i386_ms_pe_masm.asm",
+		"/C/dev/boost_1_54_0/libs/context/src/asm/make_i386_ms_pe_masm.asm",
 		"/D/dev/compiler/doc/grammar",
 		"/D/dev/compiler/tests/expression-parser/046.t",
 		"/D/dev/compiler/tests/expression-parser/000.t",
@@ -602,13 +625,7 @@
 		"/C/Users/mapho_000/Desktop/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af",
 		"/C/Users/mapho_000/Desktop/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af (1).tar/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af (1)/(1).tar/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af",
 		"/C/portableApplications/miranda-ng-v0.93.5_x64/Profiles/Satana/Logs/Jabber.ru/s@anoos.pyos.net.log",
-		"/C/Users/mapho_000/Desktop/ru.json",
-		"/D/dev/whiterra/repo/game/Makefile",
-		"/D/dev/whiterra/repo/game/Makefile.Debug",
-		"/D/dev/hotlava/HotSource_wx/HotEngine/Common/DirectX/DxRenderSystem.cpp",
-		"/D/dev/whiterra/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af/build-test/RSEngine/src/win32/graph.cpp",
-		"/D/dev/whiterra/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af/build-test/RSEngine/src/gmemory.cpp",
-		"/C/Users/mapho_000/AppData/Local/Temp/main-7837fa.sh"
+		"/C/Users/mapho_000/Desktop/ru.json"
 	],
 	"find":
 	{
@@ -891,7 +908,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -958,6 +975,165 @@
 							],
 							"encoding_helper_encoding_sublime": "UTF-8",
 							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"settings":
+					{
+						"buffer_size": 2588,
+						"regions":
+						{
+							"bookmarks":
+							{
+								"flags": 144,
+								"icon": "bookmark",
+								"regions":
+								[
+									[
+										1339,
+										1339
+									]
+								],
+								"scope": "bookmarks"
+							}
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"auto_name": "Лекция. Курс компиляторов.",
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/D/dev/compiler/doc/grammar",
+					"settings":
+					{
+						"buffer_size": 5401,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								452,
+								452
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 0.99,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,

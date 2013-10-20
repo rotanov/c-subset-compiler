@@ -26,6 +26,7 @@
 #include "DebugTokenOutputStream.hpp"
 #include "SimpleExpressionParser.hpp"
 #include "ExpressionParser.hpp"
+#include "Parser.hpp"
 
 #include "CxxHighlighter.hpp"
 #include "DebugStream.hpp"

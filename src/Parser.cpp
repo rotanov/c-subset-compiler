@@ -1,4 +1,4 @@
-#include "ExpressionParser.hpp"
+#include "Parser.hpp"
 
 #include <sstream>
 #include <unordered_set>
@@ -15,36 +15,13 @@
 namespace Compiler
 {
 //------------------------------------------------------------------------------
-    ExpressionASTNode::~ExpressionASTNode()
+    Parser::Parser()
     {
-        delete left_;
-        delete right_;
+        parseCoroutine_ = boost::move(Coroutine(boost::bind(&Parser::ParseTopLevelExpression_, this, _1), Token()));
     }
 
 //------------------------------------------------------------------------------
-    ExpressionASTNode::ExpressionASTNode(const ExpressionToken &token)
-        : token(token)
-    {
-
-    }
-
-//------------------------------------------------------------------------------
-    ExpressionASTNode::ExpressionASTNode(const ExpressionToken &token, ExpressionASTNode *left, ExpressionASTNode *right)
-        : left_(left)
-        , right_(right)
-        , token(token)
-    {
-
-    }
-
-//------------------------------------------------------------------------------
-    ExpressionParser::ExpressionParser()
-    {
-        parseCoroutine_ = boost::move(Coroutine(boost::bind(&ExpressionParser::ParseTopLevelExpression_, this, _1), Token()));
-    }
-
-//------------------------------------------------------------------------------
-    ExpressionASTNode* ExpressionParser::ParseTopLevelExpression_(Coroutine::caller_type& caller)
+    ASTNode* Parser::ParseTopLevelExpression_(Coroutine::caller_type& caller)
     {
         while (true)
         {
@@ -66,7 +43,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ExpressionASTNode* ExpressionParser::ParsePrimaryExpression_(Coroutine::caller_type& caller)
+    ASTNode* Parser::ParsePrimaryExpression_(Coroutine::caller_type& caller)
     {
         Token token = WaitForTokenReady_(caller);
         switch(token.type)
@@ -75,13 +52,13 @@ namespace Compiler
             case TT_LITERAL:
             case TT_LITERAL_ARRAY:
             {
-                return new ExpressionASTNode(token);
+                return new ASTNode(token);
                 break;
             }
 
             case OP_LPAREN:
             {
-                ExpressionASTNode* r = ParseExpression_(caller);
+                ASTNode* r = ParseExpression_(caller);
 
                 token = WaitForTokenReady_(caller);
                 if (token != OP_RPAREN)
@@ -103,9 +80,9 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ExpressionASTNode* ExpressionParser::ParseBinaryOperator_(Coroutine::caller_type& caller, int priority)
+    ASTNode* Parser::ParseBinaryOperator_(Coroutine::caller_type& caller, int priority)
     {
-        ExpressionASTNode* left = NULL;
+        ASTNode* left = NULL;
 
         if (nodeStack_.empty())
         {
@@ -122,7 +99,7 @@ namespace Compiler
         while (binaryOperatorTypeToPrecedence.find(token.type) != binaryOperatorTypeToPrecedence.end()
                && binaryOperatorTypeToPrecedence.at(token.type) >= priority)
         {
-            left = new ExpressionASTNode(token, left, ParseBinaryOperator_(caller, binaryOperatorTypeToPrecedence.at(token.type) + 1));
+            left = new ASTNode(token, left, ParseBinaryOperator_(caller, binaryOperatorTypeToPrecedence.at(token.type) + 1));
             token = WaitForTokenReady_(caller);
         }
 
@@ -131,13 +108,13 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ExpressionASTNode* ExpressionParser::ParseExpression_(Coroutine::caller_type& caller)
+    ASTNode* Parser::ParseExpression_(Coroutine::caller_type& caller)
     {
-        ExpressionASTNode* node = ParseAssignmentExpression_(caller);
+        ASTNode* node = ParseAssignmentExpression_(caller);
         Token token = WaitForTokenReady_(caller);
         while (token == OP_COMMA)
         {
-            node = new ExpressionASTNode(token, node, ParseAssignmentExpression_(caller));
+            node = new ASTNode(token, node, ParseAssignmentExpression_(caller));
             token = WaitForTokenReady_(caller);
         }
 
@@ -146,13 +123,13 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ExpressionASTNode* ExpressionParser::ParseAssignmentExpression_(Coroutine::caller_type& caller)
+    ASTNode* Parser::ParseAssignmentExpression_(Coroutine::caller_type& caller)
     {
-        ExpressionASTNode* node = ParseUnaryExpression_(caller);
+        ASTNode* node = ParseUnaryExpression_(caller);
         Token token = WaitForTokenReady_(caller);
         if (IsAssignmentOperator(token.type))
         {
-            return new ExpressionASTNode(token, node, ParseAssignmentExpression_(caller));
+            return new ASTNode(token, node, ParseAssignmentExpression_(caller));
         }
         else
         {
@@ -166,7 +143,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ExpressionASTNode* ExpressionParser::ParseUnaryExpression_(Coroutine::caller_type& caller)
+    ASTNode* Parser::ParseUnaryExpression_(Coroutine::caller_type& caller)
     {
         Token token = WaitForTokenReady_(caller);
 
@@ -174,14 +151,14 @@ namespace Compiler
             || token == OP_INC
             || token == OP_DEC)
         {
-            ExpressionASTNode* node = new ExpressionASTNode(token);
-            ExpressionASTNode* root = node;
+            ASTNode* node = new ASTNode(token);
+            ASTNode* root = node;
             token = WaitForTokenReady_(caller);
             while (IsUnaryOperator(token.type)
                    || token == OP_INC
                    || token == OP_DEC)
             {
-                node->SetLeft(new ExpressionASTNode(token));
+                node->SetLeft(new ASTNode(token));
                 node = node->GetLeft();
                 token = WaitForTokenReady_(caller);
             }
@@ -197,17 +174,17 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ExpressionASTNode* ExpressionParser::ParseConditionalExpression_(Coroutine::caller_type& caller)
+    ASTNode* Parser::ParseConditionalExpression_(Coroutine::caller_type& caller)
     {
-        ExpressionASTNode* node = ParseBinaryOperator_(caller, 0);
+        ASTNode* node = ParseBinaryOperator_(caller, 0);
         Token token = WaitForTokenReady_(caller);
         if (token == OP_QMARK)
         {
-            ExpressionASTNode* leftSubNode = ParseExpression_(caller);
+            ASTNode* leftSubNode = ParseExpression_(caller);
             Token colonToken = WaitForTokenReady_(caller);
             if (colonToken == OP_COLON)
             {
-                return new ExpressionASTNode(token, node, new ExpressionASTNode(colonToken, leftSubNode,
+                return new ASTNode(token, node, new ASTNode(colonToken, leftSubNode,
                     ParseConditionalExpression_(caller)));
             }
             else
@@ -223,9 +200,9 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ExpressionASTNode* ExpressionParser::ParsePostfixExpression_(Coroutine::caller_type& caller)
+    ASTNode* Parser::ParsePostfixExpression_(Coroutine::caller_type& caller)
     {
-        ExpressionASTNode* node = ParsePrimaryExpression_(caller);
+        ASTNode* node = ParsePrimaryExpression_(caller);
         Token token = WaitForTokenReady_(caller);
 
         while (true)
@@ -235,7 +212,7 @@ namespace Compiler
                 case OP_LSQUARE:
                 {
                     // postfix-expression '[' expression ']'
-                    node = new ExpressionASTNode(token, node, ParseExpression_(caller));
+                    node = new ASTNode(token, node, ParseExpression_(caller));
                     token = WaitForTokenReady_(caller);
                     if (token != OP_RSQUARE)
                     {
@@ -253,7 +230,7 @@ namespace Compiler
                     if (token != OP_RPAREN)
                     {
                         tokenStack_.push_back(token);
-                        node = new ExpressionASTNode(prevToken, node, ParseExpression_(caller));
+                        node = new ASTNode(prevToken, node, ParseExpression_(caller));
                         token = WaitForTokenReady_(caller);
                         if (token != OP_RPAREN)
                         {
@@ -262,7 +239,7 @@ namespace Compiler
                     }
                     else
                     {
-                        node = new ExpressionASTNode(token, node, NULL);
+                        node = new ASTNode(token, node, NULL);
                     }
                     token = WaitForTokenReady_(caller);
                     break;
@@ -276,7 +253,7 @@ namespace Compiler
                     Token identifierToken = WaitForTokenReady_(caller);
                     if (identifierToken == TT_IDENTIFIER)
                     {
-                        node = new ExpressionASTNode(token, node, new ExpressionASTNode(identifierToken));
+                        node = new ASTNode(token, node, new ASTNode(identifierToken));
                     }
                     else
                     {
@@ -294,7 +271,7 @@ namespace Compiler
                     while (token == OP_INC
                            || token == OP_DEC)
                     {
-                        node = new ExpressionASTNode(token, node, NULL);
+                        node = new ASTNode(token, node, NULL);
                         token = WaitForTokenReady_(caller);
                     }
                     break;
@@ -312,7 +289,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    void ExpressionParser::ThrowInvalidTokenError_(const ExpressionParser::Token &token, const std::string& descriptionText)
+    void Parser::ThrowInvalidTokenError_(const Token &token, const std::string& descriptionText)
     {
         FlushOutput_();
         std::stringstream ss;
@@ -326,7 +303,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    void ExpressionParser::PrintAST_(ExpressionASTNode *root) const
+    void Parser::PrintAST_(ASTNode *root) const
     {
         struct PrintTreeNode
         {
@@ -343,8 +320,8 @@ namespace Compiler
         unsigned depth = 0;
         const int spacing = 2;
 
-        std::function<void(ExpressionASTNode*, PrintTreeNode*, int)> f =
-                [&](ExpressionASTNode* next, PrintTreeNode* print, int estimate)
+        std::function<void(ASTNode*, PrintTreeNode*, int)> f =
+                [&](ASTNode* next, PrintTreeNode* print, int estimate)
         {
             if (next != NULL)
             {
@@ -370,7 +347,7 @@ namespace Compiler
                          || (next->GetLeft() == NULL && next->GetRight() != NULL))
                 {
                     assert(print != NULL);
-                    ExpressionASTNode* validNode = next->GetLeft() != NULL ? next->GetLeft() : next->GetRight();
+                    ASTNode* validNode = next->GetLeft() != NULL ? next->GetLeft() : next->GetRight();
                     print->left = new PrintTreeNode;
 
                     depth++;
@@ -491,13 +468,13 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    void ExpressionParser::ResumeParse_(const ExpressionParser::Token& token)
+    void Parser::ResumeParse_(const Token& token)
     {
         parseCoroutine_(token);
     }
 
 //------------------------------------------------------------------------------
-    ExpressionParser::Token ExpressionParser::WaitForTokenReady_(Coroutine::caller_type& caller)
+    Token Parser::WaitForTokenReady_(Coroutine::caller_type& caller)
     {
         Token token;
         if (tokenStack_.empty())
@@ -514,7 +491,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    void ExpressionParser::FlushOutput_()
+    void Parser::FlushOutput_()
     {
         for (auto& node : nodeStack_)
         {
@@ -524,21 +501,21 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    void ExpressionParser::EmitInvalid(const string &source, const int line, const int column)
+    void Parser::EmitInvalid(const string &source, const int line, const int column)
     {
         Token token(TT_INVALID, source, line, column);
         ResumeParse_(token);
     }
 
 //------------------------------------------------------------------------------
-    void ExpressionParser::EmitKeyword(const string &source, ETokenType token_type, const int line, const int column)
+    void Parser::EmitKeyword(const string &source, ETokenType token_type, const int line, const int column)
     {
         Token token(token_type, source, line, column);
         ResumeParse_(token);
     }
 
 //------------------------------------------------------------------------------
-    void ExpressionParser::EmitPunctuation(const string &source, ETokenType token_type, const int line, const int column)
+    void Parser::EmitPunctuation(const string &source, ETokenType token_type, const int line, const int column)
     {
         const unordered_set<ETokenType> disallowedPunctuation =
         {
@@ -561,14 +538,14 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    void ExpressionParser::EmitIdentifier(const string &source, const int line, const int column)
+    void Parser::EmitIdentifier(const string &source, const int line, const int column)
     {
         Token token(TT_IDENTIFIER, source, line, column);
         ResumeParse_(token);
     }
 
 //------------------------------------------------------------------------------
-    void ExpressionParser::EmitLiteral(const string &source,
+    void Parser::EmitLiteral(const string &source,
                                              EFundamentalType type,
                                              const void *data, size_t nbytes,
                                              const int line, const int column)
@@ -578,7 +555,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    void ExpressionParser::EmitLiteralArray(const string &source,
+    void Parser::EmitLiteralArray(const string &source,
                                                   size_t num_elements,
                                                   EFundamentalType type,
                                                   const void *data, size_t nbytes,
@@ -589,29 +566,10 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    void ExpressionParser::EmitEof(const int line, const int column)
+    void Parser::EmitEof(const int line, const int column)
     {
         Token token(TT_EOF, "", line, column);
         ResumeParse_(token);
-    }
-
-//------------------------------------------------------------------------------
-    ExpressionToken::ExpressionToken(const ETokenType &type,
-                                                 const std::string &value,
-                                                 const unsigned &line,
-                                                 const unsigned &column)
-        : type(type)
-        , value(value)
-        , line(line)
-        , column(column)
-    {
-
-    }
-
-    ExpressionToken::ExpressionToken(const ETokenType& type)
-        :type(type)
-    {
-
     }
 
 } // namespace Compiler

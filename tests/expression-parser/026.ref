@@ -1,1 +1,1 @@
-ERROR: closing parenthesis ')' expected at2-1
+ERROR: unexpected token TT_EOF : "" at 2-1, ')' expected

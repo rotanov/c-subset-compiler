@@ -279,7 +279,7 @@ namespace Compiler
                             || tokenStack_.back().type == OP_MINUS)
                            && ((tokenTypeToRightAssociativity.count(token.type) == 0
                             && GetPrecedence(token) == GetPrecedence(tokenStack_.back()))
-                           || (GetPrecedence(token) > GetPrecedence(tokenStack_.back())))))
+                           || (GetPrecedence(token) < GetPrecedence(tokenStack_.back())))))
                 {
                     StackTopToNode_();
                 }

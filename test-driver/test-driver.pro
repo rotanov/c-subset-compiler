@@ -45,7 +45,11 @@ SOURCES += main.cpp\
     CodeEditor.cpp \
     DebugStream.cpp \
     CxxHighlighter.cpp \
-    ../src/ExpressionParser.cpp
+    ../src/ExpressionParser.cpp \
+    ../src/Token.cpp \
+    ../src/Parser.cpp \
+    ../src/ASTNode.cpp \
+    ../src/SymbolTable.cpp
 
 HEADERS  += MainWindow.hpp \
     ../src/utils.hpp \
@@ -61,6 +65,10 @@ HEADERS  += MainWindow.hpp \
     CodeEditor.hpp \
     DebugStream.hpp \
     CxxHighlighter.hpp \
-    ../src/ExpressionParser.hpp
+    ../src/ExpressionParser.hpp \
+    ../src/Token.hpp \
+    ../src/Parser.hpp \
+    ../src/ASTNode.hpp \
+    ../src/SymbolTable.hpp
 
 FORMS    += mainwindow.ui
