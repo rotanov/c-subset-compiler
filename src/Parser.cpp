@@ -2,15 +2,13 @@
 
 #include <sstream>
 #include <unordered_set>
-#include <functional>
-#include <queue>
 #include <iostream>
-#include <algorithm>
 #include <cassert>
 
 #include <boost/bind.hpp>
 
 #include "utils.hpp"
+#include "prettyPrinting.hpp"
 
 namespace Compiler
 {
@@ -25,7 +23,7 @@ namespace Compiler
     {
         while (true)
         {
-            PrintAST_(ParseExpression_(caller));
+            PrintAST(ParseExpression_(caller));
             std::cout << std::endl << std::endl;
 
             if (tokenStack_.empty())
@@ -99,7 +97,7 @@ namespace Compiler
         while (binaryOperatorTypeToPrecedence.find(token.type) != binaryOperatorTypeToPrecedence.end()
                && binaryOperatorTypeToPrecedence.at(token.type) >= priority)
         {
-            left = new ASTNode(token, left, ParseBinaryOperator_(caller, binaryOperatorTypeToPrecedence.at(token.type) + 1));
+            left = new ASTNodeBinaryOperator(token, left, ParseBinaryOperator_(caller, binaryOperatorTypeToPrecedence.at(token.type) + 1));
             token = WaitForTokenReady_(caller);
         }
 
@@ -114,7 +112,7 @@ namespace Compiler
         Token token = WaitForTokenReady_(caller);
         while (token == OP_COMMA)
         {
-            node = new ASTNode(token, node, ParseAssignmentExpression_(caller));
+            node = new ASTNodeBinaryOperator(token, node, ParseAssignmentExpression_(caller));
             token = WaitForTokenReady_(caller);
         }
 
@@ -129,7 +127,7 @@ namespace Compiler
         Token token = WaitForTokenReady_(caller);
         if (IsAssignmentOperator(token.type))
         {
-            return new ASTNode(token, node, ParseAssignmentExpression_(caller));
+            return new ASTNodeAssignment(token, node, ParseAssignmentExpression_(caller));
         }
         else
         {
@@ -139,7 +137,6 @@ namespace Compiler
             nodeStack_.push_back(node);
             return ParseConditionalExpression_(caller);
         }
-
     }
 
 //------------------------------------------------------------------------------
@@ -151,19 +148,19 @@ namespace Compiler
             || token == OP_INC
             || token == OP_DEC)
         {
-            ASTNode* node = new ASTNode(token);
+            ASTNode* node = new ASTNodeUnaryOperator(token);
             ASTNode* root = node;
             token = WaitForTokenReady_(caller);
             while (IsUnaryOperator(token.type)
                    || token == OP_INC
                    || token == OP_DEC)
             {
-                node->SetLeft(new ASTNode(token));
-                node = node->GetLeft();
+                static_cast<ASTNodeUnaryOperator*>(node)->SetOperand(new ASTNodeUnaryOperator(token));
+                node = static_cast<ASTNodeUnaryOperator*>(node)->GetOperand();
                 token = WaitForTokenReady_(caller);
             }
             tokenStack_.push_back(token);
-            node->SetLeft(ParsePostfixExpression_(caller));
+            static_cast<ASTNodeUnaryOperator*>(node)->SetOperand(ParsePostfixExpression_(caller));
             return root;
         }
         else
@@ -176,16 +173,18 @@ namespace Compiler
 //------------------------------------------------------------------------------
     ASTNode* Parser::ParseConditionalExpression_(Coroutine::caller_type& caller)
     {
-        ASTNode* node = ParseBinaryOperator_(caller, 0);
+        ASTNode* conditionNode = ParseBinaryOperator_(caller, 0);
         Token token = WaitForTokenReady_(caller);
+
         if (token == OP_QMARK)
         {
-            ASTNode* leftSubNode = ParseExpression_(caller);
+            ASTNode* thenExpressionNode = ParseExpression_(caller);
             Token colonToken = WaitForTokenReady_(caller);
+
             if (colonToken == OP_COLON)
             {
-                return new ASTNode(token, node, new ASTNode(colonToken, leftSubNode,
-                    ParseConditionalExpression_(caller)));
+                return new ASTNodeConditionalOperator(token, conditionNode,
+                    thenExpressionNode, ParseConditionalExpression_(caller));
             }
             else
             {
@@ -195,7 +194,7 @@ namespace Compiler
         else
         {
             tokenStack_.push_back(token);
-            return node;
+            return conditionNode;
         }
     }
 
@@ -212,7 +211,7 @@ namespace Compiler
                 case OP_LSQUARE:
                 {
                     // postfix-expression '[' expression ']'
-                    node = new ASTNode(token, node, ParseExpression_(caller));
+                    node = new ASTNodeArraySubscript(token, node, ParseExpression_(caller));
                     token = WaitForTokenReady_(caller);
                     if (token != OP_RSQUARE)
                     {
@@ -227,11 +226,21 @@ namespace Compiler
                     // postfix-expression '(' {expression} ')' // argument-expression-list
                     Token prevToken = token;
                     token = WaitForTokenReady_(caller);
+
                     if (token != OP_RPAREN)
                     {
                         tokenStack_.push_back(token);
-                        node = new ASTNode(prevToken, node, ParseExpression_(caller));
-                        token = WaitForTokenReady_(caller);
+                        ASTNodeFunctionCall* fcallNode = new ASTNodeFunctionCall(prevToken, node);
+                        node = fcallNode;
+
+                        do
+                        {
+                            ASTNode* nodeAssExpr = ParseAssignmentExpression_(caller);
+                            fcallNode->AddArgumentExpressionNode(nodeAssExpr);
+                            token = WaitForTokenReady_(caller);
+
+                        } while (token == OP_COMMA);
+
                         if (token != OP_RPAREN)
                         {
                             ThrowInvalidTokenError_(token, "')' expected");
@@ -239,7 +248,7 @@ namespace Compiler
                     }
                     else
                     {
-                        node = new ASTNode(token, node, NULL);
+                        node = new ASTNodeFunctionCall(token, node);
                     }
                     token = WaitForTokenReady_(caller);
                     break;
@@ -253,7 +262,7 @@ namespace Compiler
                     Token identifierToken = WaitForTokenReady_(caller);
                     if (identifierToken == TT_IDENTIFIER)
                     {
-                        node = new ASTNode(token, node, new ASTNode(identifierToken));
+                        node = new ASTNodeStructureAccess(token, node, new ASTNode(identifierToken));
                     }
                     else
                     {
@@ -271,7 +280,7 @@ namespace Compiler
                     while (token == OP_INC
                            || token == OP_DEC)
                     {
-                        node = new ASTNode(token, node, NULL);
+                        node = new ASTNodeUnaryOperator(token, node);
                         token = WaitForTokenReady_(caller);
                     }
                     break;
@@ -303,171 +312,6 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    void Parser::PrintAST_(ASTNode *root) const
-    {
-        struct PrintTreeNode
-        {
-            std::string text;
-            PrintTreeNode* left = NULL;
-            PrintTreeNode* right = NULL;
-            unsigned depth = 0;
-        };
-
-        std::vector<int> offsetByDepth;
-        offsetByDepth.resize(1);
-        offsetByDepth[0] = 0;
-
-        unsigned depth = 0;
-        const int spacing = 2;
-
-        std::function<void(ASTNode*, PrintTreeNode*, int)> f =
-                [&](ASTNode* next, PrintTreeNode* print, int estimate)
-        {
-            if (next != NULL)
-            {
-                if (offsetByDepth.size() < depth + 1)
-                {
-                    offsetByDepth.resize(depth + 1, 0);
-                }
-                int spaceCount = estimate - offsetByDepth[depth];
-                if (spaceCount == 1)
-                {
-                    spaceCount = 2;
-                }
-
-                if (next->GetLeft() == NULL
-                        && next->GetRight() == NULL)
-                {
-                    assert(print !=NULL);
-                    print->text = std::string(spaceCount, ' ') + next->token.value;
-                    print->depth = depth;
-                    offsetByDepth[depth] += next->token.value.size() + spaceCount;
-                }
-                else if ((next->GetLeft() != NULL && next->GetRight() == NULL)
-                         || (next->GetLeft() == NULL && next->GetRight() != NULL))
-                {
-                    assert(print != NULL);
-                    ASTNode* validNode = next->GetLeft() != NULL ? next->GetLeft() : next->GetRight();
-                    print->left = new PrintTreeNode;
-
-                    depth++;
-                    f(next->GetLeft(), print->left, estimate);
-
-                    int maxLeft = *std::max_element(offsetByDepth.begin() + depth, offsetByDepth.end());
-
-                    depth--;
-
-
-                    print->text = std::string(spaceCount, ' ')
-                                  + next->token.value;
-                    print->depth = depth;
-                    offsetByDepth[depth] += next->token.value.size() + spaceCount;
-                }
-                else
-                {
-                    print->left = new PrintTreeNode;
-                    print->right = new PrintTreeNode;
-
-                    depth++;
-                    f(next->GetLeft(), print->left, estimate);
-                    int maxLeft = *std::max_element(offsetByDepth.begin() + depth, offsetByDepth.end());
-                    f(next->GetRight(), print->right, maxLeft + spacing);
-                    depth--;
-                    assert(print != NULL);
-                    print->text = std::string(spaceCount, ' ')
-                                  + next->token.value
-                                  + std::string(maxLeft + spacing - estimate
-                                                - (next->token.value.size() - 1), '-');
-                    print->depth = depth;
-                    offsetByDepth[depth] += next->token.value.size() + maxLeft
-                                            + spacing - estimate + spaceCount - (next->token.value.size() - 1);
-                }
-            }
-        };
-
-        PrintTreeNode printRoot;
-        f(root, &printRoot, 0);
-
-        std::queue<PrintTreeNode*> queue;
-        queue.push(&printRoot);
-        vector<PrintTreeNode*> line;
-        depth= 0;
-        while (!queue.empty())
-        {
-            PrintTreeNode* next = queue.front();
-            queue.pop();
-
-            if (next->left != NULL)
-            {
-                queue.push(next->left);
-            }
-
-            if (next->right != NULL)
-            {
-                queue.push(next->right);
-            }
-
-            std::cout << next->text;
-            line.push_back(next);
-            if (!queue.empty() &&
-                    depth != queue.front()->depth)
-            {
-                std::cout << std::endl;
-                depth = queue.front()->depth;
-                for (auto node : line)
-                {
-                    if (node->left == NULL
-                        && node->right == NULL)
-                    {
-                        std::cout << std::string(node->text.size(), ' ');
-                        continue;
-                    }
-
-                    bool singleLeaf = node->left == NULL || node->right == NULL;
-                    bool flag = false;
-
-                    for (int i = 0; i < node->text.size(); i++)
-                    {
-                        if (!flag)
-                        {
-                            if (node->text[i] != ' ')
-                            {
-                                std::cout << '|';
-                                flag = true;
-                            }
-                            else
-                            {
-                                std::cout << ' ';
-                            }
-                        }
-                        else
-                        {
-                            if (i == node->text.size() - 1)
-                            {
-                                if (!singleLeaf)
-                                {
-                                    std::cout << '|';
-                                }
-                                else
-                                {
-                                    std::cout << ' ';
-                                }
-                            }
-                            else
-                            {
-                                std::cout << ' ';
-                            }
-                        }
-
-                    }
-                }
-                std::cout << std::endl;
-                line.clear();
-            }
-        }
-    }
-
-//------------------------------------------------------------------------------
     void Parser::ResumeParse_(const Token& token)
     {
         parseCoroutine_(token);
@@ -495,7 +339,7 @@ namespace Compiler
     {
         for (auto& node : nodeStack_)
         {
-            PrintAST_(node);
+            PrintAST(node);
             std::cout << std::endl;
         }
     }

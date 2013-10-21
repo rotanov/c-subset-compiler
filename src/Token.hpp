@@ -16,9 +16,13 @@ namespace Compiler
         Token(const ETokenType &type);
         Token();
 
-        bool operator ==(const ETokenType& rhs) const;
-        bool operator !=(const ETokenType& rhs) const;
+//        bool operator ==(const ETokenType& rhs) const;
+//        bool operator !=(const ETokenType& rhs) const;
 
+        operator const ETokenType& () const
+        {
+            return type;
+        }
     };
 
 } // namespace Compiler

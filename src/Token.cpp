@@ -27,15 +27,15 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    bool Token::operator ==(const ETokenType& rhs) const
-    {
-        return type == rhs;
-    }
+//    bool Token::operator ==(const ETokenType& rhs) const
+//    {
+//        return type == rhs;
+//    }
 
-//------------------------------------------------------------------------------
-    bool Token::operator !=(const ETokenType& rhs) const
-    {
-        return !(*this == rhs);
-    }
+////------------------------------------------------------------------------------
+//    bool Token::operator !=(const ETokenType& rhs) const
+//    {
+//        return !(*this == rhs);
+//    }
 
 } // namespace Compiler

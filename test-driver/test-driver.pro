@@ -49,7 +49,8 @@ SOURCES += main.cpp\
     ../src/Token.cpp \
     ../src/Parser.cpp \
     ../src/ASTNode.cpp \
-    ../src/SymbolTable.cpp
+    ../src/SymbolTable.cpp \
+    ../src/prettyPrinting.cpp
 
 HEADERS  += MainWindow.hpp \
     ../src/utils.hpp \
@@ -69,6 +70,7 @@ HEADERS  += MainWindow.hpp \
     ../src/Token.hpp \
     ../src/Parser.hpp \
     ../src/ASTNode.hpp \
-    ../src/SymbolTable.hpp
+    ../src/SymbolTable.hpp \
+    ../src/prettyPrinting.hpp
 
 FORMS    += mainwindow.ui

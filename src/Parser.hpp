@@ -32,7 +32,6 @@ namespace Compiler
         ASTNode* ParsePostfixExpression_(Coroutine::caller_type& caller);
 
         void ThrowInvalidTokenError_(const Token& token, const std::string& descriptionText = "");
-        void PrintAST_(ASTNode* root) const;
         void ResumeParse_(const Token& token);
         Token WaitForTokenReady_(Coroutine::caller_type& caller);
 

@@ -58,7 +58,7 @@
 			}
 		},
 		{
-			"file": "/D/dev/compiler/doc/grammar",
+			"file": "doc/grammar",
 			"settings":
 			{
 				"buffer_size": 5401,
@@ -498,6 +498,7 @@
 	},
 	"file_history":
 	[
+		"/D/dev/whiterra/repo/game/src/Grid.cpp",
 		"/D/dev/compiler/src/Parser.hpp",
 		"/D/dev/compiler/src/Parser.cpp",
 		"/D/dev/compiler/src/utils.cpp",
@@ -624,8 +625,7 @@
 		"/D/dev/whiterra/repo/bin/game.ini",
 		"/C/Users/mapho_000/Desktop/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af",
 		"/C/Users/mapho_000/Desktop/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af (1).tar/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af (1)/(1).tar/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af",
-		"/C/portableApplications/miranda-ng-v0.93.5_x64/Profiles/Satana/Logs/Jabber.ru/s@anoos.pyos.net.log",
-		"/C/Users/mapho_000/Desktop/ru.json"
+		"/C/portableApplications/miranda-ng-v0.93.5_x64/Profiles/Satana/Logs/Jabber.ru/s@anoos.pyos.net.log"
 	],
 	"find":
 	{
@@ -908,7 +908,7 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 2,
 			"sheets":
 			[
 				{
@@ -1006,8 +1006,8 @@
 						"selection":
 						[
 							[
-								0,
-								0
+								169,
+								169
 							]
 						],
 						"settings":
@@ -1058,7 +1058,9 @@
 								"bh_single_quote_close"
 							],
 							"encoding_helper_encoding_sublime": "UTF-8",
-							"syntax": "Packages/Text/Plain text.tmLanguage"
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -1068,7 +1070,7 @@
 				},
 				{
 					"buffer": 2,
-					"file": "/D/dev/compiler/doc/grammar",
+					"file": "doc/grammar",
 					"settings":
 					{
 						"buffer_size": 5401,
@@ -1078,8 +1080,8 @@
 						"selection":
 						[
 							[
-								452,
-								452
+								348,
+								348
 							]
 						],
 						"settings":

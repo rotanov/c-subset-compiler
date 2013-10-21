@@ -1,0 +1,9 @@
++---------
+|        |
++------  d
+|     |
++---  c
+|  |
+a  b
+
+ERROR: unexpected token OP_RPAREN : ")" at 1-12

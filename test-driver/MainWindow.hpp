@@ -11,14 +11,14 @@ namespace Ui
     class MainWindow;
 } // namespace Ui
 
-enum CompilerMode
+enum class CompilerMode
 {
-    CM_TOKENIZER,
-    CM_SIMPLE_EXPRESSION,
-    CM_EXPRESSION_PARSER,
+    TOKENIZER,
+    SIMPLE_EXPRESSION,
+    EXPRESSION_PARSER,
+    PARSER,
+    COUNT,
 };
-
-const unsigned COMPILER_MODE_COUNT = 3;
 
 struct TestInfo
 {
@@ -50,13 +50,15 @@ private slots:
     void on_action_Log_triggered(bool checked);
     void OnQpteInputCursorPositionChanged();
 
+    void on_action_Parser_triggered();
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
 private:
     Ui::MainWindow* ui = NULL;
-    CompilerMode mode_ = CM_TOKENIZER;
+    CompilerMode mode_ = CompilerMode::TOKENIZER;
     std::vector<int> testIndexes_;
     std::vector<std::vector<TestInfo>> tests_;
     QLabel* qlStatus_ = NULL;

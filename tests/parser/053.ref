@@ -1,0 +1,9 @@
+=---
+|  |          
+e  ?----------
+   |     |   |
+   <---  ++  a
+   |  |  |
+   a  d  a
+
+ERROR: unexpected token OP_ASS : "=" at 1-21

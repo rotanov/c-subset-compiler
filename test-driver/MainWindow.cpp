@@ -60,16 +60,18 @@ void MainWindow::OnReferenceTextChanged()
 
 std::map<CompilerMode, std::string> CompilerModeToString =
 {
-    {CM_TOKENIZER, "Tokenizer"},
-    {CM_SIMPLE_EXPRESSION, "Simple Expressions"},
-    {CM_EXPRESSION_PARSER, "Expressions"},
+    {CompilerMode::TOKENIZER, "Tokenizer"},
+    {CompilerMode::SIMPLE_EXPRESSION, "Simple Expressions"},
+    {CompilerMode::EXPRESSION_PARSER, "Expressions"},
+    {CompilerMode::PARSER, "Parser"},
 };
 
 std::map<CompilerMode, std::string> CompilerModeToTestDir =
 {
-    {CM_TOKENIZER, "../tests/tokenizer/"},
-    {CM_SIMPLE_EXPRESSION, "../tests/simple-expression-parser/"},
-    {CM_EXPRESSION_PARSER, "../tests/expression-parser/"},
+    {CompilerMode::TOKENIZER, "../tests/tokenizer/"},
+    {CompilerMode::SIMPLE_EXPRESSION, "../tests/simple-expression-parser/"},
+    {CompilerMode::EXPRESSION_PARSER, "../tests/expression-parser/"},
+    {CompilerMode::PARSER, "../tests/parser/"},
 };
 
 MainWindow::MainWindow(QWidget *parent)
@@ -85,12 +87,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->statusBar->addWidget(qlStatus_);
     ui->statusBar->addWidget(qlLineColumn_);
 
-    tests_.resize(COMPILER_MODE_COUNT);
-    testIndexes_.resize(COMPILER_MODE_COUNT, 0);
+    int modeCount = static_cast<int>(CompilerMode::COUNT);
+    tests_.resize(modeCount);
+    testIndexes_.resize(modeCount, 0);
     for (const auto& i : CompilerModeToTestDir)
     {
-        std::vector<TestInfo>& tests = tests_[i.first];
-        int& testIndex = testIndexes_[i.first];
+        int index = static_cast<int>(i.first);
+        std::vector<TestInfo>& tests = tests_[index];
+        int& testIndex = testIndexes_[index];
 
         QDir dir(QString().fromStdString(i.second),
                  QString("*.t"),
@@ -170,17 +174,19 @@ void MainWindow::SetMode_(const CompilerMode &mode)
 
 TestInfo &MainWindow::GetCurrentTest_()
 {
-    return tests_[mode_][testIndexes_[mode_]];
+    int modeIndex = static_cast<int>(mode_);
+    return tests_[modeIndex][testIndexes_[modeIndex]];
 }
 
 void MainWindow::UpdateTest_()
 {
+    int modeIndex = static_cast<int>(mode_);
     QString filename;
     QTextStream filenameStream(&filename);
     filenameStream << QString().fromStdString(CompilerModeToTestDir[mode_])
                    << qSetFieldWidth(3)
                    << qSetPadChar('0')
-                   << testIndexes_[mode_]
+                   << testIndexes_[modeIndex]
                    << qSetFieldWidth(0);
     QFile inputFile(filename + QString(".t"));
     assert(inputFile.open(QIODevice::ReadWrite | QIODevice::Text));
@@ -199,34 +205,44 @@ void MainWindow::RunCompiler_(std::vector<char> &input)
     //        DebugPreTokenStream debugPreTokenStream;
     //        PreTokenizer pretokenizer(input, debugPreTokenStream);
 
+    ITokenStream* output = NULL;
     try
     {
         switch (mode_)
         {
-            case CM_TOKENIZER:
+            case CompilerMode::TOKENIZER:
             {
-                DebugTokenOutputStream debugTokenOutputStream;
-                Tokenizer tokenizer(debugTokenOutputStream);
-                PreTokenizer preTokenizer(input, tokenizer);
+                output = new DebugTokenOutputStream;
                 break;
             }
 
-            case CM_SIMPLE_EXPRESSION:
+            case CompilerMode::SIMPLE_EXPRESSION:
             {
-                SimpleExpressionParser simpleExpressionParser;
-                Tokenizer tokenizer(simpleExpressionParser);
-                PreTokenizer preTokenizer(input, tokenizer);
+                output = new SimpleExpressionParser;
                 break;
             }
 
-            case CM_EXPRESSION_PARSER:
+            case CompilerMode::EXPRESSION_PARSER:
             {
-                ExpressionParser expressionParser;
-                Tokenizer tokenizer(expressionParser);
-                PreTokenizer preTokenizer(input, tokenizer);
+                output = new ExpressionParser;
+                break;
+            }
+
+            case CompilerMode::PARSER:
+            {
+                output = new Parser;
+                break;
+            }
+
+            default:
+            {
+                throw std::runtime_error("unknown compiler mode");
                 break;
             }
         }
+
+        Tokenizer tokenizer(*output);
+        PreTokenizer preTokenizer(input, tokenizer);
     }
     catch (std::exception& e)
     {
@@ -244,24 +260,28 @@ void MainWindow::RunCompiler_(std::vector<char> &input)
     {
         std::cerr << "ERROR: unknown exception";
     }
+
+    delete output;
 }
 
 void MainWindow::on_action_New_triggered()
 {
+    int modeIndex = static_cast<int>(mode_);
     TestInfo testInfo;
-    testIndexes_[mode_] = tests_[mode_].size();
-    tests_[mode_].push_back(testInfo);
+    testIndexes_[modeIndex] = tests_[modeIndex].size();
+    tests_[modeIndex].push_back(testInfo);
     UpdateTest_();
 }
 
 void MainWindow::on_action_Save_triggered()
 {
+    int modeIndex = static_cast<int>(mode_);
     QString filename;
     QTextStream filenameStream(&filename);
     filenameStream << QString().fromStdString(CompilerModeToTestDir[mode_])
                    << qSetFieldWidth(3)
                    << qSetPadChar('0')
-                   << testIndexes_[mode_]
+                   << testIndexes_[modeIndex]
                    << qSetFieldWidth(0);
     QFile fileInput(filename + ".t");
     assert(fileInput.open(QIODevice::ReadWrite | QIODevice::Truncate));
@@ -273,13 +293,15 @@ void MainWindow::on_action_Save_triggered()
 
 void MainWindow::on_action_Next_triggered()
 {
-    testIndexes_[mode_] = (testIndexes_[mode_] + 1) % tests_[mode_].size();
+    int modeIndex = static_cast<int>(mode_);
+    testIndexes_[modeIndex] = (testIndexes_[modeIndex] + 1) % tests_[modeIndex].size();
     UpdateTest_();
 }
 
 void MainWindow::on_action_Prev_triggered()
 {
-    testIndexes_[mode_] = (tests_[mode_].size() + testIndexes_[mode_] - 1) % tests_[mode_].size();
+    int modeIndex = static_cast<int>(mode_);
+    testIndexes_[modeIndex] = (tests_[modeIndex].size() + testIndexes_[modeIndex] - 1) % tests_[modeIndex].size();
     UpdateTest_();
 }
 
@@ -296,7 +318,8 @@ void MainWindow::on_action_Run_Tests_for_Current_Mode_triggered()
         ui->menu_View->actions().at(2)->trigger();
     }
 
-    int& testIndex = testIndexes_[mode_];
+    int modeIndex = static_cast<int>(mode_);
+    int& testIndex = testIndexes_[modeIndex];
 
     QDir dir(QString().fromStdString(CompilerModeToTestDir[mode_]),
              QString("*.t"),
@@ -308,8 +331,8 @@ void MainWindow::on_action_Run_Tests_for_Current_Mode_triggered()
     ui->qpteLog->appendPlainText("");
     ui->qpteLog->appendPlainText(QString().fromStdString("Running tests for " + CompilerModeToString[mode_]));
 
-    std::vector<int> failedTests;
-    for (unsigned i = 0; i < tests_[mode_].size(); i++)
+    std::vector<int> failedTests;    
+    for (unsigned i = 0; i < tests_[modeIndex].size(); i++)
     {
         QString filename;
         QTextStream filenameStream(&filename);
@@ -358,6 +381,9 @@ void MainWindow::on_action_Run_Tests_for_Current_Mode_triggered()
         }
     }
 
+    ui->qpteLog->appendPlainText(QString().fromStdString("Passed %1 of %2")
+                                 .arg(tests_[modeIndex].size() - failedTests.size())
+                                 .arg(tests_[modeIndex].size()));
     if (failedTests.size() == 0)
     {
         ui->qpteLog->appendPlainText("SUCCESS. ALL TESTS PASSED.");
@@ -374,13 +400,13 @@ void MainWindow::on_action_Run_Tests_for_Current_Mode_triggered()
 
 void MainWindow::on_action_Tokenizer_triggered()
 {
-    SetMode_(CM_TOKENIZER);
+    SetMode_(CompilerMode::TOKENIZER);
     UpdateTest_();
 }
 
 void MainWindow::on_actionSimple_Expressions_triggered()
 {
-    SetMode_(CM_SIMPLE_EXPRESSION);
+    SetMode_(CompilerMode::SIMPLE_EXPRESSION);
     UpdateTest_();
 }
 
@@ -413,6 +439,12 @@ void MainWindow::on_action_Log_triggered(bool checked)
 
 void MainWindow::on_action_Expressions_triggered()
 {
-    SetMode_(CM_EXPRESSION_PARSER);
+    SetMode_(CompilerMode::EXPRESSION_PARSER);
+    UpdateTest_();
+}
+
+void MainWindow::on_action_Parser_triggered()
+{
+    SetMode_(CompilerMode::PARSER);
     UpdateTest_();
 }

@@ -89,6 +89,7 @@
      <addaction name="action_Tokenizer"/>
      <addaction name="actionSimple_Expressions"/>
      <addaction name="action_Expressions"/>
+     <addaction name="action_Parser"/>
     </widget>
     <addaction name="action_Copy_Output_to_Reference"/>
     <addaction name="menu_Select_Mode"/>
@@ -202,6 +203,11 @@
   <action name="action_Expressions">
    <property name="text">
     <string>&amp;Expressions</string>
+   </property>
+  </action>
+  <action name="action_Parser">
+   <property name="text">
+    <string>&amp;Parser</string>
    </property>
   </action>
  </widget>
