@@ -298,6 +298,12 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
+    ASTNode* Parser::ParseTypeName(boost::coroutines::coroutine::caller_type& caller)
+    {
+
+    }
+
+//------------------------------------------------------------------------------
     void Parser::ThrowInvalidTokenError_(const Token &token, const std::string& descriptionText)
     {
         FlushOutput_();
