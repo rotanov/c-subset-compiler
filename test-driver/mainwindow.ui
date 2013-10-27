@@ -167,10 +167,16 @@
    <property name="text">
     <string>&amp;Tokenizer</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+1</string>
+   </property>
   </action>
   <action name="actionSimple_Expressions">
    <property name="text">
     <string>&amp;Simple Expressions</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+2</string>
    </property>
   </action>
   <action name="action_Run_Tests_for_Current_Mode">
@@ -204,10 +210,16 @@
    <property name="text">
     <string>&amp;Expressions</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+3</string>
+   </property>
   </action>
   <action name="action_Parser">
    <property name="text">
     <string>&amp;Parser</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+4</string>
    </property>
   </action>
  </widget>

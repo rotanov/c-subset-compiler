@@ -180,7 +180,9 @@ public:
         action_Copy_Output_to_Reference->setText(QApplication::translate("MainWindow", "&Copy Output to Reference", 0));
         action_Copy_Output_to_Reference->setShortcut(QApplication::translate("MainWindow", "Ctrl+D", 0));
         action_Tokenizer->setText(QApplication::translate("MainWindow", "&Tokenizer", 0));
+        action_Tokenizer->setShortcut(QApplication::translate("MainWindow", "Ctrl+1", 0));
         actionSimple_Expressions->setText(QApplication::translate("MainWindow", "&Simple Expressions", 0));
+        actionSimple_Expressions->setShortcut(QApplication::translate("MainWindow", "Ctrl+2", 0));
         action_Run_Tests_for_Current_Mode->setText(QApplication::translate("MainWindow", "&Run Tests for Current Mode", 0));
         action_Run_Tests_for_Current_Mode->setShortcut(QApplication::translate("MainWindow", "Ctrl+R", 0));
         actionTest_Name->setText(QApplication::translate("MainWindow", "Test &Name", 0));
@@ -188,7 +190,9 @@ public:
         action_Log->setText(QApplication::translate("MainWindow", "&Log", 0));
         action_Log->setShortcut(QApplication::translate("MainWindow", "Ctrl+L", 0));
         action_Expressions->setText(QApplication::translate("MainWindow", "&Expressions", 0));
+        action_Expressions->setShortcut(QApplication::translate("MainWindow", "Ctrl+3", 0));
         action_Parser->setText(QApplication::translate("MainWindow", "&Parser", 0));
+        action_Parser->setShortcut(QApplication::translate("MainWindow", "Ctrl+4", 0));
         qpteOutput->setDocumentTitle(QApplication::translate("MainWindow", "Output", 0));
         menu_File->setTitle(QApplication::translate("MainWindow", "&File", 0));
         menu_Edit->setTitle(QApplication::translate("MainWindow", "&Edit", 0));
