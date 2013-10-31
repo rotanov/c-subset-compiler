@@ -78,13 +78,10 @@
 			}
 		},
 		{
-			"contents": "Grammar\n\n    Notation\n\n    In the syntax notation used in this clause, syntactic categories (nonterminals)\nare indicated by words, separated by `-` symbol, and literal words and character\nset members (terminals) by enclosing in grave accent (` рус. — гравис).\n    A colon (:) following a nonterminal introduces its definition. Alternative\ndefinitions are listed on separate lines, except when prefaced by\nthe words ‘‘one of’’. An optional symbol is indicated by enclosing in curly\nbraces ({}) so that {expression} indicates an optional expression non terminal.\n    // at the end of the line denotes beginning of a comment\n\n    Expressions\n\n// 6.5.1.1 Generic selection excluded\nprimary-expression:\n    identifier\n    literal\n    string-literal\n    `(` expression `)`\n\n// 6.5.2.5 Compound literals - excluded\npostfix-expression:\n    primary-expression\n    postfix-expression `[` expression `]`\n    postfix-expression `(` {argument-expression-list} `)`\n    postfix-expression `.` identifier\n    postfix-expression `->` identifier\n    postfix-expression `++`\n    postfix-expression `--`\n\nunary-expression:\n    postfix-expression\n    `++` unary-expression\n    `--` unary-expression\n    unary-operator cast-expression\n    sizeof unary-expression\n    sizeof `(` type-name `)`\n\nunary-operator: one of\n    `&` `*` `+` `-` `~` `!`\n\ncast-expression:\n    unary-expression\n    `(` type-name `)` cast-expression\n\nmultiplicative-expression:\n    cast-expression\n    multiplicative-expression `*` unary-expression // cast-expression\n    multiplicative-expression `/` unary-expression // cast-expression\n    multiplicative-expression `%` unary-expression // cast-expression\n\nadditive-expression:\n    multiplicative-expression\n    additive-expression `+` multiplicative-expression\n    additive-expression `-` multiplicative-expression\n\nshift-expression:\n    additive-expression\n    shift-expression `<<` additive-expression\n    shift-expression `>>` additive-expression\n\nrelational-expression:\n    shift-expression\n    relational-expression `<` shift-expression\n    relational-expression `>` shift-expression\n    relational-expression `<=` shift-expression\n    relational-expression `>=` shift-expression\n\nequality-expression:\n    relational-expression\n    equality-expression `==` relational-expression\n    equality-expression `!=` relational-expression\n\nAND-expression:\n    equality-expression\n    AND-expression `&` equality-expression\n\nexclusive-OR-expression:\n    AND-expression\n    exclusive-OR-expression `^` AND-expression\n\ninclusive-OR-expression:\n    exclusive-OR-expression\n    inclusive-OR-expression `|` exclusive-OR-expression\n\nlogical-AND-expression:\n    inclusive-OR-expression\n    logical-AND-expression `&&` inclusive-OR-expression\n\nlogical-OR-expression:\n    logical-AND-expression\n    logical-OR-expression `||` logical-AND-expression\n\n// right associative\n// PHP HAS LEFT ASSOCIATIVE CONDITIONAL OPERATOR (unable to hold it)\nconditional-expression:\n    logical-OR-expression\n    logical-OR-expression `?` expression `:` conditional-expression\n\nassignment-expression:\n    conditional-expression\n    unary-expression assignment-operator assignment-expression\n\nassignment-operator: one of\n    `=` `*=` `/=` `%=` `+=` `-=` `<<=` `>>=` `&=` `^=` `|=`\n\nexpression:\n    assignment-expression\n    expression `,` assignment-expression\n\nargument-expression-list:\n    assignment-expression\n    argument-expression-list `,` assignment-expression    \n\nconstant-expression:\n    conditional-expression\n\n--------------------------------------------------------------------------------\n    Declarations\n\n// 6.7.10 Static assertions - excluded\ndeclaration:\n    declaration-specifiers {init-declarator-list} `;`\n\n// 6.7.4 Function specifiers - excluded (inline, _Noreturn)\n// 6.7.5 Alignment specifier - excluded (_Alignas)\ndeclaration-specifiers:\n    storage-class-specifier {declaration-specifiers}\n    type-specifier {declaration-specifiers}\n    `const` {declaration-specifiers}\n\ninit-declarator-list:\n    init-declarator\n    init-declarator-list `,` init-declarator\n\ninit-declarator:\n    declarator\n    declarator `=` initializer\n\n// `extern` `static` `_Thread_local` `auto` `register` - excluded, see 6.7.1\nstorage-class-specifier:\n    `typedef`\n\n    Type specifiers\n\n// `short` `long` `double` `signed` `unsigned` `_Bool` `_Complex` - excluded, see 6.7.2\n// 6.7.2.4 Atomic type specifiers - excluded\n// struct-or-union-specifier replaced with struct-specifier, unions excluded\n// \ntype-specifier:\n    `void`\n    `char`\n    `int`\n    `float`\n    struct-specifier\n    enum-specifier\n    typedef-name\n\n    Structure and union specifiers\n\n// struct-or-union replaced with simply `struct` terminal\nstruct-specifier:\n    `struct` {identifier} `{` struct-declaration-list `}`\n    `struct` identifier\n\nstruct-declaration-list:\n    struct-declaration\n    struct-declaration-list struct-declaration\n\nstruct-declaration:\n    specifier-qualifier-list {struct-declarator-list} `;`\n\nspecifier-qualifier-list:\n    type-specifier {specifier-qualifier-list}\n    `const` {specifier-qualifier-list}\n\n// {declarator} `:` constant-expression (Bit fields) - excluded\n// that way struct-declarator became simply declarator\nstruct-declarator-list:\n    declarator\n    struct-declarator-list `,` declarator\n\n    Enumeration specifiers\n\nenum-specifier:\n    `enum` {identifier} `{` enumerator-list `}`\n    `enum` {identifier} `{` enumerator-list `,` `}`\n    `enum` identifier\n\nenumerator-list:\n    enumerator\n    enumerator-list `,` enumerator\n\nenumerator:\n    enumeration-constant\n    enumeration-constant `=` constant-expression\n\n    Type qualifiers\n\n// `restrict` `volatile` `_Atomic` - excluded\n// and since type-qualifier can only be `const` it will be replaced with `const`\n// in latter appearances\n// and regarding that fact type-qualifier-list also becomes useless\n// so `const` will be used instead\ntype-qualifier:\n    `const`\n\n    Declarators    \n\ndeclarator:\n    {pointer} direct-declarator\n\n// `static` keyword appearance within `[` `]` excluded See 6.7.6.3 and\n// http://hamberg.no/erlend/posts/2013-02-18-static-array-indices.html\n// for details\n// `const` keyword appearance within `[` `]` is also excluded as well as `*`\ndirect-declarator:\n    identifier\n    `(` declarator `)`\n    direct-declarator `[` {assignment-expression} `]`\n    direct-declarator `(` parameter-list `)`\n    direct-declarator `(` {identifier-list} `)`\n\npointer:\n    `*` {`const`}\n    `*` {`const`} pointer\n\n// all occurences of parameter-type-list are replaced with parameter-list\n// due to exclusion of `...` punctuation\nparameter-list:\n    parameter-declaration\n    parameter-list `,` parameter-declaration\n\nparameter-declaration:\n        declaration-specifiers declarator\n        declaration-specifiers {abstract-declarator}\n\nidentifier-list:\n    identifier\n    identifier-list `,` identifier\n\n\n    Type Names\n\ntype-name:\n    specifier-qualifier-list {abstract-declarator}\n\nabstract-declarator:\n    pointer\n    {pointer} direct-abstract-declarator\n\n// Yet again, as in direct-declarator: all stuff within square brackets\n// except {assignment-expression} is excluded\ndirect-abstract-declarator:\n    `(` abstract-declarator `)`\n    {direct-abstract-declarator} `[` {assignment-expression} `]`\n    {direct-abstract-declarator} `(` {parameter-list} `)`\n\n    Type definitions\n\ntypedef-name:\n    identifier\n\n    \n    Initialization\n\ninitializer:\n    assignment-expression\n    `{` initializer-list `}`\n    `{` initializer-list `,` `}`\n\ninitializer-list:\n    {designation} initializer\n    initializer-list `,` {designation} initializer\n\ndesignation:\n    designator-list `=`\n\ndesignator-list:\n    designator\n    designator-list designator\n\ndesignator:\n    `[` constant-expression `]`\n    `.` identifier\n\n    Statements and Blocks\n\nstatement:\n    compound-statement\n    expression-statement\n    selection-statement\n    iteration-statement\n    jump-statement\n\n    Compound statement\n\ncompound-statement:\n    `{` {block-item-list} `}`\n\nblock-item-list:\n    block-item\n    block-item-list block-item\n\nblock-item:\n    declaration\n    statement\n\n    Expression and null statements\n\nexpression-statement:\n    {expression} `;`\n\n    Selection statements\n\nselection-statement:\n    `if` `(` expression `)` statement\n    `if` `(` expression `)` statement `else` statement\n\niteration-statement:\n    `while` `(` expression `)` statement\n    `do` statement `while` `(` expression `)` `;`\n    `for` `(` {expression} `;` {expression} `;` {expression} `)` statement\n    `for` `(` declaration {expression} `;` {expression} `)` statement\n\njump-statement:\n    `continue` `;`\n    `break` `;`\n    `return` {expression} `;`\n\n    External definitions - excluded?\n\ntranslation-unit:\n    external-declaration\n    translation-unit external-declaration\n\nexternal-declaration:\n    function-definition\n    declaration    \n\n    Function definition\n\nfunction-definition:\n    declaration-specifiers declarator {declaration-list} compound-statement\n\ndeclaration-list:\n    declaration\n    declaration-list declaration\n\n",
 			"file": "doc/grammar",
-			"file_size": 9238,
-			"file_write_time": 130273793096309806,
 			"settings":
 			{
-				"buffer_size": 9029,
+				"buffer_size": 8614,
 				"line_ending": "Windows"
 			}
 		},
@@ -585,6 +582,7 @@
 	},
 	"file_history":
 	[
+		"/C/Users/mapho_000/Desktop/aaaaa/game-crash-2013-10-28-13-42-00-907.txt",
 		"/D/dev/ncc/include/statements.h",
 		"/D/dev/ncc/include/common.h",
 		"/D/dev/ncc/include/codegen.h",
@@ -711,8 +709,7 @@
 		"/D/dev/whiterra/rtr-res/xml/xml/resources.xml",
 		"/C/Users/mapho_000/Downloads/ktt7.tar/ktt7/ktt7/Tokenizer.hpp",
 		"/D/cppgm/dev/cppgm-dev/posttoken/posttoken.pro",
-		"/C/Users/mapho_000/Downloads/ktt7.tar/ktt7/ktt7/PostTokenStream.cpp",
-		"/D/cppgm/dev/cppgm-dev/pptoken/pptoken-ref"
+		"/C/Users/mapho_000/Downloads/ktt7.tar/ktt7/ktt7/PostTokenStream.cpp"
 	],
 	"find":
 	{
@@ -781,6 +778,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"enum",
 			"ParsePointer",
 			"CPointerSymbol",
 			"GetQu",
@@ -907,8 +905,7 @@
 			"MDd",
 			".lib",
 			"Water",
-			"ktt7.*ktt4.*\\?",
-			"\n"
+			"ktt7.*ktt4.*\\?"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -996,7 +993,7 @@
 	"groups":
 	[
 		{
-			"selected": 7,
+			"selected": 2,
 			"sheets":
 			[
 				{
@@ -1161,15 +1158,15 @@
 					"file": "doc/grammar",
 					"settings":
 					{
-						"buffer_size": 9029,
+						"buffer_size": 8614,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								8825,
-								8825
+								4413,
+								4413
 							]
 						],
 						"settings":
@@ -1226,7 +1223,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 8694.0,
+						"translation.y": 3536.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -1539,8 +1536,8 @@
 						"selection":
 						[
 							[
-								10276,
-								10287
+								1095,
+								1095
 							]
 						],
 						"settings":
@@ -1596,7 +1593,7 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 11113.0,
+						"translation.y": 394.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"

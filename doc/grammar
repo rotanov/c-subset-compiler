@@ -1,17 +1,17 @@
-Grammar
+//Grammar
 
-    Notation
+//    Notation
 
-    In the syntax notation used in this clause, syntactic categories (nonterminals)
-are indicated by words, separated by `-` symbol, and literal words and character
-set members (terminals) by enclosing in grave accent (` рус. — гравис).
-    A colon (:) following a nonterminal introduces its definition. Alternative
-definitions are listed on separate lines, except when prefaced by
-the words ‘‘one of’’. An optional symbol is indicated by enclosing in curly
-braces ({}) so that {expression} indicates an optional expression non terminal.
-    // at the end of the line denotes beginning of a comment
+//  In the syntax notation used in this clause, syntactic categories (nonterminals)
+// are indicated by words, separated by `-` symbol. Literal words and character
+// set members (terminals) are indicated by enclosing in grave accent (`).
+//  A colon (:) following a nonterminal introduces its definition. Alternative
+// definitions are listed on separate lines, except when prefaced by
+// the words ‘‘one of’’. An optional symbol is indicated by enclosing in curly
+// braces ({}) e.g. {expression} indicates an optional expression non terminal.
+// `//` anywhere denotes beginning of a comment til the end of the line.
 
-    Expressions
+//    Expressions
 
 // 6.5.1.1 Generic selection excluded
 primary-expression:
@@ -35,8 +35,8 @@ unary-expression:
     `++` unary-expression
     `--` unary-expression
     unary-operator cast-expression
-    sizeof unary-expression
-    sizeof `(` type-name `)`
+    `sizeof` unary-expression
+    `sizeof` `(` type-name `)`
 
 unary-operator: one of
     `&` `*` `+` `-` `~` `!`
@@ -47,9 +47,9 @@ cast-expression:
 
 multiplicative-expression:
     cast-expression
-    multiplicative-expression `*` unary-expression // cast-expression
-    multiplicative-expression `/` unary-expression // cast-expression
-    multiplicative-expression `%` unary-expression // cast-expression
+    multiplicative-expression `*` cast-expression
+    multiplicative-expression `/` cast-expression
+    multiplicative-expression `%` cast-expression
 
 additive-expression:
     multiplicative-expression
@@ -117,8 +117,7 @@ argument-expression-list:
 constant-expression:
     conditional-expression
 
---------------------------------------------------------------------------------
-    Declarations
+//    Declarations
 
 // 6.7.10 Static assertions - excluded
 declaration:
@@ -148,17 +147,16 @@ storage-class-specifier:
 // `short` `long` `double` `signed` `unsigned` `_Bool` `_Complex` - excluded, see 6.7.2
 // 6.7.2.4 Atomic type specifiers - excluded
 // struct-or-union-specifier replaced with struct-specifier, unions excluded
-// 
+// enum-specifier - excluded
 type-specifier:
     `void`
     `char`
     `int`
     `float`
     struct-specifier
-    enum-specifier
     typedef-name
 
-    Structure and union specifiers
+//    Structure and union specifiers
 
 // struct-or-union replaced with simply `struct` terminal
 struct-specifier:
@@ -182,22 +180,7 @@ struct-declarator-list:
     declarator
     struct-declarator-list `,` declarator
 
-    Enumeration specifiers
-
-enum-specifier:
-    `enum` {identifier} `{` enumerator-list `}`
-    `enum` {identifier} `{` enumerator-list `,` `}`
-    `enum` identifier
-
-enumerator-list:
-    enumerator
-    enumerator-list `,` enumerator
-
-enumerator:
-    enumeration-constant
-    enumeration-constant `=` constant-expression
-
-    Type qualifiers
+//    Type qualifiers
 
 // `restrict` `volatile` `_Atomic` - excluded
 // and since type-qualifier can only be `const` it will be replaced with `const`
@@ -207,7 +190,7 @@ enumerator:
 type-qualifier:
     `const`
 
-    Declarators    
+//    Declarators    
 
 declarator:
     {pointer} direct-declarator
@@ -242,7 +225,7 @@ identifier-list:
     identifier-list `,` identifier
 
 
-    Type Names
+//    Type Names
 
 type-name:
     specifier-qualifier-list {abstract-declarator}
@@ -258,13 +241,13 @@ direct-abstract-declarator:
     {direct-abstract-declarator} `[` {assignment-expression} `]`
     {direct-abstract-declarator} `(` {parameter-list} `)`
 
-    Type definitions
+//    Type definitions
 
 typedef-name:
     identifier
 
     
-    Initialization
+//    Initialization
 
 initializer:
     assignment-expression
@@ -295,7 +278,7 @@ statement:
     iteration-statement
     jump-statement
 
-    Compound statement
+//    Compound statement
 
 compound-statement:
     `{` {block-item-list} `}`
@@ -308,12 +291,12 @@ block-item:
     declaration
     statement
 
-    Expression and null statements
+//    Expression and null statements
 
 expression-statement:
     {expression} `;`
 
-    Selection statements
+//    Selection statements
 
 selection-statement:
     `if` `(` expression `)` statement
@@ -330,9 +313,17 @@ jump-statement:
     `break` `;`
     `return` {expression} `;`
 
-    External definitions - excluded?
+//    External definitions
 
-    Function definition
+translation-unit:
+    external-declaration
+    translation-unit external-declaration
+
+external-declaration:
+    function-definition
+    declaration    
+
+//    Function definition
 
 function-definition:
     declaration-specifiers declarator {declaration-list} compound-statement
