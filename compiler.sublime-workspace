@@ -4,26 +4,6 @@
 		"selected_items":
 		[
 			[
-				"design",
-				"designator-list"
-			],
-			[
-				"initi",
-				"initializer"
-			],
-			[
-				"init-lis",
-				"initializer-list"
-			],
-			[
-				"typed",
-				"typedef-name"
-			],
-			[
-				"spec",
-				"specifier-qualifier-list"
-			],
-			[
 				"exc",
 				"exclusive-OR-expression"
 			],
@@ -69,86 +49,30 @@
 			}
 		},
 		{
-			"contents": "Лекция. Курс компиляторов.\n\nРазбор объявлений и выражений.\nТаблица символов.\n\nclass SymTable\n{\n    Symbols\n}\n\n\nclass SymVariable : Symbol\n{\n    \n}\n\nclass SymType: Symbol\n{\n    \n}\n\nclass SymFunction: Symbol\n{\n    params\n    locals\n    body - Operator : Statement : Node (Assignment, Expression)\n}\n\nоператоры:\nwhile\n{\n    cond: Expression\n    body: Statement\n}\n\nRepeat -//-\n\nif : statement\n{\n    cond: Expression\n    body1: Statement\n    body2: Statement\n    (EmptyStatement)\n}\n\nfor : statement\n{\n    e[3] : Expression\n}\n\nbreak, continue, return\n\n!!!\nBlock : statement\n{\n    symtable\n    statements\n}\n\n\nParse возвращает указатель на таблицу символов, которая содержит глобальные\nпеременные.\n\nЗадача:  реализовать вот это.\n\nСтэк таблиц символов\n0. Окружение (char, int float, printf etc)\n1. Global Symbol Table\n2. ...\n\nОперации со стэком таблиц символов:\n1. искать символ (нельзя переопределеять то что на самом верхнем уровне)\n2. добавлять символ\n(категории таблиц символов: пространства имён структур и переменных не конфликтуют\nнапример)\n\nИмя структуры, тэг, тэгдеф???\nСразу объявление переменной.\n\nВозможнные трудности (си):\nРазбор типов данных.\nТрюки: (проблема в том что мы не можем легко конструировать тип по частям\nв языке си: int a[10] массив из десяти чисел,  int* a[10] - массив из 10 указателей\n, int (*a)[10] указатель на массив из 10 символов)\nПроблема в том, что мы как бы разобрали часть выражения:\n    int a[10][21]; массив из десяти элементов, каждый из которых является массивом из 20 элементов, каждый\n    из которых имеет тип int. Проблема в том, что объявление типа далеко от того\n    момента, когда мы пониманием, что мы находимся в объявлении массива массивов.\n\n1. Создавать типы заглушки. вместо типа, когда непонятно, какой тип. Потом подставляем\nкогда становится ясно что за тип.\n2. Можно сжирать квадратные скобки в цикле. Но надо будет нарушить концепцию рекурсивного спуска+\nДля функций, которые возвращают массив, указатель на массив или массив указателей на функции, которые возвращают массив. \n3. Можно пытаться применить трюк конструирования структуры данных на обратном ходе рекурсии.\nВсё равно понядобятся промежуточные типы или удаление чего-то там.\n\n\nСборка мусора:\n1. Аккуратный конструктор и деструктор (нетривиально, потому что может быть много ссылок на объект и \nбольше одного пути, который попадает в одну и ту же точку. Избежать double delete)\n2. РефКаунт \n\nSymType : SymArray { elementType может быть массивом }\n\nМы не будем реализовывать класс алгоритмов для выделения памяти.\nОбращаться к операционной системе для выделением памяти плохо.\n\n\nщ",
+			"contents": "Лекция. Курс компиляторов.\n\nРазбор объявлений и выражений.\nТаблица символов.\n\nclass SymTable\n{\n    Symbols\n}\n\n\nclass SymVariable : Symbol\n{\n    \n}\n\nclass SymType: Symbol\n{\n    \n}\n\nclass SymFunction: Symbol\n{\n    params\n    locals\n    body - Operator : Statement : Node (Assignment, Expression)\n}\n\nоператоры:\nwhile\n{\n    cond: Expression\n    body: Statement\n}\n\nRepeat -//-\n\nif : statement\n{\n    cond: Expression\n    body1: Statement\n    body2: Statement\n    (EmptyStatement)\n}\n\nfor : statement\n{\n    e[3] : Expression\n}\n\nbreak, continue, return\n\n!!!\nBlock : statement\n{\n    symtable\n    statements\n}\n\n\nParse возвращает указатель на таблицу символов, которая содержит глобальные\nпеременные.\n\nЗадача:  реализовать вот это.\n\nСтэк таблиц символов\n0. Окружение (char, int float, printf etc)\n1. Global Symbol Table\n2. ...\n\nОперации со стэком таблиц символов:\n1. искать символ (нельзя переопределеять то что на самом верхнем уровне)\n2. добавлять символ\n(категории таблиц символов: пространства имён структур и переменных не конфликтуют\nнапример)\n\nИмя структуры, тэг, тэгдеф???\nСразу объявление переменной.\n\nВозможнные трудности (си):\nРазбор типов данных.\nТрюки: (проблема в том что мы не можем легко конструировать тип по частям\nв языке си: int a[10] массив из десяти чисел,  int* a[10] - массив из 10 указателей\n, int (*a)[10] указатель на массив из 10 символов)\nПроблема в том, что мы как бы разобрали часть выражения:\n    int a[10][21]; массив из десяти элементов, каждый из которых является массивом из 20 элементов, каждый\n    из которых имеет тип int. Проблема в том, что объявление типа далеко от того\n    момента, когда мы пониманием, что мы находимся в объявлении массива массивов.\n\n1. Создавать типы заглушки. вместо типа, когда непонятно, какой тип. Потом подставляем\nкогда становится ясно что за тип.\n2. Можно сжирать квадратные скобки в цикле. Но надо будет нарушить концепцию рекурсивного спуска+\nДля функций, которые возвращают массив, указатель на массив или массив указателей на функции, которые возвращают массив. \n3. Можно пытаться применить трюк конструирования структуры данных на обратном ходе рекурсии.\nВсё равно понядобятся промежуточные типы или удаление чего-то там.\n\n\nСборка мусора:\n1. Аккуратный конструктор и деструктор (нетривиально, потому что может быть много ссылок на объект и \nбольше одного пути, который попадает в одну и ту же точку. Избежать double delete)\n2. РефКаунт \n\nSymType : SymArray { elementType может быть массивом }\n\nМы не будем реализовывать класс алгоритмов для выделения памяти.\nОбращаться к операционной системе для выделением памяти плохо.\n\n\nСледующий этап:\n    \n    В чём же состоят проверки? Во-первых мы проверяем для каждой операции совместимость\nтипов операндов. Тут у нас какие есть варианты? У нас есть совместимость типов для полиморфных операций.\nТ.е. бинарных операций. С учётом того, что у нас три типа - чар, инт и доубле, то все типы совместимы с\nсоответствующими преобразованиями. Для того чтобы осуществлять проверку типов нам необходимо\nсначала эти типы расчитать, т.е. нам необходимо какую-нибудь функцию типа GetType, которая будет\nвиртуальной в Expression и будет возвращать тип выражения. Для литералов всё просто,\nдля бинарных операций - комбинируем, всё. Для побитовых - ньюансы.\n\nС указателями ньюансы. void* совместим со всем.\n\nОбращения к записям. GetType - что-то типа единичного вызова GetType с самого верха, который\nПроходит всё рекурсивно и сохраняет типы походу, находя ошибки.\n\nДля вызовов функций надо проверить. 1. Количество аргументов совпадает, \nПо значению: 2. последовательное соответствие типов. Exactly. 3. Типы совпадают - всё хорошо. 4. Допустимо повышение скалярных типов. (по значению). Указатель на что угодно -> указатель на void*.\nДля массивов можно сделать exact match.\n\nДля присваиваний 1. совпадение по типу с повышением. 2. l-value (допустимо взятие адреса)\n\nВ случае неявных преобразований (целое + вещественно) то при генерации кода\nнам необходимо будет сгенерировать разный код для разных типов аргументов.\n1. Усложнить генератор кода и написать n вариантов для сложения\n2. На этапе определения типов модификацию дерева, которая вставит преобразование типов где нужно\n\nЭто на сл. занятие (через две недели)\nПар архитектуры в субботу не будет, потому что асм.\n\nПростая инициализация обязательна и делается как присваивание.\n\n    Q/A\n\nПоддержка const - Да, в смысле только в объявлениях\nПоддержка enum - выпилили\nСравнение типов объявленых typedef, считать равными!\nЗа сколько min проходов можно всё сделать 2\nСложные инициализацторы - опциональны!\n\n    Code generation\n\n",
 			"settings":
 			{
-				"buffer_size": 2588,
+				"buffer_size": 4569,
 				"line_ending": "Windows",
 				"name": "Лекция. Курс компиляторов."
 			}
 		},
 		{
-			"contents": "Grammar\n\n    Notation\n\n    In the syntax notation used in this clause, syntactic categories (nonterminals)\nare indicated by words, separated by `-` symbol, and literal words and character\nset members (terminals) by enclosing in grave accent (` рус. — гравис).\n    A colon (:) following a nonterminal introduces its definition. Alternative\ndefinitions are listed on separate lines, except when prefaced by\nthe words ‘‘one of’’. An optional symbol is indicated by enclosing in curly\nbraces ({}) so that {expression} indicates an optional expression non terminal.\n    // at the end of the line denotes beginning of a comment\n\n    Expressions\n\n// 6.5.1.1 Generic selection excluded\nprimary-expression:\n    identifier\n    literal\n    string-literal\n    `(` expression `)`\n\n// 6.5.2.5 Compound literals - excluded\npostfix-expression:\n    primary-expression\n    postfix-expression `[` expression `]`\n    postfix-expression `(` {argument-expression-list} `)`\n    postfix-expression `.` identifier\n    postfix-expression `->` identifier\n    postfix-expression `++`\n    postfix-expression `--`\n\nunary-expression:\n    postfix-expression\n    `++` unary-expression\n    `--` unary-expression\n    unary-operator cast-expression\n    sizeof unary-expression\n    sizeof `(` type-name `)`\n\nunary-operator: one of\n    `&` `*` `+` `-` `~` `!`\n\ncast-expression:\n    unary-expression\n    `(` type-name `)` cast-expression\n\nmultiplicative-expression:\n    cast-expression\n    multiplicative-expression `*` unary-expression // cast-expression\n    multiplicative-expression `/` unary-expression // cast-expression\n    multiplicative-expression `%` unary-expression // cast-expression\n\nadditive-expression:\n    multiplicative-expression\n    additive-expression `+` multiplicative-expression\n    additive-expression `-` multiplicative-expression\n\nshift-expression:\n    additive-expression\n    shift-expression `<<` additive-expression\n    shift-expression `>>` additive-expression\n\nrelational-expression:\n    shift-expression\n    relational-expression `<` shift-expression\n    relational-expression `>` shift-expression\n    relational-expression `<=` shift-expression\n    relational-expression `>=` shift-expression\n\nequality-expression:\n    relational-expression\n    equality-expression `==` relational-expression\n    equality-expression `!=` relational-expression\n\nAND-expression:\n    equality-expression\n    AND-expression `&` equality-expression\n\nexclusive-OR-expression:\n    AND-expression\n    exclusive-OR-expression `^` AND-expression\n\ninclusive-OR-expression:\n    exclusive-OR-expression\n    inclusive-OR-expression `|` exclusive-OR-expression\n\nlogical-AND-expression:\n    inclusive-OR-expression\n    logical-AND-expression `&&` inclusive-OR-expression\n\nlogical-OR-expression:\n    logical-AND-expression\n    logical-OR-expression `||` logical-AND-expression\n\n// right associative\n// PHP HAS LEFT ASSOCIATIVE CONDITIONAL OPERATOR (unable to hold it)\nconditional-expression:\n    logical-OR-expression\n    logical-OR-expression `?` expression `:` conditional-expression\n\nassignment-expression:\n    conditional-expression\n    unary-expression assignment-operator assignment-expression\n\nassignment-operator: one of\n    `=` `*=` `/=` `%=` `+=` `-=` `<<=` `>>=` `&=` `^=` `|=`\n\nexpression:\n    assignment-expression\n    expression `,` assignment-expression\n\nargument-expression-list:\n    assignment-expression\n    argument-expression-list `,` assignment-expression    \n\nconstant-expression:\n    conditional-expression\n\n--------------------------------------------------------------------------------\n    Declarations\n\n// 6.7.10 Static assertions - excluded\ndeclaration:\n    declaration-specifiers {init-declarator-list} `;`\n\n// 6.7.4 Function specifiers - excluded (inline, _Noreturn)\n// 6.7.5 Alignment specifier - excluded (_Alignas)\ndeclaration-specifiers:\n    storage-class-specifier {declaration-specifiers}\n    type-specifier {declaration-specifiers}\n    `const` {declaration-specifiers}\n\ninit-declarator-list:\n    init-declarator\n    init-declarator-list `,` init-declarator\n\ninit-declarator:\n    declarator\n    declarator `=` initializer\n\n// `extern` `static` `_Thread_local` `auto` `register` - excluded, see 6.7.1\nstorage-class-specifier:\n    `typedef`\n\n    Type specifiers\n\n// `short` `long` `double` `signed` `unsigned` `_Bool` `_Complex` - excluded, see 6.7.2\n// 6.7.2.4 Atomic type specifiers - excluded\n// struct-or-union-specifier replaced with struct-specifier, unions excluded\n// \ntype-specifier:\n    `void`\n    `char`\n    `int`\n    `float`\n    struct-specifier\n    enum-specifier\n    typedef-name\n\n    Structure and union specifiers\n\n// struct-or-union replaced with simply `struct` terminal\nstruct-specifier:\n    `struct` {identifier} `{` struct-declaration-list `}`\n    `struct` identifier\n\nstruct-declaration-list:\n    struct-declaration\n    struct-declaration-list struct-declaration\n\nstruct-declaration:\n    specifier-qualifier-list {struct-declarator-list} `;`\n\nspecifier-qualifier-list:\n    type-specifier {specifier-qualifier-list}\n    `const` {specifier-qualifier-list}\n\n// {declarator} `:` constant-expression (Bit fields) - excluded\n// that way struct-declarator became simply declarator\nstruct-declarator-list:\n    declarator\n    struct-declarator-list `,` declarator\n\n    Enumeration specifiers\n\nenum-specifier:\n    `enum` {identifier} `{` enumerator-list `}`\n    `enum` {identifier} `{` enumerator-list `,` `}`\n    `enum` identifier\n\nenumerator-list:\n    enumerator\n    enumerator-list `,` enumerator\n\nenumerator:\n    enumeration-constant\n    enumeration-constant `=` constant-expression\n\n    Type qualifiers\n\n// `restrict` `volatile` `_Atomic` - excluded\n// and since type-qualifier can only be `const` it will be replaced with `const`\n// in latter appearances\n// and regarding that fact type-qualifier-list also becomes useless\n// so `const` will be used instead\ntype-qualifier:\n    `const`\n\n    Declarators    \n\ndeclarator:\n    {pointer} direct-declarator\n\n// `static` keyword appearance within `[` `]` excluded See 6.7.6.3 and\n// http://hamberg.no/erlend/posts/2013-02-18-static-array-indices.html\n// for details\n// `const` keyword appearance within `[` `]` is also excluded as well as `*`\ndirect-declarator:\n    identifier\n    `(` declarator `)`\n    direct-declarator `[` {assignment-expression} `]`\n    direct-declarator `(` parameter-list `)`\n    direct-declarator `(` {identifier-list} `)`\n\npointer:\n    `*` {`const`}\n    `*` {`const`} pointer\n\n// all occurences of parameter-type-list are replaced with parameter-list\n// due to exclusion of `...` punctuation\nparameter-list:\n    parameter-declaration\n    parameter-list `,` parameter-declaration\n\nparameter-declaration:\n        declaration-specifiers declarator\n        declaration-specifiers {abstract-declarator}\n\nidentifier-list:\n    identifier\n    identifier-list `,` identifier\n\n\n    Type Names\n\ntype-name:\n    specifier-qualifier-list {abstract-declarator}\n\nabstract-declarator:\n    pointer\n    {pointer} direct-abstract-declarator\n\n// Yet again, as in direct-declarator: all stuff within square brackets\n// except {assignment-expression} is excluded\ndirect-abstract-declarator:\n    `(` abstract-declarator `)`\n    {direct-abstract-declarator} `[` {assignment-expression} `]`\n    {direct-abstract-declarator} `(` {parameter-list} `)`\n\n    Type definitions\n\ntypedef-name:\n    identifier\n\n    \n    Initialization\n\ninitializer:\n    assignment-expression\n    `{` initializer-list `}`\n    `{` initializer-list `,` `}`\n\ninitializer-list:\n    {designation} initializer\n    initializer-list `,` {designation} initializer\n\ndesignation:\n    designator-list `=`\n\ndesignator-list:\n    designator\n    designator-list designator\n\ndesignator:\n    `[` constant-expression `]`\n    `.` identifier\n\n    Statements and Blocks\n\nstatement:\n    compound-statement\n    expression-statement\n    selection-statement\n    iteration-statement\n    jump-statement\n\n    Compound statement\n\ncompound-statement:\n    `{` {block-item-list} `}`\n\nblock-item-list:\n    block-item\n    block-item-list block-item\n\nblock-item:\n    declaration\n    statement\n\n    Expression and null statements\n\nexpression-statement:\n    {expression} `;`\n\n    Selection statements\n\nselection-statement:\n    `if` `(` expression `)` statement\n    `if` `(` expression `)` statement `else` statement\n\niteration-statement:\n    `while` `(` expression `)` statement\n    `do` statement `while` `(` expression `)` `;`\n    `for` `(` {expression} `;` {expression} `;` {expression} `)` statement\n    `for` `(` declaration {expression} `;` {expression} `)` statement\n\njump-statement:\n    `continue` `;`\n    `break` `;`\n    `return` {expression} `;`\n\n    External definitions - excluded?\n\ntranslation-unit:\n    external-declaration\n    translation-unit external-declaration\n\nexternal-declaration:\n    function-definition\n    declaration    \n\n    Function definition\n\nfunction-definition:\n    declaration-specifiers declarator {declaration-list} compound-statement\n\ndeclaration-list:\n    declaration\n    declaration-list declaration\n\n",
-			"file": "doc/grammar",
-			"file_size": 9238,
-			"file_write_time": 130273793096309806,
+			"contents": "\n\nif(\n    isdigit(c)\n        ||(\n            (\n                c == '.' \n                &&\n                (\n                    (\n                        IncPos(), isdigit(cget())\n                    )\n                ||(\n                    DecPos(), false\n                  )\n                ))\n            &&\n            (DecPos(), true)))\n    return ParseNumber()&&OldPos != Pos;",
 			"settings":
 			{
-				"buffer_size": 9029,
+				"buffer_size": 385,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "/D/dev/ncc/include/expressions.h",
+			"contents": "Grammar\n\n    Notation\n\n    In the syntax notation used in this clause, syntactic categories (nonterminals)\nare indicated by words, separated by `-` symbol, and literal words and character\nset members (terminals) by enclosing in grave accent (` рус. — гравис).\n    A colon (:) following a nonterminal introduces its definition. Alternative\ndefinitions are listed on separate lines, except when prefaced by\nthe words ‘‘one of’’. An optional symbol is indicated by enclosing in curly\nbraces ({}) so that {expression} indicates an optional expression non terminal.\n    // at the end of the line denotes beginning of a comment\n\n    Expressions\n\n// 6.5.1.1 Generic selection excluded\nprimary-expression:\n    identifier\n    literal\n    string-literal\n    `(` expression `)`\n\n// 6.5.2.5 Compound literals - excluded\npostfix-expression:\n    primary-expression\n    postfix-expression `[` expression `]`\n    postfix-expression `(` {argument-expression-list} `)`\n    postfix-expression `.` identifier\n    postfix-expression `->` identifier\n    postfix-expression `++`\n    postfix-expression `--`\n\nunary-expression:\n    postfix-expression\n    `++` unary-expression\n    `--` unary-expression\n    unary-operator cast-expression\n    `sizeof` unary-expression\n    `sizeof` `(` type-name `)`\n\nunary-operator: one of\n    `&` `*` `+` `-` `~` `!`\n\ncast-expression:\n    unary-expression\n    `(` type-name `)` cast-expression\n\nmultiplicative-expression:\n    cast-expression\n    multiplicative-expression `*` cast-expression\n    multiplicative-expression `/` cast-expression\n    multiplicative-expression `%` cast-expression\n\nadditive-expression:\n    multiplicative-expression\n    additive-expression `+` multiplicative-expression\n    additive-expression `-` multiplicative-expression\n\nshift-expression:\n    additive-expression\n    shift-expression `<<` additive-expression\n    shift-expression `>>` additive-expression\n\nrelational-expression:\n    shift-expression\n    relational-expression `<` shift-expression\n    relational-expression `>` shift-expression\n    relational-expression `<=` shift-expression\n    relational-expression `>=` shift-expression\n\nequality-expression:\n    relational-expression\n    equality-expression `==` relational-expression\n    equality-expression `!=` relational-expression\n\nAND-expression:\n    equality-expression\n    AND-expression `&` equality-expression\n\nexclusive-OR-expression:\n    AND-expression\n    exclusive-OR-expression `^` AND-expression\n\ninclusive-OR-expression:\n    exclusive-OR-expression\n    inclusive-OR-expression `|` exclusive-OR-expression\n\nlogical-AND-expression:\n    inclusive-OR-expression\n    logical-AND-expression `&&` inclusive-OR-expression\n\nlogical-OR-expression:\n    logical-AND-expression\n    logical-OR-expression `||` logical-AND-expression\n\n// right associative\n// PHP HAS LEFT ASSOCIATIVE CONDITIONAL OPERATOR (unable to hold it)\nconditional-expression:\n    logical-OR-expression\n    logical-OR-expression `?` expression `:` conditional-expression\n\nassignment-expression:\n    conditional-expression\n    unary-expression assignment-operator assignment-expression\n\nassignment-operator: one of\n    `=` `*=` `/=` `%=` `+=` `-=` `<<=` `>>=` `&=` `^=` `|=`\n\nexpression:\n    assignment-expression\n    expression `,` assignment-expression\n\nargument-expression-list:\n    assignment-expression\n    argument-expression-list `,` assignment-expression    \n\nconstant-expression:\n    conditional-expression\n\n--------------------------------------------------------------------------------\n    Declarations\n\n// 6.7.10 Static assertions - excluded\ndeclaration:\n    declaration-specifiers {init-declarator-list} `;`\n\n// 6.7.4 Function specifiers - excluded (inline, _Noreturn)\n// 6.7.5 Alignment specifier - excluded (_Alignas)\ndeclaration-specifiers:\n    storage-class-specifier {declaration-specifiers}\n    type-specifier {declaration-specifiers}\n    `const` {declaration-specifiers}\n\ninit-declarator-list:\n    init-declarator\n    init-declarator-list `,` init-declarator\n\ninit-declarator:\n    declarator\n    declarator `=` initializer\n\n// `extern` `static` `_Thread_local` `auto` `register` - excluded, see 6.7.1\nstorage-class-specifier:\n    `typedef`\n\n    Type specifiers\n\n// `short` `long` `double` `signed` `unsigned` `_Bool` `_Complex` - excluded, see 6.7.2\n// 6.7.2.4 Atomic type specifiers - excluded\n// struct-or-union-specifier replaced with struct-specifier, unions excluded\n// \ntype-specifier:\n    `void`\n    `char`\n    `int`\n    `float`\n    struct-specifier\n    typedef-name\n\n    Structure and union specifiers\n\n// struct-or-union replaced with simply `struct` terminal\nstruct-specifier:\n    `struct` {identifier} `{` struct-declaration-list `}`\n    `struct` identifier\n\nstruct-declaration-list:\n    struct-declaration\n    struct-declaration-list struct-declaration\n\nstruct-declaration:\n    specifier-qualifier-list {struct-declarator-list} `;`\n\nspecifier-qualifier-list:\n    type-specifier {specifier-qualifier-list}\n    `const` {specifier-qualifier-list}\n\n// {declarator} `:` constant-expression (Bit fields) - excluded\n// that way struct-declarator became simply declarator\nstruct-declarator-list:\n    declarator\n    struct-declarator-list `,` declarator\n\n    Type qualifiers\n\n// `restrict` `volatile` `_Atomic` - excluded\n// and since type-qualifier can only be `const` it will be replaced with `const`\n// in latter appearances\n// and regarding that fact type-qualifier-list also becomes useless\n// so `const` will be used instead\ntype-qualifier:\n    `const`\n\n    Declarators    \n\ndeclarator:\n    {pointer} direct-declarator\n\n// `static` keyword appearance within `[` `]` excluded See 6.7.6.3 and\n// http://hamberg.no/erlend/posts/2013-02-18-static-array-indices.html\n// for details\n// `const` keyword appearance within `[` `]` is also excluded as well as `*`\ndirect-declarator:\n    identifier\n    `(` declarator `)`\n    direct-declarator `[` {assignment-expression} `]`\n    direct-declarator `(` parameter-list `)`\n    direct-declarator `(` {identifier-list} `)`\n\npointer:\n    `*` {`const`}\n    `*` {`const`} pointer\n\n// all occurences of parameter-type-list are replaced with parameter-list\n// due to exclusion of `...` punctuation\nparameter-list:\n    parameter-declaration\n    parameter-list `,` parameter-declaration\n\nparameter-declaration:\n        declaration-specifiers declarator\n        declaration-specifiers {abstract-declarator}\n\nidentifier-list:\n    identifier\n    identifier-list `,` identifier\n\n\n    Type Names\n\ntype-name:\n    specifier-qualifier-list {abstract-declarator}\n\nabstract-declarator:\n    pointer\n    {pointer} direct-abstract-declarator\n\n// Yet again, as in direct-declarator: all stuff within square brackets\n// except {assignment-expression} is excluded\ndirect-abstract-declarator:\n    `(` abstract-declarator `)`\n    {direct-abstract-declarator} `[` {assignment-expression} `]`\n    {direct-abstract-declarator} `(` {parameter-list} `)`\n\n    Type definitions\n\ntypedef-name:\n    identifier\n\n    \n    Initialization\n\ninitializer:\n    assignment-expression\n    `{` initializer-list `}`\n    `{` initializer-list `,` `}`\n\ninitializer-list:\n    {designation} initializer\n    initializer-list `,` {designation} initializer\n\ndesignation:\n    designator-list `=`\n\ndesignator-list:\n    designator\n    designator-list designator\n\ndesignator:\n    `[` constant-expression `]`\n    `.` identifier\n\n    Statements and Blocks\n\nstatement:\n    compound-statement\n    expression-statement\n    selection-statement\n    iteration-statement\n    jump-statement\n\n    Compound statement\n\ncompound-statement:\n    `{` {block-item-list} `}`\n\nblock-item-list:\n    block-item\n    block-item-list block-item\n\nblock-item:\n    declaration\n    statement\n\n    Expression and null statements\n\nexpression-statement:\n    {expression} `;`\n\n    Selection statements\n\nselection-statement:\n    `if` `(` expression `)` statement\n    `if` `(` expression `)` statement `else` statement\n\niteration-statement:\n    `while` `(` expression `)` statement\n    `do` statement `while` `(` expression `)` `;`\n    `for` `(` {expression} `;` {expression} `;` {expression} `)` statement\n    `for` `(` declaration {expression} `;` {expression} `)` statement\n\njump-statement:\n    `continue` `;`\n    `break` `;`\n    `return` {expression} `;`\n\n    External definitions\n\ntranslation-unit:\n    external-declaration\n    translation-unit external-declaration\n\nexternal-declaration:\n    function-definition\n    declaration    \n\n    Function definition\n\nfunction-definition:\n    declaration-specifiers declarator {declaration-list} compound-statement\n\ndeclaration-list:\n    declaration\n    declaration-list declaration\n\n",
+			"file": "/D/dev/compiler/doc/grammar",
+			"file_size": 9399,
+			"file_write_time": 130274017533360648,
 			"settings":
 			{
-				"buffer_size": 7996,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "/D/dev/ncc/include/parser.h",
-			"settings":
-			{
-				"buffer_size": 4246,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "/D/dev/ncc/include/symbols.h",
-			"settings":
-			{
-				"buffer_size": 9041,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "/D/dev/ncc/src/symbols.cpp",
-			"settings":
-			{
-				"buffer_size": 20664,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "/D/dev/ncc/src/parser.cpp",
-			"settings":
-			{
-				"buffer_size": 43024,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "doc/LL(k).txt",
-			"settings":
-			{
-				"buffer_size": 333,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "doc/next-week-task.txt",
-			"settings":
-			{
-				"buffer_size": 203,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "doc/tasks2.txt",
-			"settings":
-			{
-				"buffer_size": 333,
+				"buffer_size": 8620,
 				"line_ending": "Windows"
 			}
 		}
@@ -156,9 +80,13 @@
 	"build_system": "",
 	"command_palette":
 	{
-		"height": 236.0,
+		"height": 86.0,
 		"selected_items":
 		[
+			[
+				"C++",
+				"Set Syntax: C++"
+			],
 			[
 				"lua",
 				"Set Syntax: Lua"
@@ -178,10 +106,6 @@
 			[
 				"packli",
 				"Package Control: List Packages"
-			],
-			[
-				"C++",
-				"Set Syntax: C++"
 			],
 			[
 				"lower",
@@ -585,16 +509,6 @@
 	},
 	"file_history":
 	[
-		"/D/dev/ncc/include/statements.h",
-		"/D/dev/ncc/include/common.h",
-		"/D/dev/ncc/include/codegen.h",
-		"/D/dev/ncc/include/cli.h",
-		"/C/Users/mapho_000/Desktop/error.log",
-		"/D/dev/compiler/tests/parser/000.t",
-		"/C/Users/mapho_000/AppData/Local/Temp/asm_test.txt",
-		"/H/doc/University/asm_test.txt",
-		"/D/dev/compiler/tests/parser/001.t",
-		"/D/dev/whiterra/repo/game/src/Grid.cpp",
 		"/D/dev/compiler/src/Parser.hpp",
 		"/D/dev/compiler/src/Parser.cpp",
 		"/D/dev/compiler/src/utils.cpp",
@@ -712,7 +626,17 @@
 		"/C/Users/mapho_000/Downloads/ktt7.tar/ktt7/ktt7/Tokenizer.hpp",
 		"/D/cppgm/dev/cppgm-dev/posttoken/posttoken.pro",
 		"/C/Users/mapho_000/Downloads/ktt7.tar/ktt7/ktt7/PostTokenStream.cpp",
-		"/D/cppgm/dev/cppgm-dev/pptoken/pptoken-ref"
+		"/D/cppgm/dev/cppgm-dev/pptoken/pptoken-ref",
+		"/D/cppgm/dev/cppgm-dev/posttoken/posttoken",
+		"/D/cppgm/dev/cppgm-dev/cppgm.pro",
+		"/D/cppgm/dev/cppgm-starter-kits/pa1/tests/100-raw-string-literal.t",
+		"/D/dev/whiterra/repo/bin/res/json/Levels/templates.json",
+		"/C/Users/mapho_000/Desktop/json/json/Levels/templates.json",
+		"/D/dev/whiterra/repo/bin/game.ini",
+		"/C/Users/mapho_000/Desktop/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af",
+		"/C/Users/mapho_000/Desktop/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af (1).tar/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af (1)/(1).tar/RSEngine-7553457135d9bb3affb1e0d4e1a366ae91d311af",
+		"/C/portableApplications/miranda-ng-v0.93.5_x64/Profiles/Satana/Logs/Jabber.ru/s@anoos.pyos.net.log",
+		"/C/Users/mapho_000/Desktop/ru.json"
 	],
 	"find":
 	{
@@ -781,32 +705,11 @@
 		"case_sensitive": false,
 		"find_history":
 		[
-			"ParsePointer",
-			"CPointerSymbol",
-			"GetQu",
-			"CTypeSymbol",
-			"FilterDuplicates",
-			"ParsePointer",
-			"Pointer",
-			"CDecl",
-			"InitOffset",
-			"type-qualifier",
-			"const`",
+			"parameter-list",
+			"enum",
+			"`const`",
+			"'const'",
 			"const",
-			"pointer",
-			"type-specifier",
-			"specifier-qualifier-list",
-			"type-name",
-			"declaration-list",
-			"ass",
-			"type-qualifier",
-			"type-qualifier-list",
-			"declarator",
-			"function-spec",
-			"struct-declarator-list",
-			"struct-declarator",
-			"constant-expression",
-			"'",
 			"},",
 			"OP",
 			"O",
@@ -908,7 +811,28 @@
 			".lib",
 			"Water",
 			"ktt7.*ktt4.*\\?",
-			"\n"
+			"\n",
+			" ",
+			"no-texture",
+			",",
+			"lousy.*седь",
+			"воронеж",
+			"OnHoverEn",
+			"IDPREF",
+			"plus",
+			"twitch",
+			"twitch.tv",
+			"twitch.tv/",
+			"Лагерь",
+			"BUILD",
+			"\"Effects\"",
+			"Images",
+			"Effec",
+			"Image",
+			"\"Images\"",
+			"Imag",
+			"(.*\"Name\": \")Images\"",
+			"(.*\"Name\": \")Images\","
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -916,7 +840,6 @@
 		"regex": true,
 		"replace_history":
 		[
-			"`",
 			"\\1,",
 			"\\1",
 			"\\1Visual\"",
@@ -996,7 +919,7 @@
 	"groups":
 	[
 		{
-			"selected": 7,
+			"selected": 3,
 			"sheets":
 			[
 				{
@@ -1074,7 +997,7 @@
 					"buffer": 1,
 					"settings":
 					{
-						"buffer_size": 2588,
+						"buffer_size": 4569,
 						"regions":
 						{
 							"bookmarks":
@@ -1094,8 +1017,8 @@
 						"selection":
 						[
 							[
-								171,
-								171
+								4569,
+								4569
 							]
 						],
 						"settings":
@@ -1151,25 +1074,95 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 2401.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
 					"buffer": 2,
-					"file": "doc/grammar",
 					"settings":
 					{
-						"buffer_size": 9029,
+						"buffer_size": 385,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								8825,
-								8825
+								0,
+								385
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/D/dev/compiler/doc/grammar",
+					"settings":
+					{
+						"buffer_size": 8620,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								8183,
+								8183
 							]
 						],
 						"settings":
@@ -1226,596 +1219,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 8694.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "/D/dev/ncc/include/expressions.h",
-					"settings":
-					{
-						"buffer_size": 7996,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1004,
-								1004
-							]
-						],
-						"settings":
-						{
-							"BracketHighlighterBusy": false,
-							"bh_regions":
-							[
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close"
-							],
-							"encoding_helper_confidence": 1.0,
-							"encoding_helper_encoding": "UTF-8",
-							"encoding_helper_encoding_sublime": "UTF-8",
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 324.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "/D/dev/ncc/include/parser.h",
-					"settings":
-					{
-						"buffer_size": 4246,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2566,
-								2573
-							]
-						],
-						"settings":
-						{
-							"BracketHighlighterBusy": false,
-							"bh_regions":
-							[
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close"
-							],
-							"encoding_helper_confidence": 1.0,
-							"encoding_helper_encoding": "UTF-8",
-							"encoding_helper_encoding_sublime": "UTF-8",
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 2554.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "/D/dev/ncc/include/symbols.h",
-					"settings":
-					{
-						"buffer_size": 9041,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								6783,
-								6783
-							]
-						],
-						"settings":
-						{
-							"BracketHighlighterBusy": false,
-							"bh_regions":
-							[
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close"
-							],
-							"encoding_helper_confidence": 1.0,
-							"encoding_helper_encoding": "UTF-8",
-							"encoding_helper_encoding_sublime": "UTF-8",
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 7900.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "/D/dev/ncc/src/symbols.cpp",
-					"settings":
-					{
-						"buffer_size": 20664,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								15741,
-								15755
-							]
-						],
-						"settings":
-						{
-							"BracketHighlighterBusy": false,
-							"bh_regions":
-							[
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close"
-							],
-							"encoding_helper_confidence": 1.0,
-							"encoding_helper_encoding": "UTF-8",
-							"encoding_helper_encoding_sublime": "UTF-8",
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 20320.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 7,
-					"file": "/D/dev/ncc/src/parser.cpp",
-					"settings":
-					{
-						"buffer_size": 43024,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								10276,
-								10287
-							]
-						],
-						"settings":
-						{
-							"BracketHighlighterBusy": false,
-							"bh_regions":
-							[
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close"
-							],
-							"encoding_helper_confidence": 1.0,
-							"encoding_helper_encoding": "UTF-8",
-							"encoding_helper_encoding_sublime": "UTF-8",
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 11113.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 8,
-					"file": "doc/LL(k).txt",
-					"settings":
-					{
-						"buffer_size": 333,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"BracketHighlighterBusy": false,
-							"bh_regions":
-							[
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close"
-							],
-							"encoding_helper_confidence": 0.99,
-							"encoding_helper_encoding": "UTF-8",
-							"encoding_helper_encoding_sublime": "UTF-8",
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 9,
-					"file": "doc/next-week-task.txt",
-					"settings":
-					{
-						"buffer_size": 203,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"BracketHighlighterBusy": false,
-							"bh_regions":
-							[
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close"
-							],
-							"encoding_helper_confidence": 0.99,
-							"encoding_helper_encoding": "UTF-8",
-							"encoding_helper_encoding_sublime": "UTF-8",
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 10,
-					"file": "doc/tasks2.txt",
-					"settings":
-					{
-						"buffer_size": 333,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								34,
-								26
-							]
-						],
-						"settings":
-						{
-							"BracketHighlighterBusy": false,
-							"bh_regions":
-							[
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close"
-							],
-							"encoding_helper_confidence": 0.99,
-							"encoding_helper_encoding": "UTF-8",
-							"encoding_helper_encoding_sublime": "UTF-8",
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 6001.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -1876,14 +1280,6 @@
 		"height": 0.0,
 		"selected_items":
 		[
-			[
-				"t000.t",
-				"tests/parser/000.t"
-			],
-			[
-				"t001.t",
-				"tests/parser/001.t"
-			],
 			[
 				"gramm",
 				"doc/grammar"

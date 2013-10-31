@@ -32,13 +32,13 @@ namespace Compiler
         ASTNode* ParseConditionalExpression_(Coroutine::caller_type& caller);
         ASTNode* ParsePostfixExpression_(Coroutine::caller_type& caller);
 
-        // type-name
-        ASTNode* ParseTypeName(Coroutine::caller_type& caller);
-        ASTNode* ParseSpecifierQualifierList(Coroutine::caller_type& caller);
-        ASTNode* ParseAbstractDeclarator(Coroutine::caller_type& caller);
-        ASTNode* ParsePointer(Coroutine::caller_type& caller);
-        ASTNode* ParseDirectAbstractDeclarator(Coroutine::caller_type& caller);
-        ASTNode* ParseParameterList(Coroutine::caller_type& caller);
+//        // type-name
+//        ASTNode* ParseTypeName(Coroutine::caller_type& caller);
+//        ASTNode* ParseSpecifierQualifierList(Coroutine::caller_type& caller);
+//        ASTNode* ParseAbstractDeclarator(Coroutine::caller_type& caller);
+//        ASTNode* ParsePointer(Coroutine::caller_type& caller);
+//        ASTNode* ParseDirectAbstractDeclarator(Coroutine::caller_type& caller);
+//        ASTNode* ParseParameterList(Coroutine::caller_type& caller);
 
         void ThrowInvalidTokenError_(const Token& token, const std::string& descriptionText = "");
         void ResumeParse_(const Token& token);
