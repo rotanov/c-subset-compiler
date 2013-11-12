@@ -297,12 +297,12 @@
 ..70-.41: punctuation OP_INC ++
 ..70-.44: punctuation OP_RPAREN )
 ..70-.46: punctuation OP_LBRACE {
-..71-.11: keyword KW_SWITCH switch
+..71-.11: identifier  switch
 ..71-.18: punctuation OP_LPAREN (
 ..71-.20: identifier  month
 ..71-.26: punctuation OP_RPAREN )
 ..71-.28: punctuation OP_LBRACE {
-..72-.11: keyword KW_CASE case
+..72-.11: identifier  case
 ..72-.16: literal int 1 01000000
 ..72-.17: punctuation OP_COLON :
 ..73-.16: identifier  fprintf
@@ -320,7 +320,7 @@ January array of 10 char 0A0A4A616E7561727900
 ..74-.34: punctuation OP_SEMICOLON ;
 ..75-.16: keyword KW_BREAK break
 ..75-.21: punctuation OP_SEMICOLON ;
-..76-.11: keyword KW_CASE case
+..76-.11: identifier  case
 ..76-.16: literal int 2 02000000
 ..76-.17: punctuation OP_COLON :
 ..77-.16: identifier  fprintf
@@ -342,7 +342,7 @@ February array of 11 char 0A0A466562727561727900
 ..78-.51: punctuation OP_SEMICOLON ;
 ..79-.16: keyword KW_BREAK break
 ..79-.21: punctuation OP_SEMICOLON ;
-..80-.11: keyword KW_CASE case
+..80-.11: identifier  case
 ..80-.16: literal int 3 03000000
 ..80-.17: punctuation OP_COLON :
 ..81-.16: identifier  fprintf
@@ -360,7 +360,7 @@ March array of 8 char 0A0A4D6172636800
 ..82-.34: punctuation OP_SEMICOLON ;
 ..83-.16: keyword KW_BREAK break
 ..83-.21: punctuation OP_SEMICOLON ;
-..84-.11: keyword KW_CASE case
+..84-.11: identifier  case
 ..84-.16: literal int 4 04000000
 ..84-.17: punctuation OP_COLON :
 ..85-.16: identifier  fprintf
@@ -378,7 +378,7 @@ April array of 8 char 0A0A417072696C00
 ..86-.34: punctuation OP_SEMICOLON ;
 ..87-.16: keyword KW_BREAK break
 ..87-.21: punctuation OP_SEMICOLON ;
-..88-.11: keyword KW_CASE case
+..88-.11: identifier  case
 ..88-.16: literal int 5 05000000
 ..88-.17: punctuation OP_COLON :
 ..89-.16: identifier  fprintf
@@ -396,7 +396,7 @@ May array of 6 char 0A0A4D617900
 ..90-.34: punctuation OP_SEMICOLON ;
 ..91-.16: keyword KW_BREAK break
 ..91-.21: punctuation OP_SEMICOLON ;
-..92-.11: keyword KW_CASE case
+..92-.11: identifier  case
 ..92-.16: literal int 6 06000000
 ..92-.17: punctuation OP_COLON :
 ..93-.16: identifier  fprintf
@@ -414,7 +414,7 @@ June array of 7 char 0A0A4A756E6500
 ..94-.34: punctuation OP_SEMICOLON ;
 ..95-.16: keyword KW_BREAK break
 ..95-.21: punctuation OP_SEMICOLON ;
-..96-.11: keyword KW_CASE case
+..96-.11: identifier  case
 ..96-.16: literal int 7 07000000
 ..96-.17: punctuation OP_COLON :
 ..97-.16: identifier  fprintf
@@ -432,7 +432,7 @@ July array of 7 char 0A0A4A756C7900
 ..98-.34: punctuation OP_SEMICOLON ;
 ..99-.16: keyword KW_BREAK break
 ..99-.21: punctuation OP_SEMICOLON ;
-.100-.11: keyword KW_CASE case
+.100-.11: identifier  case
 .100-.16: literal int 8 08000000
 .100-.17: punctuation OP_COLON :
 .101-.16: identifier  fprintf
@@ -450,7 +450,7 @@ August array of 9 char 0A0A41756775737400
 .102-.34: punctuation OP_SEMICOLON ;
 .103-.16: keyword KW_BREAK break
 .103-.21: punctuation OP_SEMICOLON ;
-.104-.11: keyword KW_CASE case
+.104-.11: identifier  case
 .104-.16: literal int 9 09000000
 .104-.17: punctuation OP_COLON :
 .105-.16: identifier  fprintf
@@ -468,7 +468,7 @@ September array of 12 char 0A0A53657074656D62657200
 .106-.34: punctuation OP_SEMICOLON ;
 .107-.16: keyword KW_BREAK break
 .107-.21: punctuation OP_SEMICOLON ;
-.108-.11: keyword KW_CASE case
+.108-.11: identifier  case
 .108-.16: literal int 10 0A000000
 .108-.18: punctuation OP_COLON :
 .109-.16: identifier  fprintf
@@ -486,7 +486,7 @@ October array of 10 char 0A0A4F63746F62657200
 .110-.34: punctuation OP_SEMICOLON ;
 .111-.16: keyword KW_BREAK break
 .111-.21: punctuation OP_SEMICOLON ;
-.112-.11: keyword KW_CASE case
+.112-.11: identifier  case
 .112-.16: literal int 11 0B000000
 .112-.18: punctuation OP_COLON :
 .113-.16: identifier  fprintf
@@ -504,7 +504,7 @@ November array of 11 char 0A0A4E6F76656D62657200
 .114-.34: punctuation OP_SEMICOLON ;
 .115-.16: keyword KW_BREAK break
 .115-.21: punctuation OP_SEMICOLON ;
-.116-.11: keyword KW_CASE case
+.116-.11: identifier  case
 .116-.16: literal int 12 0C000000
 .116-.18: punctuation OP_COLON :
 .117-.16: identifier  fprintf

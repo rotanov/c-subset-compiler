@@ -20,41 +20,26 @@ token:
 
 // these keywords from c standard are excluded from study implementation:
 //  restrict, _Alignas, _Alignof, _Atomic, _Bool, _Complex, _Generic, _Imaginary,
-// _Noreturn, _Static_assert, _Thread_local,
+// _Noreturn, _Static_assert, _Thread_local, auto, default, case, double,
+// enum, extern, volatile, union, unsigned, goto, inline, register, short,
+// signed, static, switch, long
 // any other may be excluded later on
 keyword:
-    auto
     break
-    case
     char
     const
     continue
-    default
     do
-    double
     else
-    enum
-    extern
     float
     for
-    goto
     if
-    inline
     int
-    long
-    register    
     return
-    short
-    signed
     sizeof
-    static
     struct
-    switch
     typedef
-    union
-    unsigned
-    void
-    volatile
+    void    
     while
 
 identifier:

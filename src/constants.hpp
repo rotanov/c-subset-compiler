@@ -63,7 +63,7 @@ namespace Compiler
 
     const unordered_set<string> punctuation3 =
     {
-        "<<=", ">>=", "...",
+        "<<=", ">>=",
     };
 
     const unordered_set<string> punctuation2 =
@@ -136,7 +136,6 @@ namespace Compiler
         OP_LNOT,
         OP_SEMICOLON,
         OP_COLON,
-        OP_DOTS,
         OP_QMARK,
         OP_DOT,
         OP_PLUS,
@@ -226,38 +225,21 @@ namespace Compiler
     const unordered_map<string, ETokenType> stringToKeywordTypeMap =
     {
         // keywords
-        {"auto", KW_AUTO},
         {"break", KW_BREAK},
-        {"case", KW_CASE},
         {"char", KW_CHAR},
         {"const", KW_CONST},
         {"continue", KW_CONTINUE},
-        {"default", KW_DEFAULT},
         {"do", KW_DO},
-        {"double", KW_DOUBLE},
         {"else", KW_ELSE},
-        {"enum", KW_ENUM},
-        {"extern", KW_EXTERN},
         {"float", KW_FLOAT},
         {"for", KW_FOR},
-        {"goto", KW_GOTO},
         {"if", KW_IF},
-        {"inline", KW_INLINE},
         {"int", KW_INT},
-        {"long", KW_LONG},
-        {"register", KW_REGISTER},
         {"return", KW_RETURN},
-        {"short", KW_SHORT},
-        {"signed", KW_SIGNED},
         {"sizeof", KW_SIZEOF},
-        {"static", KW_STATIC},
         {"struct", KW_STRUCT},
-        {"switch", KW_SWITCH},
         {"typedef", KW_TYPEDEF},
-        {"union", KW_UNION},
-        {"unsigned", KW_UNSIGNED},
         {"void", KW_VOID},
-        {"volatile", KW_VOLATILE},
         {"while", KW_WHILE},
     };
 
@@ -281,7 +263,6 @@ namespace Compiler
         {"!", OP_LNOT},
         {";", OP_SEMICOLON},
         {":", OP_COLON},
-        {"...", OP_DOTS},
         {"?", OP_QMARK},
         {".", OP_DOT},
         {"+", OP_PLUS},
@@ -369,7 +350,6 @@ namespace Compiler
         {OP_LNOT, "OP_LNOT"},
         {OP_SEMICOLON, "OP_SEMICOLON"},
         {OP_COLON, "OP_COLON"},
-        {OP_DOTS, "OP_DOTS"},
         {OP_QMARK, "OP_QMARK"},
         {OP_DOT, "OP_DOT"},
         {OP_PLUS, "OP_PLUS"},

@@ -542,7 +542,6 @@ namespace Compiler
     {
         const unordered_set<ETokenType> disallowedPunctuation =
         {
-            OP_DOTS,
             OP_LBRACE,
             OP_RBRACE,
             OP_SEMICOLON,

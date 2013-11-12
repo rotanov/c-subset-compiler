@@ -16,10 +16,7 @@ namespace Compiler
         Token(const ETokenType &type);
         Token();
 
-        operator const ETokenType& () const
-        {
-            return type;
-        }
+        operator const ETokenType& () const;
     };
 
 } // namespace Compiler

@@ -70,10 +70,10 @@
 ..11-.12: identifier  alignas
 ..11-.20: identifier  alignof
 ..11-.28: identifier  asm
-..11-.32: keyword KW_AUTO auto
+..11-.32: identifier  auto
 ..11-.37: identifier  bool
 ..12-..1: keyword KW_BREAK break
-..12-..7: keyword KW_CASE case
+..12-..7: identifier  case
 ..12-.12: identifier  catch
 ..12-.18: keyword KW_CHAR char
 ..13-..1: identifier  char16_t
@@ -84,25 +84,25 @@
 ..14-..1: identifier  const_cast
 ..14-.12: keyword KW_CONTINUE continue
 ..14-.21: identifier  decltype
-..15-..1: keyword KW_DEFAULT default
+..15-..1: identifier  default
 ..15-..9: identifier  delete
 ..15-.16: keyword KW_DO do
-..15-.19: keyword KW_DOUBLE double
+..15-.19: identifier  double
 ..15-.26: identifier  dynamic_cast
 ..16-..1: keyword KW_ELSE else
-..16-..6: keyword KW_ENUM enum
+..16-..6: identifier  enum
 ..16-.11: identifier  explicit
 ..16-.20: identifier  export
-..16-.27: keyword KW_EXTERN extern
+..16-.27: identifier  extern
 ..17-..1: identifier  false
 ..17-..7: keyword KW_FLOAT float
 ..17-.13: keyword KW_FOR for
 ..17-.17: identifier  friend
-..17-.24: keyword KW_GOTO goto
+..17-.24: identifier  goto
 ..17-.29: keyword KW_IF if
-..17-.32: keyword KW_INLINE inline
+..17-.32: identifier  inline
 ..18-..1: keyword KW_INT int
-..18-..5: keyword KW_LONG long
+..18-..5: identifier  long
 ..18-.10: identifier  mutable
 ..18-.18: identifier  namespace
 ..18-.28: identifier  new
@@ -112,17 +112,17 @@
 ..19-.27: identifier  private
 ..20-..1: identifier  protected
 ..20-.11: identifier  public
-..20-.18: keyword KW_REGISTER register
+..20-.18: identifier  register
 ..20-.27: identifier  reinterpret_cast
 ..21-..1: keyword KW_RETURN return
-..21-..8: keyword KW_SHORT short
-..21-.14: keyword KW_SIGNED signed
+..21-..8: identifier  short
+..21-.14: identifier  signed
 ..21-.21: keyword KW_SIZEOF sizeof
-..21-.28: keyword KW_STATIC static
+..21-.28: identifier  static
 ..22-..1: identifier  static_assert
 ..22-.15: identifier  static_cast
 ..22-.27: keyword KW_STRUCT struct
-..22-.34: keyword KW_SWITCH switch
+..22-.34: identifier  switch
 ..23-..1: identifier  template
 ..23-.10: identifier  this
 ..23-.15: identifier  thread_local
@@ -132,12 +132,12 @@
 ..24-.10: keyword KW_TYPEDEF typedef
 ..24-.18: identifier  typeid
 ..24-.25: identifier  typename
-..24-.34: keyword KW_UNION union
-..25-..1: keyword KW_UNSIGNED unsigned
+..24-.34: identifier  union
+..25-..1: identifier  unsigned
 ..25-.10: identifier  using
 ..25-.16: identifier  virtual
 ..25-.24: keyword KW_VOID void
-..26-..1: keyword KW_VOLATILE volatile
+..26-..1: identifier  volatile
 ..26-.10: identifier  wchar_t
 ..26-.18: keyword KW_WHILE while
 ..29-..1: identifier  abcd

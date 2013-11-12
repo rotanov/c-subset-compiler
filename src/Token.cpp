@@ -15,7 +15,7 @@ namespace Compiler
 
 //------------------------------------------------------------------------------
     Token::Token(const ETokenType& type)
-        :type(type)
+        : type(type)
     {
 
     }
@@ -24,6 +24,12 @@ namespace Compiler
     Token::Token()
     {
 
+    }
+
+//------------------------------------------------------------------------------
+    Compiler::Token::operator const ETokenType&() const
+    {
+        return type;
     }
 
 } // namespace Compiler

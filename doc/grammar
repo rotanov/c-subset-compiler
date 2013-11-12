@@ -126,7 +126,7 @@ declaration:
 // 6.7.4 Function specifiers - excluded (inline, _Noreturn)
 // 6.7.5 Alignment specifier - excluded (_Alignas)
 declaration-specifiers:
-    storage-class-specifier {declaration-specifiers}
+    `typedef` {declaration-specifiers}
     type-specifier {declaration-specifiers}
     `const` {declaration-specifiers}
 
@@ -139,6 +139,7 @@ init-declarator:
     declarator `=` initializer
 
 // `extern` `static` `_Thread_local` `auto` `register` - excluded, see 6.7.1
+// since it is `typedef` only I shall use plainly `typedef` in place of storage-class-specifier
 storage-class-specifier:
     `typedef`
 
@@ -190,7 +191,7 @@ struct-declarator-list:
 type-qualifier:
     `const`
 
-//    Declarators    
+//    Declarators
 
 declarator:
     {pointer} direct-declarator
@@ -199,12 +200,12 @@ declarator:
 // http://hamberg.no/erlend/posts/2013-02-18-static-array-indices.html
 // for details
 // `const` keyword appearance within `[` `]` is also excluded as well as `*`
+// direct-declarator `(` {identifier-list} `)` excluded
 direct-declarator:
     identifier
     `(` declarator `)`
     direct-declarator `[` {assignment-expression} `]`
-    direct-declarator `(` parameter-list `)`
-    direct-declarator `(` {identifier-list} `)`
+    direct-declarator `(` parameter-list `)`    
 
 pointer:
     `*` {`const`}
@@ -325,10 +326,11 @@ external-declaration:
 
 //    Function definition
 
+// {declaration-list} after declarator excluded as old style see 6.9.1
 function-definition:
-    declaration-specifiers declarator {declaration-list} compound-statement
+    declaration-specifiers declarator  compound-statement
 
-declaration-list:
-    declaration
-    declaration-list declaration
+// declaration-list:
+//    declaration
+//    declaration-list declaration
 

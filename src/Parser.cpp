@@ -15,11 +15,17 @@ namespace Compiler
 //------------------------------------------------------------------------------
     Parser::Parser()
     {
-        parseCoroutine_ = boost::move(Coroutine(boost::bind(&Parser::ParseTopLevelExpression_, this, _1), Token()));
+        SymbolTable* globalSymbols = new SymbolTable;
+        globalSymbols->AddType(new SymbolChar);
+        globalSymbols->AddType(new SymbolInt);
+        globalSymbols->AddType(new SymbolFloat);
+        globalSymbols->AddType(new SymbolVoid);
+        symTables_.push_back(globalSymbols);
+        parseCoroutine_ = boost::move(Coroutine(boost::bind(&Parser::ParseTranslationUnit_, this, _1), Token()));
     }
 
 //------------------------------------------------------------------------------
-    ASTNode* Parser::ParseTopLevelExpression_(Coroutine::caller_type& caller)
+    ASTNode* Parser::ParseTopLevelExpression_(CallerType& caller)
     {
         while (true)
         {
@@ -41,7 +47,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ASTNode* Parser::ParsePrimaryExpression_(Coroutine::caller_type& caller)
+    ASTNode* Parser::ParsePrimaryExpression_(CallerType& caller)
     {
         Token token = WaitForTokenReady_(caller);
         switch(token.type)
@@ -78,7 +84,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ASTNode* Parser::ParseBinaryOperator_(Coroutine::caller_type& caller, int priority)
+    ASTNode* Parser::ParseBinaryOperator_(CallerType& caller, int priority)
     {
         ASTNode* left = NULL;
 
@@ -106,7 +112,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ASTNode* Parser::ParseExpression_(Coroutine::caller_type& caller)
+    ASTNode* Parser::ParseExpression_(CallerType& caller)
     {
         ASTNode* node = ParseAssignmentExpression_(caller);
         Token token = WaitForTokenReady_(caller);
@@ -121,7 +127,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ASTNode* Parser::ParseAssignmentExpression_(Coroutine::caller_type& caller)
+    ASTNode* Parser::ParseAssignmentExpression_(CallerType& caller)
     {
         ASTNode* node = ParseUnaryExpression_(caller);
         Token token = WaitForTokenReady_(caller);
@@ -140,7 +146,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ASTNode* Parser::ParseUnaryExpression_(Coroutine::caller_type& caller)
+    ASTNode* Parser::ParseUnaryExpression_(CallerType& caller)
     {
         Token token = WaitForTokenReady_(caller);
 
@@ -171,7 +177,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ASTNode* Parser::ParseConditionalExpression_(Coroutine::caller_type& caller)
+    ASTNode* Parser::ParseConditionalExpression_(CallerType& caller)
     {
         ASTNode* conditionNode = ParseBinaryOperator_(caller, 0);
         Token token = WaitForTokenReady_(caller);
@@ -199,7 +205,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ASTNode* Parser::ParsePostfixExpression_(Coroutine::caller_type& caller)
+    ASTNode* Parser::ParsePostfixExpression_(CallerType& caller)
     {
         ASTNode* node = ParsePrimaryExpression_(caller);
         Token token = WaitForTokenReady_(caller);
@@ -298,6 +304,233 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
+    SymbolType* Parser::ParsePointer_(Parser::CallerType& caller, SymbolType* refType)
+    {
+        SymbolPointer* symPtr = new SymbolPointer(refType);
+
+        Token token = WaitForTokenReady_(caller);
+
+        while (token == KW_CONST)
+        {
+            symPtr->constant = true;
+            token = WaitForTokenReady_(caller);
+        }
+
+        if (token == OP_STAR)
+        {
+            return ParsePointer_(caller, symPtr);
+        }
+        else
+        {
+            tokenStack_.push_back(token);
+            return symPtr;
+        }
+
+    }
+
+//------------------------------------------------------------------------------
+    DeclarationSpecifiers Parser::ParseDeclarationSpecifiers_(CallerType& caller)
+    {
+//        twice typedef is an error
+
+//        If the same qualifier (const) appears more than once in the same specifier-qualifier-list, either
+//        directly or via one or more typedefs, the behavior is the same as if it appeared only
+//        once.
+
+//        If the specification of an array type includes any type qualifiers, the element type is so-
+//        qualified, not the array type. If the specification of a function type includes any type
+//        qualifiers, the behavior is undefined. Both of these can occur through the use of typedefs.
+
+//        For two qualified types to be compatible, both shall have the identically qualified version
+//        of a compatible type; the order of type qualifiers within a list of specifiers or qualifiers
+//        does not affect the specified type.
+
+//        `void`, `char`, `int`, `float`
+//        `struct`
+//        typedef-name
+//        all of the above could begin type-specifier part
+
+//        `;`, `(`, `*`, identifier - end of decl spec
+
+
+        DeclarationSpecifiers declSpec;
+        Token token = WaitForTokenReady_(caller);
+
+        bool identifierFound = false;
+
+        while (token != OP_SEMICOLON
+               && token != OP_LPAREN
+               && token != OP_STAR
+               && !identifierFound)
+        {
+            switch (token)
+            {
+                case KW_CONST:
+                    declSpec.isConst = true;
+                    break;
+
+                case KW_TYPEDEF:
+                    if (declSpec.isTypedef)
+                    {
+                        ThrowInvalidTokenError_(token, "more than one `typedef` not allowed");
+                    }
+                    declSpec.isTypedef = true;
+                    break;
+
+                case KW_STRUCT:
+                    declSpec.typeSymbol = ParseStructSpecifier_(caller);
+                    break;
+
+                case KW_INT:
+                case KW_FLOAT:
+                case KW_VOID:
+                case KW_CHAR:
+                case TT_IDENTIFIER:
+                    if (declSpec.typeSymbol != NULL)
+                    {
+                        if (LookupType_(token.value) != NULL)
+                        {
+                            ThrowInvalidTokenError_(token, "only one type per declaration specification is expected");
+                        }
+                        else
+                        {
+                            identifierFound = true;
+                            tokenStack_.push_back(token);
+                        }
+                    }
+                    else
+                    {
+                        declSpec.typeSymbol = LookupType_(token.value);
+                        if (declSpec.typeSymbol == NULL)
+                        {
+                            identifierFound = true;
+                            tokenStack_.push_back(token);
+                        }
+                    }
+                    break;
+
+                default:
+                    ThrowInvalidTokenError_(token, "unexpected in declaration");
+                    break;
+            }
+            token = WaitForTokenReady_(caller);
+        }
+        tokenStack_.push_back(token);
+
+        if (declSpec.typeSymbol == NULL)
+        {
+            ThrowError_("type not specified in declaration");
+        }
+
+        return declSpec;
+    }
+
+//------------------------------------------------------------------------------
+    Symbol* Parser::ParseInitDeclaratorList_(Parser::CallerType& caller, DeclarationSpecifiers& declSpec)
+    {
+        Symbol* sym = ParseOutermostDeclarator_(caller, declSpec);
+
+    }
+
+//------------------------------------------------------------------------------
+    Symbol* Parser::ParseOutermostDeclarator_(Parser::CallerType& caller, DeclarationSpecifiers& declSpec)
+    {
+        Token token = WaitForTokenReady_(caller);
+
+        SymbolType* declType = declSpec.typeSymbol;
+
+        // pointer part
+        if (token == OP_STAR)
+        {
+            declType = ParsePointer_(caller, declType);
+            token = WaitForTokenReady_(caller);
+        }
+
+        // direct declarator
+        if (token == TT_IDENTIFIER)
+        {
+            // TODO: more complex check
+            if (symTables_.back()->LookupVariable(token.value) != NULL)
+            {
+                ThrowInvalidTokenError_(token, "redeclaration of identifier");
+            }
+            declType = new SymbolVariable();
+        }
+        else if (token == OP_LPAREN)
+        {
+            declType = ParseInnerDeclarator_(caller, declType);
+            token = WaitForTokenReady_(caller);
+            if (token != OP_RPAREN)
+            {
+                ThrowInvalidTokenError_(token, "`)` expected to close in declarator");
+            }
+        }
+        else
+        {
+            ThrowInvalidTokenError_(token, "identifier or `(` expected");
+        }
+
+        while (token == OP_LPAREN
+               || token == OP_LSQUARE)
+        {
+            if (token == OP_LPAREN)
+            {
+                declType = new SymbolFunction();
+            }
+            else if (token == OP_LSQUARE)
+            {
+                declType = new SymbolArray();
+            }
+            WaitForTokenReady_(caller);
+        }
+
+        return declType;
+    }
+
+//------------------------------------------------------------------------------
+    Symbol* Parser::ParseInnerDeclarator_(Parser::CallerType& caller)
+    {
+
+    }
+
+//------------------------------------------------------------------------------
+    SymbolStruct* Parser::ParseStructSpecifier_(Parser::CallerType& caller)
+    {
+
+    }
+
+//------------------------------------------------------------------------------
+    void Parser::ParseTranslationUnit_(CallerType& caller)
+    {
+        Token token;
+        Symbol* symbol = NULL;
+
+        do
+        {
+            DeclarationSpecifiers&& declSpec = ParseDeclarationSpecifiers_(caller);
+
+            if (token == OP_SEMICOLON)
+            {
+                // end of declSpec is legal, omitting optional init-declarator-list
+                WaitForTokenReady_(caller);
+                continue;
+            }
+
+            // here goes declarator
+            // if we see `{` after declarator then it's function definition
+            // and compound-statement should be parsed
+            // else it is declaration
+
+            symbol = ParseInitDeclaratorList_(caller, declSpec);
+//            if (symbol->GetSymbolType() == ESymbolType::FUNCTION)
+//            {
+
+//            }
+            token = WaitForTokenReady_(caller);
+        } while (token != TT_EOF);
+    }
+
+//------------------------------------------------------------------------------
     void Parser::ThrowInvalidTokenError_(const Token &token, const std::string& descriptionText)
     {
         FlushOutput_();
@@ -312,13 +545,20 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
+    void Parser::ThrowError_(const std::string& descriptionText)
+    {
+        FlushOutput_();
+        throw std::logic_error(descriptionText);
+    }
+
+//------------------------------------------------------------------------------
     void Parser::ResumeParse_(const Token& token)
     {
         parseCoroutine_(token);
     }
 
 //------------------------------------------------------------------------------
-    Token Parser::WaitForTokenReady_(Coroutine::caller_type& caller)
+    Token Parser::WaitForTokenReady_(CallerType& caller)
     {
         Token token;
         if (tokenStack_.empty())
@@ -345,6 +585,24 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
+    SymbolType*Parser::LookupType_(const std::string& name) const
+    {
+        return LookupSymbolHelper_(name, &SymbolTable::LookupType);
+    }
+
+//------------------------------------------------------------------------------
+    SymbolVariable*Parser::LookupVariable_(const std::string& name) const
+    {
+        return LookupSymbolHelper_(name, &SymbolTable::LookupVariable);
+    }
+
+//------------------------------------------------------------------------------
+    SymbolFunction*Parser::LookupFuntion_(const std::string& name) const
+    {
+        return LookupSymbolHelper_(name, &SymbolTable::LookupFunction);
+    }
+
+//------------------------------------------------------------------------------
     void Parser::EmitInvalid(const string &source, const int line, const int column)
     {
         Token token(TT_INVALID, source, line, column);
@@ -361,24 +619,9 @@ namespace Compiler
 //------------------------------------------------------------------------------
     void Parser::EmitPunctuation(const string &source, ETokenType token_type, const int line, const int column)
     {
-        const unordered_set<ETokenType> disallowedPunctuation =
-        {
-            OP_DOTS,
-            OP_LBRACE,
-            OP_RBRACE,
-            OP_SEMICOLON,
-        };
-
         Token token(token_type, source, line, column);
 
-        if (disallowedPunctuation.find(token_type) == disallowedPunctuation.end())
-        {
-            ResumeParse_(token);
-        }
-        else
-        {
-            ThrowInvalidTokenError_(token);
-        }
+        ResumeParse_(token);
     }
 
 //------------------------------------------------------------------------------
