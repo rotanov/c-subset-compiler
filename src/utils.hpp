@@ -61,6 +61,8 @@ namespace Compiler
     bool IsAssignmentOperator(const ETokenType& tokenType);
     bool IsBinaryOperator(const ETokenType& tokenType);
 
+    bool IsLiteral(const ETokenType& tokenType);
+
     class PostTokenError : public std::exception
     {
     public:

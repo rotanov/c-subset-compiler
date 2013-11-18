@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <unordered_map>
 #include <cassert>
 #include <stdexcept>
@@ -19,8 +20,20 @@ namespace Compiler
         TYPE_ARRAY,
         TYPE_POINTER,
         TYPE_STRUCT,
+        TYPE_FUNCTION,
         VARIABLE,
         FUNCTION,
+    };
+
+    enum class EScopeType
+    {
+        UNDEFINED,
+        INTERNAL,
+        GLOBAL,
+        PARAMETERS,
+        STRUCTURE,
+        BODY,
+        BLOCK,
     };
 
     class SymbolType;
@@ -28,6 +41,7 @@ namespace Compiler
     class SymbolFunction;
     class SymbolStruct;
 
+//------------------------------------------------------------------------------
     class Symbol
     {
     public:
@@ -40,12 +54,8 @@ namespace Compiler
         // but sticking with it for now
         // because I just want it to work
         // !!! also confusing with type-of-symbol-getter above
-        virtual void SetTypeSymbol(SymbolType* symType)
-        {
-            throw std::logic_error("SetType not implemented for this symbol");
-        }
-
-        virtual bool IsComplete() const { return true; }
+        virtual void SetTypeSymbol(SymbolType* symType);
+        virtual std::string GetQualifiedName() const = 0;
 
         std::string name{""};
 
@@ -53,12 +63,17 @@ namespace Compiler
 
     };
 
+//------------------------------------------------------------------------------
     class SymbolTable
     {
     public:
-        SymbolTable();
+        template <typename T>
+        using TSymbols = std::unordered_map<std::string, T*>;
 
+        SymbolTable(const EScopeType scope);
         virtual ~SymbolTable();
+
+        EScopeType GetScopeType() const;
 
         void AddType(SymbolType* symbolType);
         void AddFunction(SymbolFunction* symbolFunction);
@@ -68,14 +83,11 @@ namespace Compiler
         SymbolType* LookupType(const std::string& name) const;
         SymbolFunction* LookupFunction(const std::string& name) const;
 
+        TSymbols<SymbolVariable> variables;
+        TSymbols<SymbolType> types;
+        TSymbols<SymbolFunction> functions;
+
     private:
-        template <typename T>
-        using TSymbols = std::unordered_map<std::string, T*>;
-
-        TSymbols<SymbolVariable> variables_;
-        TSymbols<SymbolType> types_;
-        TSymbols<SymbolFunction> functions_;
-
         template <typename T>
         T* LookupHelper_(const TSymbols<T>& container, const std::string& key) const
         {
@@ -88,110 +100,158 @@ namespace Compiler
                 return NULL;
             }
         }
+
+        EScopeType scope_{EScopeType::UNDEFINED};
     };
 
+//------------------------------------------------------------------------------
     class SymbolType : public Symbol
     {
     public:
         SymbolType(const std::string& name);
 
-        virtual bool IsStruct() const;
+        bool constant{false};
 
-        bool constant;
+        virtual std::string GetQualifiedName() const;
+
     private:
 
     };
 
+//------------------------------------------------------------------------------
     class SymbolVariable : public Symbol
     {
     public:
+        SymbolVariable(const std::string& name);
+        SymbolVariable(const std::string &name, SymbolType* symType);
+
         virtual ESymbolType GetSymbolType() const;
+        virtual void SetTypeSymbol(SymbolType* symType);
+        virtual std::string GetQualifiedName() const;
 
-        virtual void SetTypeSymbol(SymbolType* symType)
-        {
-            assert(typeSymbol_ == NULL);
-            typeSymbol_ = symType;
-        }
-
-
-    private:
-        SymbolType* typeSymbol_{NULL};
+    protected:
+        SymbolType* type_{NULL};
     };
 
-    class SymbolFunction : public Symbol
+//------------------------------------------------------------------------------
+    class SymbolFunction : public SymbolVariable
     {
     public:
+        SymbolFunction(const std::string& name);
         virtual ESymbolType GetSymbolType() const;
+        virtual void SetTypeSymbol(SymbolType *symType);
+
+        virtual std::string GetQualifiedName() const;
 
     private:
-
     };
 
+//------------------------------------------------------------------------------
+    class SymbolFunctionType : public SymbolType
+    {
+    public:
+        SymbolFunctionType(SymbolTable* parametersSymTable);
+
+        virtual ESymbolType GetSymbolType() const;
+        virtual void SetTypeSymbol(SymbolType *symType);
+        virtual std::string GetQualifiedName() const;
+        void AddParameter(SymbolVariable* parameter);
+
+    private:
+        SymbolType* returnType_{NULL};
+        std::vector<SymbolVariable*> orderedParameters_;
+        SymbolTable* parameters_{NULL};
+    };
+
+//------------------------------------------------------------------------------
     class SymbolStruct : public SymbolType
     {
     public:
-        virtual ESymbolType GetSymbolType() const { return ESymbolType::TYPE_STRUCT; }
+        SymbolStruct(SymbolTable* membersSymTable, const std::string name = "");
+
+        virtual ESymbolType GetSymbolType() const;
+        virtual std::string GetQualifiedName() const;
+        void AddField(SymbolVariable* field);
 
     private:
+        SymbolTable* fields_{NULL};
+        std::vector<SymbolVariable*> orderedFields_;
     };
 
+//------------------------------------------------------------------------------
     class SymbolChar : public SymbolType
     {
     public:
         SymbolChar();
 
-        virtual ESymbolType GetSymbolType() const { return ESymbolType::TYPE_CHAR; }
+        virtual ESymbolType GetSymbolType() const;
+
     };
 
+//------------------------------------------------------------------------------
     class SymbolInt : public SymbolType
     {
     public:
         SymbolInt();
 
-        virtual ESymbolType GetSymbolType() const { return ESymbolType::TYPE_INT; }
+        virtual ESymbolType GetSymbolType() const;
+
     };
 
+//------------------------------------------------------------------------------
     class SymbolFloat : public SymbolType
     {
     public:
         SymbolFloat();
 
-        virtual ESymbolType GetSymbolType() const { return ESymbolType::TYPE_INT; }
+        virtual ESymbolType GetSymbolType() const;
+
     };
 
+//------------------------------------------------------------------------------
     class SymbolVoid : public SymbolType
     {
     public:
         SymbolVoid();
 
-        virtual ESymbolType GetSymbolType() const { return ESymbolType::TYPE_VOID; }
+        virtual ESymbolType GetSymbolType() const;
+
     };
 
+//------------------------------------------------------------------------------
     class SymbolPointer : public SymbolType
     {
     public:
-        SymbolPointer(SymbolType* refSymbol)
-            : SymbolType("*")
-        {
-            SetRefSymbol(refSymbol);
-        }
+        SymbolPointer();
 
-        void SetRefSymbol(SymbolType* refSymbol)
-        {
-            assert(refSymbol != NULL);
-            refSymbol = refSymbol;
-        }
+        SymbolType* GetRefSymbol() const;
+        virtual ESymbolType GetSymbolType() const;
+        virtual void SetTypeSymbol(SymbolType *symType);
 
-        SymbolType* GetRefSymbol() const
-        {
-            refSymbol_;
-        }
-
-        virtual ESymbolType GetSymbolType() const { return ESymbolType::TYPE_POINTER; }
+        virtual std::string GetQualifiedName() const;
 
     private:
         SymbolType* refSymbol_{NULL};
 
     };
 
+//------------------------------------------------------------------------------
+    class ASTNode;
+    class SymbolArray : public SymbolType
+    {
+    public:
+        SymbolArray();
+
+        virtual ESymbolType GetSymbolType() const;
+        void SetInitializer(ASTNode* initializerExpression);
+        virtual void SetTypeSymbol(SymbolType *symType);
+
+        virtual std::string GetQualifiedName() const;
+
+    private:
+        SymbolType* elementType_{NULL};
+        ASTNode* sizeInitializer_{NULL};
+        unsigned size_{0};
+
+    };
 } // namespace Compiler

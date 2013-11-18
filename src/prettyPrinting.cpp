@@ -42,9 +42,9 @@ namespace Compiler
             if (next->GetChildCount() == 0)
             {
                 assert(print != NULL);
-                print->text = std::string(spaceCount, ' ') + next->token.value;
+                print->text = std::string(spaceCount, ' ') + next->token.text;
                 print->depth = depth;
-                offsetByDepth[depth] += next->token.value.size() + spaceCount;
+                offsetByDepth[depth] += next->token.text.size() + spaceCount;
             }
             else
             {
@@ -68,20 +68,20 @@ namespace Compiler
                 if (prevMaxLeft != -1)
                 {
                     int decorationCount = prevMaxLeft + spacing - estimate
-                                          - (next->token.value.size() - 1);
+                                          - (next->token.text.size() - 1);
 
                     print->text = std::string(spaceCount, ' ')
-                                  + next->token.value
+                                  + next->token.text
                                   + std::string(decorationCount, '-');
 
-                    offsetByDepth[depth] += next->token.value.size() + prevMaxLeft
-                                            + spacing - estimate + spaceCount - (next->token.value.size() - 1);
+                    offsetByDepth[depth] += next->token.text.size() + prevMaxLeft
+                                            + spacing - estimate + spaceCount - (next->token.text.size() - 1);
                 }
                 else
                 {
                     print->text = std::string(spaceCount, ' ')
-                                  + next->token.value;
-                    offsetByDepth[depth] += next->token.value.size() + spaceCount;
+                                  + next->token.text;
+                    offsetByDepth[depth] += next->token.text.size() + spaceCount;
                 }
             }
         };

@@ -49,8 +49,8 @@ private slots:
     void on_actionTest_Name_triggered();
     void on_action_Log_triggered(bool checked);
     void OnQpteInputCursorPositionChanged();
-
     void on_action_Parser_triggered();
+    void onSyncScrollbars();
 
 public:
     explicit MainWindow(QWidget *parent = 0);

@@ -2,11 +2,14 @@
 
 #include <sstream>
 #include <unordered_set>
+#include <unordered_map>
 #include <functional>
 #include <queue>
 #include <iostream>
 #include <algorithm>
 #include <cassert>
+
+#include "utils.hpp"
 
 namespace Compiler
 {
@@ -235,7 +238,7 @@ namespace Compiler
         {
         case PS_OPERAND:
         {
-            if (token == TT_LITERAL
+            if (IsLiteral(token.type)
                 || token == TT_IDENTIFIER)
             {
                 nodeStack_.push_back(new SimpleASTNode(token));
@@ -259,7 +262,7 @@ namespace Compiler
 
         case PS_OPERATOR:
         {
-            if (token == TT_LITERAL
+            if (IsLiteral(token.type)
                 || token == TT_IDENTIFIER
                 || token == OP_LPAREN)
             {
@@ -387,7 +390,16 @@ namespace Compiler
                                              const void *data, size_t nbytes,
                                              const int line, const int column)
     {
-        Token token(TT_LITERAL, source, line, column);
+        std::unordered_map<EFundamentalType, ETokenType> ftToTtMap =
+        {
+            {FT_INT, TT_LITERAL_INT},
+            {FT_FLOAT, TT_LITERAL_FLOAT},
+            {FT_CHAR, TT_LITERAL_CHAR},
+        };
+
+        assert(ftToTtMap.find(type) != ftToTtMap.end());
+
+        Token token(ftToTtMap[type], source, line, column);
         PushToken_(token);
     }
 
@@ -398,7 +410,8 @@ namespace Compiler
                                                   const void *data, size_t nbytes,
                                                   const int line, const int column)
     {
-        Token token(TT_LITERAL_ARRAY, source, line, column);
+        assert(type == FT_CHAR);
+        Token token(TT_LITERAL_CHAR_ARRAY, source, line, column);
         ThrowInvalidTokenError_(token);
     }
 

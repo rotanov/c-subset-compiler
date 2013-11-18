@@ -3,8 +3,10 @@
 
 #include <cassert>
 
+#include <QTimer>
 #include <QTextCodec>
 #include <QLabel>
+#include <QScrollBar>
 #include <QFont>
 #include <QObject>
 #include <QRegExp>
@@ -138,6 +140,19 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->qpteInput, &QPlainTextEdit::cursorPositionChanged,
             this, &MainWindow::OnQpteInputCursorPositionChanged);
 
+    QTimer* timer = new QTimer(this);
+    connect(timer, &QTimer::timeout,
+            this, &MainWindow::onSyncScrollbars);
+    timer->setInterval(200);
+    timer->start();
+
+    ui->qpteInput->verticalScrollBar()->setTracking(true);
+    connect(ui->qpteInput->verticalScrollBar(), &QScrollBar::valueChanged,
+            ui->qpteReference->verticalScrollBar(), &QScrollBar::setValue);
+
+    ui->qpteOutput->setLineWrapMode(QPlainTextEdit::WidgetWidth);
+    ui->qpteReference->setLineWrapMode(QPlainTextEdit::WidgetWidth);
+
     SetMode_(mode_);
     UpdateTest_();
     showMaximized();
@@ -165,6 +180,10 @@ void MainWindow::CompareOutputWithReference_()
     p.setColor(QPalette::Inactive, QPalette::Base, color);
     ui->qpteOutput->setPalette(p);
     ui->qpteReference->setPalette(p);
+
+//    QTextCharFormat tf;
+//    tf.setBackground(QBrush(Qt::blue));
+//    ui->qpteOutput->setCurrentCharFormat(tf);
 }
 
 void MainWindow::SetMode_(const CompilerMode &mode)
@@ -260,6 +279,9 @@ void MainWindow::RunCompiler_(std::vector<char> &input)
     {
         std::cerr << "ERROR: unknown exception";
     }
+
+    ui->qpteOutput->moveCursor(QTextCursor::Start);
+    ui->qpteOutput->ensureCursorVisible();
 
     delete output;
 }
@@ -447,4 +469,11 @@ void MainWindow::on_action_Parser_triggered()
 {
     SetMode_(CompilerMode::PARSER);
     UpdateTest_();
+}
+
+void MainWindow::onSyncScrollbars()
+{
+//    ui->qpteReference->verticalScrollBar()->setValue(ui->qpteOutput->verticalScrollBar()->value());
+    ui->qpteReference->setTextCursor(ui->qpteOutput->textCursor());
+//    ui->qpteReference->ensureCursorVisible();
 }

@@ -4,6 +4,7 @@
 #include <unordered_set>
 #include <iostream>
 #include <cassert>
+#include <tuple>
 
 #include <boost/bind.hpp>
 
@@ -15,11 +16,13 @@ namespace Compiler
 //------------------------------------------------------------------------------
     Parser::Parser()
     {
-        SymbolTable* globalSymbols = new SymbolTable;
-        globalSymbols->AddType(new SymbolChar);
-        globalSymbols->AddType(new SymbolInt);
-        globalSymbols->AddType(new SymbolFloat);
-        globalSymbols->AddType(new SymbolVoid);
+        SymbolTable* internalSymbols = new SymbolTable(EScopeType::INTERNAL);
+        internalSymbols->AddType(new SymbolChar);
+        internalSymbols->AddType(new SymbolInt);
+        internalSymbols->AddType(new SymbolFloat);
+        internalSymbols->AddType(new SymbolVoid);
+        symTables_.push_back(internalSymbols);
+        SymbolTable* globalSymbols = new SymbolTable(EScopeType::GLOBAL);
         symTables_.push_back(globalSymbols);
         parseCoroutine_ = boost::move(Coroutine(boost::bind(&Parser::ParseTranslationUnit_, this, _1), Token()));
     }
@@ -53,8 +56,10 @@ namespace Compiler
         switch(token.type)
         {
             case TT_IDENTIFIER:
-            case TT_LITERAL:
-            case TT_LITERAL_ARRAY:
+            case TT_LITERAL_INT:
+            case TT_LITERAL_FLOAT:
+            case TT_LITERAL_CHAR:
+            case TT_LITERAL_CHAR_ARRAY:
             {
                 return new ASTNode(token);
                 break;
@@ -304,28 +309,39 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    SymbolType* Parser::ParsePointer_(Parser::CallerType& caller, SymbolType* refType)
+    std::tuple<SymbolType*, SymbolType*> Parser::ParsePointer_(Parser::CallerType& caller, SymbolType* refType /*= NULL*/)
     {
-        SymbolPointer* symPtr = new SymbolPointer(refType);
+        SymbolType* tail = new SymbolPointer();
+        SymbolType* head = refType != NULL ? refType : tail;
+        SymbolType* temp = refType;
+        Token token;
 
-        Token token = WaitForTokenReady_(caller);
-
-        while (token == KW_CONST)
+        do
         {
-            symPtr->constant = true;
+            if (temp != NULL)
+            {
+                tail->SetTypeSymbol(temp);
+            }
+
             token = WaitForTokenReady_(caller);
-        }
 
-        if (token == OP_STAR)
-        {
-            return ParsePointer_(caller, symPtr);
-        }
-        else
-        {
-            tokenStack_.push_back(token);
-            return symPtr;
-        }
+            while (token == KW_CONST)
+            {
+                tail->constant = true;
+                token = WaitForTokenReady_(caller);
+            }
 
+            if (token == OP_STAR)
+            {
+                temp = tail;
+                tail = new SymbolPointer();
+            }
+
+        } while (token == OP_STAR);
+
+        tokenStack_.push_back(token);
+
+        return std::make_tuple(head, tail);
     }
 
 //------------------------------------------------------------------------------
@@ -388,7 +404,7 @@ namespace Compiler
                 case TT_IDENTIFIER:
                     if (declSpec.typeSymbol != NULL)
                     {
-                        if (LookupType_(token.value) != NULL)
+                        if (LookupType_(token.text) != NULL)
                         {
                             ThrowInvalidTokenError_(token, "only one type per declaration specification is expected");
                         }
@@ -400,7 +416,7 @@ namespace Compiler
                     }
                     else
                     {
-                        declSpec.typeSymbol = LookupType_(token.value);
+                        declSpec.typeSymbol = LookupType_(token.text);
                         if (declSpec.typeSymbol == NULL)
                         {
                             identifierFound = true;
@@ -433,32 +449,40 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    Symbol* Parser::ParseOutermostDeclarator_(Parser::CallerType& caller, DeclarationSpecifiers& declSpec)
+    SymbolVariable* Parser::ParseOutermostDeclarator_(Parser::CallerType& caller, DeclarationSpecifiers& declSpec)
     {
+        SymbolVariable* declaratorVariable = NULL;
         Token token = WaitForTokenReady_(caller);
 
-        SymbolType* declType = declSpec.typeSymbol;
+        SymbolType* leftmostPointer = declSpec.typeSymbol;
+        SymbolType* rightmostPointer = NULL;
+        Symbol* centralType = NULL;
 
         // pointer part
         if (token == OP_STAR)
         {
-            declType = ParsePointer_(caller, declType);
+            std::tie(leftmostPointer, rightmostPointer) = ParsePointer_(caller, leftmostPointer);
             token = WaitForTokenReady_(caller);
+        }
+        else
+        {
+            rightmostPointer = leftmostPointer;
         }
 
         // direct declarator
         if (token == TT_IDENTIFIER)
         {
             // TODO: more complex check
-            if (symTables_.back()->LookupVariable(token.value) != NULL)
+            if (symTables_.back()->LookupVariable(token.text) != NULL)
             {
                 ThrowInvalidTokenError_(token, "redeclaration of identifier");
             }
-            declType = new SymbolVariable();
+            declaratorVariable = new SymbolVariable(token.text);
+            centralType = declaratorVariable;
         }
         else if (token == OP_LPAREN)
         {
-            declType = ParseInnerDeclarator_(caller, declType);
+            centralType = ParseInnerDeclarator_(caller, declaratorVariable);
             token = WaitForTokenReady_(caller);
             if (token != OP_RPAREN)
             {
@@ -470,33 +494,261 @@ namespace Compiler
             ThrowInvalidTokenError_(token, "identifier or `(` expected");
         }
 
+        token = WaitForTokenReady_(caller);
+
+        Symbol* leftmostType = centralType;
+        Symbol* rightmostType = centralType;
+        SymbolType* temp = NULL;
+
         while (token == OP_LPAREN
                || token == OP_LSQUARE)
         {
             if (token == OP_LPAREN)
             {
-                declType = new SymbolFunction();
+                SymbolTable* parametersSymTable = new SymbolTable(EScopeType::PARAMETERS);
+                SymbolFunctionType* type = new SymbolFunctionType(parametersSymTable);
+                symTables_.push_back(parametersSymTable);
+                temp = type;
+
+                ParseParameterList(caller, *type);
+
+                symTables_.pop_back();
+
+                token = WaitForTokenReady_(caller);
+
+                if (token != OP_RPAREN)
+                {
+                    ThrowInvalidTokenError_(token, "closing `)` expected for parameter-list in declarator");
+                }
             }
             else if (token == OP_LSQUARE)
             {
-                declType = new SymbolArray();
+                SymbolArray* type = new SymbolArray();
+                temp = type;
+                ASTNode* initializer = ParseAssignmentExpression_(caller);
+                type->SetInitializer(initializer);
+                token = WaitForTokenReady_(caller);
+                if (token != OP_RSQUARE)
+                {
+                    ThrowInvalidTokenError_(token, "closing `)` expected for parameter-list in declarator");
+                }
             }
-            WaitForTokenReady_(caller);
-        }
 
-        return declType;
+            rightmostType->SetTypeSymbol(temp);
+            rightmostType = temp;
+
+            token = WaitForTokenReady_(caller);
+        }
+        rightmostType->SetTypeSymbol(rightmostPointer);
+        tokenStack_.push_back(token);
+
+        std::cout << declaratorVariable->GetQualifiedName() << std::endl;
+
+        return declaratorVariable;
     }
 
 //------------------------------------------------------------------------------
-    Symbol* Parser::ParseInnerDeclarator_(Parser::CallerType& caller)
+    Symbol* Parser::ParseInnerDeclarator_(Parser::CallerType& caller, SymbolVariable*& declaratorVariable)
     {
+        Token token = WaitForTokenReady_(caller);
 
+        SymbolType* leftmostPointer = NULL;
+        SymbolType* rightmostPointer = NULL;
+        Symbol* centralType = NULL;
+        Symbol* leftmostFirstType = NULL;
+        Symbol* rightmostFirstType = NULL;
+
+        // pointer part
+        if (token == OP_STAR)
+        {
+            std::tie(leftmostPointer, rightmostPointer) = ParsePointer_(caller);
+            token = WaitForTokenReady_(caller);
+            leftmostFirstType = leftmostPointer;
+            rightmostFirstType = rightmostPointer;
+        }
+
+        // direct declarator
+        if (token == TT_IDENTIFIER)
+        {
+            // TODO: more complex check
+            if (symTables_.back()->LookupVariable(token.text) != NULL)
+            {
+                ThrowInvalidTokenError_(token, "redeclaration of identifier");
+            }
+            declaratorVariable = new SymbolVariable(token.text);
+            centralType = declaratorVariable;
+        }
+        else if (token == OP_LPAREN)
+        {
+            centralType = ParseInnerDeclarator_(caller, declaratorVariable);
+            token = WaitForTokenReady_(caller);
+            if (token != OP_RPAREN)
+            {
+                ThrowInvalidTokenError_(token, "`)` expected to close in declarator");
+            }
+        }
+        else
+        {
+            ThrowInvalidTokenError_(token, "identifier or `(` expected");
+        }
+
+        token = WaitForTokenReady_(caller);
+
+        Symbol* leftmostType = centralType;
+        Symbol* rightmostType = centralType;
+        SymbolType* temp = NULL;
+
+        while (token == OP_LPAREN
+               || token == OP_LSQUARE)
+        {
+            if (token == OP_LPAREN)
+            {
+                SymbolTable* parametersSymTable = new SymbolTable(EScopeType::PARAMETERS);
+                SymbolFunctionType* type = new SymbolFunctionType(parametersSymTable);
+                temp = type;
+                symTables_.push_back(parametersSymTable);
+
+                ParseParameterList(caller, *type);
+
+                symTables_.pop_back();
+
+                token = WaitForTokenReady_(caller);
+
+                if (token != OP_RPAREN)
+                {
+                    ThrowInvalidTokenError_(token, "closing `)` expected for parameter-list in declarator");
+                }
+            }
+            else if (token == OP_LSQUARE)
+            {
+                SymbolArray* type = new SymbolArray();
+                temp = type;
+                ASTNode* initializer = ParseAssignmentExpression_(caller);
+                type->SetInitializer(initializer);
+                token = WaitForTokenReady_(caller);
+                if (token != OP_RSQUARE)
+                {
+                    ThrowInvalidTokenError_(token, "closing `)` expected for parameter-list in declarator");
+                }
+            }
+
+            rightmostType->SetTypeSymbol(temp);
+            rightmostType = temp;
+
+            token = WaitForTokenReady_(caller);
+        }
+
+        tokenStack_.push_back(token);
+
+        if (rightmostPointer != NULL)
+        {
+            rightmostType->SetTypeSymbol(rightmostPointer);
+            return leftmostPointer;
+        }
+        else
+        {
+            return rightmostType;
+        }
+
+    }
+
+//------------------------------------------------------------------------------
+    void Parser::ParseParameterList(Parser::CallerType& caller, SymbolFunctionType& symFuncType)
+    {
+        // A declaration of a parameter as ‘‘array of type’’ shall be adjusted
+        // to ‘‘qualified pointer to type’’
+
+        // A declaration of a parameter as ‘‘function returning type’’ shall be
+        // adjusted to ‘‘pointer to function returning type’’
+
+        // If, in a parameter declaration, an identifier can be treated either
+        // as a typedef name or as a parameter name, it shall be taken as a typedef name.
+
+        Token token = WaitForTokenReady_(caller);
+
+        while (token != OP_RPAREN)
+        {
+            tokenStack_.push_back(token);
+
+            DeclarationSpecifiers declSpec = ParseDeclarationSpecifiers_(caller);
+
+            if (declSpec.isTypedef)
+            {
+                ThrowError_("typedef storage class specifier can not appear in parameter declaration");
+            }
+
+            symFuncType.AddParameter(ParseOutermostDeclarator_(caller, declSpec));
+
+            token = WaitForTokenReady_(caller);
+
+            if (token == OP_COMMA)
+            {
+                token = WaitForTokenReady_(caller);
+            }
+            else if (token != OP_RPAREN)
+            {
+                ThrowInvalidTokenError_(token, "`,` or `)` expected at the end of parameter declarator");
+            }
+        }
+        tokenStack_.push_back(token);
     }
 
 //------------------------------------------------------------------------------
     SymbolStruct* Parser::ParseStructSpecifier_(Parser::CallerType& caller)
     {
+        // `struct` already parsed
+        Token token = WaitForTokenReady_(caller);
+        Token tagToken;
+        if (token == TT_IDENTIFIER)
+        {
+            tagToken = token;
+        }
+        else
+        {
+            if (token != OP_LBRACE)
+            {
+                ThrowInvalidTokenError_(token, "anonymous struct shall be declared with struct-declaration-list");
+            }
+            tokenStack_.push_back(token);
+        }
 
+        SymbolTable* fieldsSymTable = new SymbolTable(EScopeType::STRUCTURE);
+        SymbolStruct* symStruct = new SymbolStruct(fieldsSymTable, tagToken.text);
+        AddType_(symStruct);
+        symTables_.push_back(fieldsSymTable);
+
+        token = WaitForTokenReady_(caller);
+
+        if (token == OP_LBRACE)
+        {
+            while (token != OP_RBRACE)
+            {
+                DeclarationSpecifiers declSpec = ParseDeclarationSpecifiers_(caller);
+                if (declSpec.isTypedef)
+                {
+                    ThrowError_("struct declaration can not contain typedef");
+                }
+
+                while (token != OP_SEMICOLON)
+                {
+                    symStruct->AddField(ParseOutermostDeclarator_(caller, declSpec));
+                    token = WaitForTokenReady_(caller);
+                    if (token != OP_COMMA
+                        && token != OP_SEMICOLON)
+                    {
+                        token = WaitForTokenReady_(caller);
+                    }
+                }
+                token = WaitForTokenReady_(caller);
+                if (token != OP_RBRACE)
+                {
+                    tokenStack_.push_back(token);
+                }
+            }
+        }
+
+        symTables_.pop_back();
+        return symStruct;
     }
 
 //------------------------------------------------------------------------------
@@ -507,7 +759,7 @@ namespace Compiler
 
         do
         {
-            DeclarationSpecifiers&& declSpec = ParseDeclarationSpecifiers_(caller);
+            DeclarationSpecifiers declSpec = ParseDeclarationSpecifiers_(caller);
 
             if (token == OP_SEMICOLON)
             {
@@ -536,7 +788,7 @@ namespace Compiler
         FlushOutput_();
         std::stringstream ss;
         ss << "unexpected token " << TokenTypeToString(token.type) << " : \""
-           << token.value << "\" at " << token.line << "-" << token.column;
+           << token.text << "\" at " << token.line << "-" << token.column;
         if (!descriptionText.empty())
         {
             ss << ", " << descriptionText;
@@ -633,22 +885,49 @@ namespace Compiler
 
 //------------------------------------------------------------------------------
     void Parser::EmitLiteral(const string &source,
-                                             EFundamentalType type,
-                                             const void *data, size_t nbytes,
-                                             const int line, const int column)
+                             EFundamentalType type,
+                             const void *data, size_t nbytes,
+                             const int line, const int column)
     {
-        Token token(TT_LITERAL, source, line, column);
+        std::unordered_map<EFundamentalType, ETokenType> ftToTtMap =
+        {
+            {FT_INT, TT_LITERAL_INT},
+            {FT_FLOAT, TT_LITERAL_FLOAT},
+            {FT_CHAR, TT_LITERAL_CHAR},
+        };
+
+        assert(ftToTtMap.find(type) != ftToTtMap.end());
+
+        Token token(ftToTtMap[type], source, line, column);
+
+        switch (type)
+        {
+            case FT_INT:
+                token.intValue = *reinterpret_cast<const int*>(data);
+                break;
+
+            case FT_FLOAT:
+                token.floatValue = *reinterpret_cast<const float*>(data);
+                break;
+
+            case FT_CHAR:
+                token.intValue = *reinterpret_cast<const char*>(data);
+                break;
+        }
         ResumeParse_(token);
     }
 
 //------------------------------------------------------------------------------
     void Parser::EmitLiteralArray(const string &source,
-                                                  size_t num_elements,
-                                                  EFundamentalType type,
-                                                  const void *data, size_t nbytes,
-                                                  const int line, const int column)
+                                  size_t num_elements,
+                                  EFundamentalType type,
+                                  const void *data, size_t nbytes,
+                                  const int line, const int column)
     {
-        Token token(TT_LITERAL_ARRAY, "\"" + source + "\"", line, column);
+        assert(type == FT_CHAR);
+        Token token(TT_LITERAL_CHAR_ARRAY, "\"" + source + "\"", line, column);
+        token.charValue = new char [nbytes];
+        memcpy(token.charValue, data, nbytes);
         ResumeParse_(token);
     }
 

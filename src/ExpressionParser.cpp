@@ -72,8 +72,10 @@ namespace Compiler
         switch(token.type)
         {
             case TT_IDENTIFIER:
-            case TT_LITERAL:
-            case TT_LITERAL_ARRAY:
+            case TT_LITERAL_CHAR:
+            case TT_LITERAL_INT:
+            case TT_LITERAL_FLOAT:
+            case TT_LITERAL_CHAR_ARRAY:
             {
                 return new ExpressionASTNode(token);
                 break;
@@ -572,7 +574,16 @@ namespace Compiler
                                              const void *data, size_t nbytes,
                                              const int line, const int column)
     {
-        Token token(TT_LITERAL, source, line, column);
+        std::unordered_map<EFundamentalType, ETokenType> ftToTtMap =
+        {
+            {FT_INT, TT_LITERAL_INT},
+            {FT_FLOAT, TT_LITERAL_FLOAT},
+            {FT_CHAR, TT_LITERAL_CHAR},
+        };
+
+        assert(ftToTtMap.find(type) != ftToTtMap.end());
+
+        Token token(ftToTtMap[type], source, line, column);
         ResumeParse_(token);
     }
 
@@ -583,7 +594,8 @@ namespace Compiler
                                                   const void *data, size_t nbytes,
                                                   const int line, const int column)
     {
-        Token token(TT_LITERAL_ARRAY, "\"" + source + "\"", line, column);
+        assert(type == FT_CHAR);
+        Token token(TT_LITERAL_CHAR_ARRAY, "\"" + source + "\"", line, column);
         ResumeParse_(token);
     }
 

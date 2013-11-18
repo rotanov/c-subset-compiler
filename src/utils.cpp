@@ -466,5 +466,13 @@ namespace Compiler
                 || tokenType == OP_LOR;
     }
 
+    bool IsLiteral(const ETokenType& tokenType)
+    {
+        return  TT_LITERAL_INT
+                || TT_LITERAL_FLOAT
+                || TT_LITERAL_CHAR
+                || TT_LITERAL_CHAR_ARRAY;
+    }
+
 
 } // namespace Compiler

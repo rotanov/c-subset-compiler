@@ -3,10 +3,10 @@
 namespace Compiler
 {
 //------------------------------------------------------------------------------
-    Token::Token(const ETokenType &type, const std::string &value,
+    Token::Token(const ETokenType &type, const std::string &text,
                  const unsigned &line, const unsigned &column)
         : type(type)
-        , value(value)
+        , text(text)
         , line(line)
         , column(column)
     {
@@ -24,6 +24,15 @@ namespace Compiler
     Token::Token()
     {
 
+    }
+
+//------------------------------------------------------------------------------
+    Token::~Token()
+    {
+        if (type == TT_LITERAL_CHAR_ARRAY)
+        {
+            delete [] charValue;
+        }
     }
 
 //------------------------------------------------------------------------------

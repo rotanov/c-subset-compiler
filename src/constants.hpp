@@ -171,9 +171,11 @@ namespace Compiler
 
         // for consistency
         TT_IDENTIFIER,
-        TT_LITERAL,
+        TT_LITERAL_INT,
+        TT_LITERAL_FLOAT,
+        TT_LITERAL_CHAR,
+        TT_LITERAL_CHAR_ARRAY,
         TT_INVALID,
-        TT_LITERAL_ARRAY,
         TT_EOF,
     };
 
@@ -387,9 +389,11 @@ namespace Compiler
     const map<ETokenType, string> otherTokenTypeToStringMap =
     {
         {TT_IDENTIFIER, "TT_IDENTIFIER"},
-        {TT_LITERAL, "TT_LITERAL"},
+        {TT_LITERAL_INT, "TT_LITERAL_INT"},
+        {TT_LITERAL_FLOAT, "TT_LITERAL_FLOAT"},
+        {TT_LITERAL_CHAR, "TT_LITERAL_CHAR"},
         {TT_INVALID, "TT_INVALID"},
-        {TT_LITERAL_ARRAY, "TT_LITERAL_ARRAY"},
+        {TT_LITERAL_CHAR_ARRAY, "TT_LITERAL_CHAR_ARRAY"},
         {TT_EOF, "TT_EOF"},
     };
 

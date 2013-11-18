@@ -69,14 +69,15 @@ namespace Compiler
         ASTNode* ParseTypeName_(CallerType& caller);
         ASTNode* ParseSpecifierQualifierList_(CallerType& caller);
         ASTNode* ParseAbstractDeclarator_(CallerType& caller);
-        SymbolType* ParsePointer_(CallerType& caller, SymbolType* refType);
+        std::tuple<SymbolType*, SymbolType*> ParsePointer_(CallerType& caller, SymbolType* refType = NULL);
         ASTNode* ParseDirectAbstractDeclarator_(CallerType& caller);
         ASTNode* ParseParameterList_(CallerType& caller);
 
         DeclarationSpecifiers ParseDeclarationSpecifiers_(CallerType& caller);
         Symbol* ParseInitDeclaratorList_(CallerType& caller, DeclarationSpecifiers& declSpec);
-        Symbol* ParseOutermostDeclarator_(CallerType& caller, DeclarationSpecifiers& declSpec);
-        Symbol* ParseInnerDeclarator_(CallerType& caller);
+        SymbolVariable* ParseOutermostDeclarator_(CallerType& caller, DeclarationSpecifiers& declSpec);
+        Symbol* ParseInnerDeclarator_(CallerType& caller, SymbolVariable*& declaratorVariable);
+        void ParseParameterList(CallerType& caller, SymbolFunctionType& symFuncType);
 
         // declaration
         SymbolStruct* ParseStructSpecifier_(CallerType& caller);
@@ -93,6 +94,28 @@ namespace Compiler
         SymbolType* LookupType_(const std::string& name) const;
         SymbolVariable* LookupVariable_(const std::string& name) const;
         SymbolFunction* LookupFuntion_(const std::string& name) const;
+
+        void AddType_(SymbolType* symType)
+        {
+            SymbolTable* symbols = symTables_.back();
+            switch (symType->GetSymbolType())
+            {
+                case ESymbolType::TYPE_STRUCT:
+                    if (symbols->GetScopeType() == EScopeType::PARAMETERS)
+                    {
+                        ThrowError_("type declarations not allowed in parameter list");
+                    }
+                    break;
+
+            }
+
+            if (symbols->LookupType(symType->name) != NULL)
+            {
+                ThrowError_("redefinition of type" + symType->name);
+            }
+
+            symbols->AddType(symType);
+        }
 
         template <typename R, typename C, class... ArgTypes>
         R LookupSymbolHelper_(const std::string& name, R (C::*lookuper)(ArgTypes...) const) const
