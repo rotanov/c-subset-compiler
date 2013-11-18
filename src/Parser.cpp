@@ -444,8 +444,30 @@ namespace Compiler
 //------------------------------------------------------------------------------
     Symbol* Parser::ParseInitDeclaratorList_(Parser::CallerType& caller, DeclarationSpecifiers& declSpec)
     {
-        Symbol* sym = ParseOutermostDeclarator_(caller, declSpec);
+        SymbolVariable* declarator = ParseOutermostDeclarator_(caller, declSpec);
+        Token token = WaitForTokenReady_(caller);
 
+        if (declarator->GetSymbolType() == ESymbolType::FUNCTION
+            && token == OP_LBRACE)
+        {
+            return declarator;
+        }
+
+        while (token != OP_SEMICOLON)
+        {
+            if (token == OP_ASS)
+            {
+                // Parse initializer
+                token = WaitForTokenReady_(caller);
+            }
+            else if (token == OP_COMMA)
+            {
+                token = WaitForTokenReady_(caller);
+                ParseOutermostDeclarator_(caller, declSpec);
+            }
+        }
+
+        return NULL;
     }
 
 //------------------------------------------------------------------------------
@@ -774,10 +796,16 @@ namespace Compiler
             // else it is declaration
 
             symbol = ParseInitDeclaratorList_(caller, declSpec);
-//            if (symbol->GetSymbolType() == ESymbolType::FUNCTION)
-//            {
+            if (symbol != NULL)
+            {
+                SymbolFunction* symFun = static_cast<SymbolFunction*>(symbol);
+                symTables_.push_back(symFun->GetTypeSymbol()->GetSymbolTable());
+                // at this point symbol has ESymbolType::FUNCTION
+                // and `{` already eaten
+                ParseCompoundStatement_(caller);
+                symTables_.pop_back();
+            }
 
-//            }
             token = WaitForTokenReady_(caller);
         } while (token != TT_EOF);
     }

@@ -14,6 +14,7 @@
 #include "Token.hpp"
 #include "ASTNode.hpp"
 #include "SymbolTable.hpp"
+#include "Statement.hpp"
 
 namespace Compiler
 {

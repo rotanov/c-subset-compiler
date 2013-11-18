@@ -322,13 +322,13 @@ translation-unit:
 
 external-declaration:
     function-definition
-    declaration    
+    declaration
 
 //    Function definition
 
 // {declaration-list} after declarator excluded as old style see 6.9.1
 function-definition:
-    declaration-specifiers declarator  compound-statement
+    declaration-specifiers declarator compound-statement
 
 // declaration-list:
 //    declaration

@@ -129,9 +129,15 @@ namespace Compiler
     }
 
     SymbolFunction::SymbolFunction(const std::string& name)
-        : SymbolVariable(name)
+        : Symbol(name)
     {
 
+    }
+
+    SymbolFunction::SymbolFunction(const std::string& name, SymbolFunctionType* symType)
+        : Symbol(name)
+    {
+        SetTypeSymbol(symType);
     }
 
     ESymbolType SymbolFunction::GetSymbolType() const
@@ -139,12 +145,17 @@ namespace Compiler
         return ESymbolType::FUNCTION;
     }
 
-    void SymbolFunction::SetTypeSymbol(SymbolType* symType)
+    void SymbolFunction::SetTypeSymbol(SymbolFunctionType* symType)
     {
         assert(symType != NULL);
-        ESymbolType type = symType->GetSymbolType();
-        assert(type == ESymbolType::TYPE_FUNCTION);
+        assert(type_ == NULL);
         type_ = symType;
+    }
+
+    SymbolFunctionType* SymbolFunction::GetTypeSymbol() const
+    {
+        assert(type_ != NULL);
+        return type_;
     }
 
     std::string SymbolFunction::GetQualifiedName() const
@@ -237,6 +248,12 @@ namespace Compiler
         assert(parameter != NULL);
         orderedParameters_.push_back(parameter);
         parameters_->AddVariable(parameter);
+    }
+
+    SymbolTable*SymbolFunctionType::GetSymbolTable() const
+    {
+        assert(parameters_ != NULL);
+        return parameters_;
     }
 
     SymbolStruct::SymbolStruct(SymbolTable* membersSymTable, const std::string name)

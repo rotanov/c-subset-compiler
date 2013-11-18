@@ -134,16 +134,20 @@ namespace Compiler
     };
 
 //------------------------------------------------------------------------------
-    class SymbolFunction : public SymbolVariable
+    class SymbolFunctionType;
+    class SymbolFunction : public Symbol
     {
     public:
         SymbolFunction(const std::string& name);
-        virtual ESymbolType GetSymbolType() const;
-        virtual void SetTypeSymbol(SymbolType *symType);
+        SymbolFunction(const std::string& name, SymbolFunctionType* symType);
 
+        virtual ESymbolType GetSymbolType() const;
+        virtual void SetTypeSymbol(SymbolFunctionType *symType);
+        SymbolFunctionType* GetTypeSymbol() const;
         virtual std::string GetQualifiedName() const;
 
     private:
+        SymbolFunctionType* type_{NULL};
     };
 
 //------------------------------------------------------------------------------
@@ -156,6 +160,7 @@ namespace Compiler
         virtual void SetTypeSymbol(SymbolType *symType);
         virtual std::string GetQualifiedName() const;
         void AddParameter(SymbolVariable* parameter);
+        SymbolTable* GetSymbolTable() const;
 
     private:
         SymbolType* returnType_{NULL};
