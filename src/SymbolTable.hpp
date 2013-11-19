@@ -151,6 +151,7 @@ namespace Compiler
     };
 
 //------------------------------------------------------------------------------
+    class CompoundStatement;
     class SymbolFunctionType : public SymbolType
     {
     public:
@@ -161,11 +162,14 @@ namespace Compiler
         virtual std::string GetQualifiedName() const;
         void AddParameter(SymbolVariable* parameter);
         SymbolTable* GetSymbolTable() const;
+        void SetBody(CompoundStatement* body);
+        CompoundStatement* GetBody() const;
 
     private:
         SymbolType* returnType_{NULL};
         std::vector<SymbolVariable*> orderedParameters_;
         SymbolTable* parameters_{NULL};
+        CompoundStatement* body_{NULL};
     };
 
 //------------------------------------------------------------------------------

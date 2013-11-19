@@ -1,6 +1,7 @@
 #include "SymbolTable.hpp"
 
 #include "ASTNode.hpp"
+#include "Statement.hpp"
 
 namespace Compiler
 {
@@ -250,10 +251,23 @@ namespace Compiler
         parameters_->AddVariable(parameter);
     }
 
-    SymbolTable*SymbolFunctionType::GetSymbolTable() const
+    SymbolTable* SymbolFunctionType::GetSymbolTable() const
     {
         assert(parameters_ != NULL);
         return parameters_;
+    }
+
+    void SymbolFunctionType::SetBody(CompoundStatement* body)
+    {
+        assert(body_ == NULL);
+        assert(body != NULL);
+        body_ = body;
+    }
+
+    CompoundStatement*SymbolFunctionType::GetBody() const
+    {
+        assert(body_ != NULL);
+        return body_;
     }
 
     SymbolStruct::SymbolStruct(SymbolTable* membersSymTable, const std::string name)

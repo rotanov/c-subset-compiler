@@ -74,6 +74,7 @@ namespace Compiler
         ASTNode* ParseDirectAbstractDeclarator_(CallerType& caller);
         ASTNode* ParseParameterList_(CallerType& caller);
 
+        Symbol* ParseDeclaration_(CallerType& caller);
         DeclarationSpecifiers ParseDeclarationSpecifiers_(CallerType& caller);
         Symbol* ParseInitDeclaratorList_(CallerType& caller, DeclarationSpecifiers& declSpec);
         SymbolVariable* ParseOutermostDeclarator_(CallerType& caller, DeclarationSpecifiers& declSpec);
@@ -85,12 +86,20 @@ namespace Compiler
 
         void ParseTranslationUnit_(CallerType& caller);
 
+        CompoundStatement* ParseCompoundStatement_(CallerType& caller);
+        Statement* ParseStatement_(CallerType& caller);
+
         void ThrowInvalidTokenError_(const Token& token, const std::string& descriptionText = "");
         void ThrowError_(const std::string& descriptionText);
         void ResumeParse_(const Token& token);
         Token WaitForTokenReady_(CallerType& caller);
 
+        // waits for token, returns it and pushes it back if token is not of tokenType
+        Token WithdrawTokenIf_(CallerType& caller, const ETokenType& tokenType = TT_INVALID);
+
         void FlushOutput_();
+
+        bool IsStartsDeclaration_(const Token& token) const;
 
         SymbolType* LookupType_(const std::string& name) const;
         SymbolVariable* LookupVariable_(const std::string& name) const;

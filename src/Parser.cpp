@@ -345,6 +345,28 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
+    Symbol* Parser::ParseDeclaration_(Parser::CallerType& caller)
+    {
+        DeclarationSpecifiers declSpec = ParseDeclarationSpecifiers_(caller);
+        Token token = WithdrawTokenIf_(caller, OP_SEMICOLON);
+
+        if (token == OP_SEMICOLON)
+        {
+            // end of declSpec is legal, omitting optional init-declarator-list
+            return NULL;
+        }
+        else
+        {
+            // here goes declarator
+            // if we see `{` after declarator then it's function definition
+            // and compound-statement should be parsed
+            // else it is declaration
+            return ParseInitDeclaratorList_(caller, declSpec);
+        }
+
+    }
+
+//------------------------------------------------------------------------------
     DeclarationSpecifiers Parser::ParseDeclarationSpecifiers_(CallerType& caller)
     {
 //        twice typedef is an error
@@ -719,19 +741,16 @@ namespace Compiler
     SymbolStruct* Parser::ParseStructSpecifier_(Parser::CallerType& caller)
     {
         // `struct` already parsed
-        Token token = WaitForTokenReady_(caller);
+        Token token = WithdrawTokenIf_(caller, TT_IDENTIFIER);
         Token tagToken;
+
         if (token == TT_IDENTIFIER)
         {
             tagToken = token;
         }
-        else
+        else if (token != OP_LBRACE)
         {
-            if (token != OP_LBRACE)
-            {
-                ThrowInvalidTokenError_(token, "anonymous struct shall be declared with struct-declaration-list");
-            }
-            tokenStack_.push_back(token);
+            ThrowInvalidTokenError_(token, "anonymous struct shall be declared with struct-declaration-list");
         }
 
         SymbolTable* fieldsSymTable = new SymbolTable(EScopeType::STRUCTURE);
@@ -761,11 +780,8 @@ namespace Compiler
                         token = WaitForTokenReady_(caller);
                     }
                 }
-                token = WaitForTokenReady_(caller);
-                if (token != OP_RBRACE)
-                {
-                    tokenStack_.push_back(token);
-                }
+
+                token = WithdrawTokenIf_(caller, OP_RBRACE);
             }
         }
 
@@ -781,33 +797,71 @@ namespace Compiler
 
         do
         {
-            DeclarationSpecifiers declSpec = ParseDeclarationSpecifiers_(caller);
-
-            if (token == OP_SEMICOLON)
-            {
-                // end of declSpec is legal, omitting optional init-declarator-list
-                WaitForTokenReady_(caller);
-                continue;
-            }
-
-            // here goes declarator
-            // if we see `{` after declarator then it's function definition
-            // and compound-statement should be parsed
-            // else it is declaration
-
-            symbol = ParseInitDeclaratorList_(caller, declSpec);
+            symbol = ParseDeclaration_(caller);
             if (symbol != NULL)
             {
                 SymbolFunction* symFun = static_cast<SymbolFunction*>(symbol);
                 symTables_.push_back(symFun->GetTypeSymbol()->GetSymbolTable());
                 // at this point symbol has ESymbolType::FUNCTION
                 // and `{` already eaten
-                ParseCompoundStatement_(caller);
+                symFun->GetTypeSymbol()->SetBody(ParseCompoundStatement_(caller));
                 symTables_.pop_back();
             }
 
             token = WaitForTokenReady_(caller);
         } while (token != TT_EOF);
+    }
+
+//------------------------------------------------------------------------------
+    CompoundStatement* Parser::ParseCompoundStatement_(Parser::CallerType& caller)
+    {
+        SymbolTable* symTable = new SymbolTable(EScopeType::BLOCK);
+        symTables_.push_back(symTable);
+        CompoundStatement* compoundStatement = new CompoundStatement(Token(OP_LBRACE), symTable);
+
+        Token token = WithdrawTokenIf_(caller, OP_RBRACE);
+
+        while (token != OP_RBRACE)
+        {
+            if (IsStartsDeclaration_(token))
+            {
+                // shall return NULL here
+                ParseDeclaration_(caller);
+            }
+            else
+            {
+                compoundStatement->AddStatement(ParseStatement_(caller));
+            }
+            token = WithdrawTokenIf_(caller, OP_RBRACE);
+        }
+        symTables_.pop_back();
+    }
+
+//------------------------------------------------------------------------------
+    Statement* Parser::ParseStatement_(Parser::CallerType& caller)
+    {
+        Token token = WithdrawTokenIf_(caller, OP_LBRACE);
+        switch (token.type)
+        {
+            case OP_LBRACE:
+                return ParseCompoundStatement_(caller);
+
+            case KW_IF:
+                return ParseSelectionStatement_(caller);
+
+            case KW_WHILE:
+            case KW_FOR:
+            case KW_DO:
+                return ParseIterationStatement_(caller);
+
+            case KW_CONTINUE:
+            case KW_BREAK:
+            case KW_RETURN:
+                return ParseJumpStatement_(caller);
+
+            default:
+                return ParseExpressionStatement_(caller);
+        }
     }
 
 //------------------------------------------------------------------------------
@@ -855,6 +909,17 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
+    Token Parser::WithdrawTokenIf_(Parser::CallerType& caller, const ETokenType& tokenType)
+    {
+        Token token = WaitForTokenReady_(caller);
+        if (token != tokenType)
+        {
+            tokenStack_.push_back(token);
+        }
+        return token;
+    }
+
+//------------------------------------------------------------------------------
     void Parser::FlushOutput_()
     {
         for (auto& node : nodeStack_)
@@ -865,19 +930,38 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    SymbolType*Parser::LookupType_(const std::string& name) const
+    bool Parser::IsStartsDeclaration_(const Token& token) const
+    {
+        if (token == TT_IDENTIFIER)
+        {
+            return LookupType_(token.text) != NULL;
+        }
+        else
+        {
+            return token == KW_CONST
+                    || token == KW_TYPEDEF
+                    || token == KW_VOID
+                    || token == KW_CHAR
+                    || token == KW_INT
+                    || token == KW_FLOAT
+                    || token == KW_STRUCT;
+        }
+    }
+
+//------------------------------------------------------------------------------
+    SymbolType* Parser::LookupType_(const std::string& name) const
     {
         return LookupSymbolHelper_(name, &SymbolTable::LookupType);
     }
 
 //------------------------------------------------------------------------------
-    SymbolVariable*Parser::LookupVariable_(const std::string& name) const
+    SymbolVariable* Parser::LookupVariable_(const std::string& name) const
     {
         return LookupSymbolHelper_(name, &SymbolTable::LookupVariable);
     }
 
 //------------------------------------------------------------------------------
-    SymbolFunction*Parser::LookupFuntion_(const std::string& name) const
+    SymbolFunction* Parser::LookupFuntion_(const std::string& name) const
     {
         return LookupSymbolHelper_(name, &SymbolTable::LookupFunction);
     }
