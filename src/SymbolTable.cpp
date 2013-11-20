@@ -47,15 +47,17 @@ namespace Compiler
     void SymbolTable::AddType(SymbolType* symbolType)
     {
         assert(symbolType != NULL);
+        //        if (symbolType->GetSymbolType() == ESymbolType::TYPE_STRUCT)
+        //        {
+        //            key = "struct " + key;
+        //        }
+        AddType(symbolType, symbolType->name);
+    }
 
-        std::string key = symbolType->name;
-//        if (symbolType->GetSymbolType() == ESymbolType::TYPE_STRUCT)
-//        {
-//            key = "struct " + key;
-//        }
-
+    void SymbolTable::AddType(SymbolType* symbolType, const std::string& key)
+    {
+        assert(symbolType != NULL);
         assert(types.find(key) == types.end());
-
         types[key] = symbolType;
     }
 
@@ -105,7 +107,7 @@ namespace Compiler
 
     std::string SymbolType::GetQualifiedName() const
     {
-        return (constant ? "const " : "") + name;
+        return name;
     }
 
     SymbolVariable::SymbolVariable(const std::string& name)
@@ -290,6 +292,12 @@ namespace Compiler
     {
     }
 
+    SymbolPointer::SymbolPointer(SymbolType* symType)
+        : SymbolType("pointer")
+    {
+        SetTypeSymbol(symType);
+    }
+
     SymbolType* SymbolPointer::GetRefSymbol() const
     {
         refSymbol_;
@@ -309,7 +317,7 @@ namespace Compiler
     std::string SymbolPointer::GetQualifiedName() const
     {
         assert(refSymbol_ != NULL);
-        return (constant ? "const " : "") + name + " to " + refSymbol_->GetQualifiedName();
+        return name + " to " + refSymbol_->GetQualifiedName();
     }
 
     SymbolArray::SymbolArray()
@@ -375,6 +383,68 @@ namespace Compiler
 
         variables[key] = symbolVariable;
         orderedVariables.push_back(symbolVariable);
+    }
+
+    SymbolConst::SymbolConst()
+        : SymbolType("const")
+    {
+
+    }
+
+    SymbolConst::SymbolConst(SymbolType* symType)
+        : SymbolType("const")
+    {
+        SetTypeSymbol(symType);
+    }
+
+    SymbolType*SymbolConst::GetRefSymbol() const
+    {
+        return refSymbol_;
+    }
+
+    ESymbolType SymbolConst::GetSymbolType() const
+    {
+        return ESymbolType::TYPE_CONST;
+    }
+
+    void SymbolConst::SetTypeSymbol(SymbolType* symType)
+    {
+        assert(symType != NULL);
+        refSymbol_ = symType;
+    }
+
+    std::string SymbolConst::GetQualifiedName() const
+    {
+        // name is always "const" here
+        assert(refSymbol_ != NULL);
+        return name + " " + refSymbol_->GetQualifiedName();
+    }
+
+    SymbolTypedef::SymbolTypedef(const std::string& name)
+        : SymbolType(name)
+    {
+
+    }
+
+    SymbolType*SymbolTypedef::GetTypeSymbol() const
+    {
+        return type_;
+    }
+
+    ESymbolType SymbolTypedef::GetSymbolType() const
+    {
+        return ESymbolType::TYPE_TYPEDEF;
+    }
+
+    void SymbolTypedef::SetTypeSymbol(SymbolType* symType)
+    {
+        assert(symType != NULL);
+        type_ = symType;
+    }
+
+    std::string SymbolTypedef::GetQualifiedName() const
+    {
+        return "typedef " + name + " " + type_->GetQualifiedName();
     }
 
 } // namespace Compiler

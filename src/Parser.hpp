@@ -33,13 +33,12 @@ namespace Compiler
     class DeclarationSpecifiers
     {
     public:
-        bool isConst{false};
         bool isTypedef{false};
         SymbolType* typeSymbol{NULL};
 
+        // ???
         void Invalidate()
         {
-            isConst = false;
             isTypedef = false;
             typeSymbol = NULL;
         }
@@ -110,6 +109,7 @@ namespace Compiler
         SymbolVariable* LookupFunction_(const std::string& name) const;
 
         void AddType_(SymbolType* symType);
+        void AddType_(SymbolType* symType, const std::string& name);
         void AddVariable_(SymbolVariable* symVar);
         void AddFunction_(SymbolVariable* symFun);
 

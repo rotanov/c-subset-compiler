@@ -326,9 +326,14 @@ namespace Compiler
 
             token = WaitForTokenReady_(caller);
 
+            bool constant = false;
             while (token == KW_CONST)
             {
-                tail->constant = true;
+                if (!constant)
+                {
+                    constant = true;
+                    tail = new SymbolConst(tail);
+                }
                 token = WaitForTokenReady_(caller);
             }
 
@@ -394,6 +399,7 @@ namespace Compiler
 
         DeclarationSpecifiers declSpec;
         Token token = WaitForTokenReady_(caller);
+        bool constant = false;
 
         bool identifierFound = false;
 
@@ -405,7 +411,7 @@ namespace Compiler
             switch (token)
             {
                 case KW_CONST:
-                    declSpec.isConst = true;
+                    constant = true;
                     break;
 
                 case KW_TYPEDEF:
@@ -459,6 +465,18 @@ namespace Compiler
         if (declSpec.typeSymbol == NULL)
         {
             ThrowError_("type not specified in declaration");
+        }
+
+        if (declSpec.typeSymbol->GetSymbolType() == ESymbolType::TYPE_TYPEDEF)
+        {
+            SymbolTypedef* symTypedef = static_cast<SymbolTypedef*>(declSpec.typeSymbol);
+            declSpec.typeSymbol = symTypedef->GetTypeSymbol();
+        }
+
+        if (constant
+            && declSpec.typeSymbol->GetSymbolType() != ESymbolType::TYPE_CONST)
+        {
+            declSpec.typeSymbol = new SymbolConst(declSpec.typeSymbol);
         }
 
         return declSpec;
@@ -597,7 +615,9 @@ namespace Compiler
 
         if (declSpec.isTypedef)
         {
-//            AddType_();
+            SymbolTypedef* symTypedef = new SymbolTypedef(declaratorVariable->name);
+            symTypedef->SetTypeSymbol(declaratorVariable->GetTypeSymbol());
+            AddType_(symTypedef);
         }
         else
         {
@@ -1059,7 +1079,16 @@ namespace Compiler
 //------------------------------------------------------------------------------
     void Parser::AddType_(SymbolType* symType)
     {
+        assert(symType != NULL);
+        AddType_(symType, symType->name);
+    }
+
+//------------------------------------------------------------------------------
+    void Parser::AddType_(SymbolType* symType, const std::string& name)
+    {
+        assert(symType != NULL);
         SymbolTable* symbols = symTables_.back();
+
         switch (symType->GetSymbolType())
         {
             case ESymbolType::TYPE_STRUCT:
@@ -1068,15 +1097,14 @@ namespace Compiler
                     ThrowError_("type declarations not allowed in parameter list");
                 }
                 break;
-
         }
 
-        if (symbols->LookupType(symType->name) != NULL)
+        if (symbols->LookupType(name) != NULL)
         {
-            ThrowError_("redefinition of type " + symType->name);
+            ThrowError_("redefinition of type " + name);
         }
 
-        symbols->AddType(symType);
+        symbols->AddType(symType, name);
     }
 
 //------------------------------------------------------------------------------

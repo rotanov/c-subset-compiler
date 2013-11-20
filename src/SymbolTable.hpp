@@ -21,6 +21,8 @@ namespace Compiler
         TYPE_POINTER,
         TYPE_STRUCT,
         TYPE_FUNCTION,
+        TYPE_CONST,
+        TYPE_TYPEDEF,
         VARIABLE,
     };
 
@@ -76,6 +78,7 @@ namespace Compiler
         EScopeType GetScopeType() const;
 
         void AddType(SymbolType* symbolType);
+        void AddType(SymbolType* symbolType, const std::string& key);
         void AddFunction(SymbolVariable* symbolVariable);
         virtual void AddVariable(SymbolVariable* symbolVariable);
 
@@ -126,11 +129,7 @@ namespace Compiler
     public:
         SymbolType(const std::string& name);
 
-        bool constant{false};
-
         virtual std::string GetQualifiedName() const;
-
-    private:
 
     };
 
@@ -231,6 +230,7 @@ namespace Compiler
     {
     public:
         SymbolPointer();
+        SymbolPointer(SymbolType* symType);
 
         SymbolType* GetRefSymbol() const;
         virtual ESymbolType GetSymbolType() const;
@@ -262,4 +262,36 @@ namespace Compiler
         unsigned size_{0};
 
     };
+
+//------------------------------------------------------------------------------
+    class SymbolConst : public SymbolType
+    {
+    public:
+        SymbolConst();
+        SymbolConst(SymbolType* symType);
+
+        SymbolType* GetRefSymbol() const;
+        virtual ESymbolType GetSymbolType() const;
+        virtual void SetTypeSymbol(SymbolType *symType);
+        virtual std::string GetQualifiedName() const;
+
+    private:
+        SymbolType* refSymbol_{NULL};
+    };
+
+//------------------------------------------------------------------------------
+    class SymbolTypedef : public SymbolType
+    {
+    public:
+        SymbolTypedef(const std::string& name);
+
+        SymbolType* GetTypeSymbol() const;
+        virtual ESymbolType GetSymbolType() const;
+        virtual void SetTypeSymbol(SymbolType *symType);
+        virtual std::string GetQualifiedName() const;
+
+    private:
+        SymbolType* type_{NULL};
+    };
+
 } // namespace Compiler

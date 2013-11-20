@@ -1,0 +1,28 @@
+types:
+------------------------------------------------
+typedef ConstPtrToIntConst const pointer to const int
+
+typedef TwiceConstInt const int
+
+typedef PtrToConstIntConst pointer to const int
+
+typedef PtrToIntConst pointer to const int
+
+typedef ConstIntConst const int
+
+typedef ConstConstInt const int
+
+typedef IntConstConst const int
+
+typedef ConstInt const int
+
+typedef IntConst const int
+
+variables:
+------------------------------------------------
+variable f of type const pointer to const int
+variable e of type const int
+variable d of type const int
+variable c of type const int
+variable b of type const int
+variable a of type const int

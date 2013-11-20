@@ -1,0 +1,11 @@
+types:
+------------------------------------------------
+typedef PTSFoo pointer to const struct SFoo
+
+typedef TSFoo struct SFoo
+
+struct SFoo
+  variables:
+  ----------------------------------------------
+  variable a of type int
+
