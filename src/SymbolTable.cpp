@@ -21,10 +21,17 @@ namespace Compiler
         throw std::logic_error("SetType not implemented for this symbol");
     }
 
+    SymbolTable::SymbolTable()
+    {
+
+    }
+
     SymbolTable::SymbolTable(const EScopeType scope)
         : scope_(scope)
     {
-        assert(scope != EScopeType::UNDEFINED);
+        assert(scope != EScopeType::UNDEFINED
+                && scope != EScopeType::PARAMETERS
+                && scope != EScopeType::STRUCTURE);
     }
 
     SymbolTable::~SymbolTable()
@@ -52,15 +59,16 @@ namespace Compiler
         types[key] = symbolType;
     }
 
-    void SymbolTable::AddFunction(SymbolFunction* symbolFunction)
+    void SymbolTable::AddFunction(SymbolVariable* symbolVariable)
     {
-        assert(symbolFunction != NULL);
+        assert(symbolVariable != NULL);
+        assert(symbolVariable->GetTypeSymbol()->GetSymbolType() == ESymbolType::TYPE_FUNCTION);
 
-        std::string key = symbolFunction->name;
+        std::string key = symbolVariable->name;
 
-        assert(types.find(key) == types.end());
+        assert(functions.find(key) == functions.end());
 
-        functions[key] = symbolFunction;
+        functions[key] = symbolVariable;
     }
 
     void SymbolTable::AddVariable(SymbolVariable* symbolVariable)
@@ -69,7 +77,7 @@ namespace Compiler
 
         std::string key = symbolVariable->name;
 
-        assert(types.find(key) == types.end());
+        assert(variables.find(key) == variables.end());
 
         variables[key] = symbolVariable;
     }
@@ -84,7 +92,7 @@ namespace Compiler
         return LookupHelper_(types, name);
     }
 
-    SymbolFunction*SymbolTable::LookupFunction(const std::string& name) const
+    SymbolVariable* SymbolTable::LookupFunction(const std::string& name) const
     {
         return LookupHelper_(functions, name);
     }
@@ -123,46 +131,16 @@ namespace Compiler
         type_ = symType;
     }
 
-    std::string SymbolVariable::GetQualifiedName() const
-    {
-        assert(type_ != NULL);
-        return "variable " + name + " of type " + type_->GetQualifiedName();
-    }
-
-    SymbolFunction::SymbolFunction(const std::string& name)
-        : Symbol(name)
-    {
-
-    }
-
-    SymbolFunction::SymbolFunction(const std::string& name, SymbolFunctionType* symType)
-        : Symbol(name)
-    {
-        SetTypeSymbol(symType);
-    }
-
-    ESymbolType SymbolFunction::GetSymbolType() const
-    {
-        return ESymbolType::FUNCTION;
-    }
-
-    void SymbolFunction::SetTypeSymbol(SymbolFunctionType* symType)
-    {
-        assert(symType != NULL);
-        assert(type_ == NULL);
-        type_ = symType;
-    }
-
-    SymbolFunctionType* SymbolFunction::GetTypeSymbol() const
+    SymbolType* SymbolVariable::GetTypeSymbol() const
     {
         assert(type_ != NULL);
         return type_;
     }
 
-    std::string SymbolFunction::GetQualifiedName() const
+    std::string SymbolVariable::GetQualifiedName() const
     {
         assert(type_ != NULL);
-        return "function " + name + " of type " + type_->GetQualifiedName();
+        return "variable " + name + " of type " + type_->GetQualifiedName();
     }
 
     SymbolChar::SymbolChar()
@@ -209,7 +187,7 @@ namespace Compiler
         return ESymbolType::TYPE_VOID;
     }
 
-    SymbolFunctionType::SymbolFunctionType(SymbolTable* parametersSymTable)
+    SymbolFunctionType::SymbolFunctionType(SymbolTableWithOrder* parametersSymTable)
         : SymbolType("function")
         , parameters_(parametersSymTable)
     {
@@ -237,7 +215,7 @@ namespace Compiler
     {
         assert(returnType_ != NULL);
         std::string argStr;
-        for (auto& a : orderedParameters_)
+        for (auto& a : parameters_->orderedVariables)
         {
             argStr += a->GetQualifiedName() + ", ";
         }
@@ -247,11 +225,10 @@ namespace Compiler
     void SymbolFunctionType::AddParameter(SymbolVariable* parameter)
     {
         assert(parameter != NULL);
-        orderedParameters_.push_back(parameter);
         parameters_->AddVariable(parameter);
     }
 
-    SymbolTable* SymbolFunctionType::GetSymbolTable() const
+    SymbolTableWithOrder* SymbolFunctionType::GetSymbolTable() const
     {
         assert(parameters_ != NULL);
         return parameters_;
@@ -264,13 +241,13 @@ namespace Compiler
         body_ = body;
     }
 
-    CompoundStatement*SymbolFunctionType::GetBody() const
+    CompoundStatement* SymbolFunctionType::GetBody() const
     {
-        assert(body_ != NULL);
+//        assert(body_ != NULL);
         return body_;
     }
 
-    SymbolStruct::SymbolStruct(SymbolTable* membersSymTable, const std::string name)
+    SymbolStruct::SymbolStruct(SymbolTableWithOrder* membersSymTable, const std::string name)
         : SymbolType(name)
         , fields_(membersSymTable)
     {
@@ -285,22 +262,27 @@ namespace Compiler
     std::string SymbolStruct::GetQualifiedName() const
     {
         // TODO: don't print members everytime
-        std::string membersStr;
-        if (fields_ != NULL)
-        {
-            for (auto& s : fields_->variables)
-            {
-                membersStr += "\n    " + s.second->GetQualifiedName();
-            }
-        }
-        return "struct " + name + membersStr + "\n";
+//        std::string membersStr;
+//        if (fields_ != NULL)
+//        {
+//            for (auto& s : fields_->variables)
+//            {
+//                membersStr += "\n    " + s.second->GetQualifiedName();
+//            }
+//        }
+        return "struct " + name;// + membersStr + "\n";
     }
 
     void SymbolStruct::AddField(SymbolVariable* field)
     {
         assert(field != NULL);
-        orderedFields_.push_back(field);
         fields_->AddVariable(field);
+    }
+
+    SymbolTableWithOrder* SymbolStruct::GetSymbolTable() const
+    {
+        assert(fields_ != NULL);
+        return fields_;
     }
 
     SymbolPointer::SymbolPointer()
@@ -368,6 +350,31 @@ namespace Compiler
             size = " " + sizeInitializer_->token.text;
         }
         return name + size + " of " + elementType_->GetQualifiedName();
+    }
+
+    SymbolTableWithOrder::SymbolTableWithOrder(const EScopeType scope)
+        : SymbolTable()
+    {
+        assert(scope == EScopeType::PARAMETERS
+               || scope == EScopeType::STRUCTURE);
+        scope_ = scope;
+    }
+
+    SymbolTableWithOrder::~SymbolTableWithOrder()
+    {
+
+    }
+
+    void SymbolTableWithOrder::AddVariable(SymbolVariable* symbolVariable)
+    {
+        assert(symbolVariable != NULL);
+
+        std::string key = symbolVariable->name;
+
+        assert(variables.find(key) == variables.end());
+
+        variables[key] = symbolVariable;
+        orderedVariables.push_back(symbolVariable);
     }
 
 } // namespace Compiler

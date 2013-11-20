@@ -120,6 +120,8 @@ MainWindow::MainWindow(QWidget *parent)
         }
     }
 
+
+
     ui->qpteInput->setFont(QFont("Consolas", 12));
     ui->qpteOutput->setFont(QFont("Consolas", 12));
     ui->qpteReference->setFont(QFont("Consolas", 12));
@@ -158,6 +160,9 @@ MainWindow::MainWindow(QWidget *parent)
     showMaximized();
 
     ui->qpteLog->hide();
+
+    on_action_Parser_triggered();
+    on_action_Prev_triggered();
 }
 
 MainWindow::~MainWindow()
@@ -476,4 +481,34 @@ void MainWindow::onSyncScrollbars()
 //    ui->qpteReference->verticalScrollBar()->setValue(ui->qpteOutput->verticalScrollBar()->value());
     ui->qpteReference->setTextCursor(ui->qpteOutput->textCursor());
 //    ui->qpteReference->ensureCursorVisible();
+}
+
+void MainWindow::on_actionInput_triggered()
+{
+    QList<int> list = {9999, 0, 0, 0};
+    ui->splitter->setSizes(list);
+}
+
+void MainWindow::on_actionOutput_triggered()
+{
+    QList<int> list = {0, 9999, 0, 0};
+    ui->splitter->setSizes(list);
+}
+
+void MainWindow::on_actionReference_triggered()
+{
+    QList<int> list = {0, 0, 9999, 0};
+    ui->splitter->setSizes(list);
+}
+
+void MainWindow::on_actionLog_triggered()
+{
+    QList<int> list = {0, 0, 0, 9999};
+    ui->splitter->setSizes(list);
+}
+
+void MainWindow::on_actionAll_equal_triggered()
+{
+    QList<int> list = {9999, 9999, 9999, 9999};
+    ui->splitter->setSizes(list);
 }

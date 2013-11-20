@@ -1,1 +1,1 @@
-a + b * c*d + e
+int * const a;

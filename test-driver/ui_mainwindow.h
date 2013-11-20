@@ -42,6 +42,11 @@ public:
     QAction *action_Log;
     QAction *action_Expressions;
     QAction *action_Parser;
+    QAction *actionInput;
+    QAction *actionOutput;
+    QAction *actionReference;
+    QAction *actionLog;
+    QAction *actionAll_equal;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout;
     QSplitter *splitter;
@@ -54,6 +59,7 @@ public:
     QMenu *menu_Edit;
     QMenu *menu_Select_Mode;
     QMenu *menu_View;
+    QMenu *menuExpand_panel;
     QMenu *menu_Run;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -88,6 +94,16 @@ public:
         action_Expressions->setObjectName(QStringLiteral("action_Expressions"));
         action_Parser = new QAction(MainWindow);
         action_Parser->setObjectName(QStringLiteral("action_Parser"));
+        actionInput = new QAction(MainWindow);
+        actionInput->setObjectName(QStringLiteral("actionInput"));
+        actionOutput = new QAction(MainWindow);
+        actionOutput->setObjectName(QStringLiteral("actionOutput"));
+        actionReference = new QAction(MainWindow);
+        actionReference->setObjectName(QStringLiteral("actionReference"));
+        actionLog = new QAction(MainWindow);
+        actionLog->setObjectName(QStringLiteral("actionLog"));
+        actionAll_equal = new QAction(MainWindow);
+        actionAll_equal->setObjectName(QStringLiteral("actionAll_equal"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         verticalLayout = new QVBoxLayout(centralWidget);
@@ -133,6 +149,8 @@ public:
         menu_Select_Mode->setObjectName(QStringLiteral("menu_Select_Mode"));
         menu_View = new QMenu(menuBar);
         menu_View->setObjectName(QStringLiteral("menu_View"));
+        menuExpand_panel = new QMenu(menu_View);
+        menuExpand_panel->setObjectName(QStringLiteral("menuExpand_panel"));
         menu_Run = new QMenu(menuBar);
         menu_Run->setObjectName(QStringLiteral("menu_Run"));
         MainWindow->setMenuBar(menuBar);
@@ -159,6 +177,13 @@ public:
         menu_View->addAction(action_Prev);
         menu_View->addAction(action_Next);
         menu_View->addAction(action_Log);
+        menu_View->addAction(menuExpand_panel->menuAction());
+        menuExpand_panel->addAction(actionInput);
+        menuExpand_panel->addAction(actionOutput);
+        menuExpand_panel->addAction(actionReference);
+        menuExpand_panel->addAction(actionLog);
+        menuExpand_panel->addSeparator();
+        menuExpand_panel->addAction(actionAll_equal);
         menu_Run->addAction(action_Run_Tests_for_Current_Mode);
 
         retranslateUi(MainWindow);
@@ -193,11 +218,22 @@ public:
         action_Expressions->setShortcut(QApplication::translate("MainWindow", "Ctrl+3", 0));
         action_Parser->setText(QApplication::translate("MainWindow", "&Parser", 0));
         action_Parser->setShortcut(QApplication::translate("MainWindow", "Ctrl+4", 0));
+        actionInput->setText(QApplication::translate("MainWindow", "Input", 0));
+        actionInput->setShortcut(QApplication::translate("MainWindow", "Ctrl+Alt+1", 0));
+        actionOutput->setText(QApplication::translate("MainWindow", "Output", 0));
+        actionOutput->setShortcut(QApplication::translate("MainWindow", "Ctrl+Alt+2", 0));
+        actionReference->setText(QApplication::translate("MainWindow", "Reference", 0));
+        actionReference->setShortcut(QApplication::translate("MainWindow", "Ctrl+Alt+3", 0));
+        actionLog->setText(QApplication::translate("MainWindow", "Log", 0));
+        actionLog->setShortcut(QApplication::translate("MainWindow", "Ctrl+Alt+4", 0));
+        actionAll_equal->setText(QApplication::translate("MainWindow", "All equal", 0));
+        actionAll_equal->setShortcut(QApplication::translate("MainWindow", "Ctrl+Alt+5", 0));
         qpteOutput->setDocumentTitle(QApplication::translate("MainWindow", "Output", 0));
         menu_File->setTitle(QApplication::translate("MainWindow", "&File", 0));
         menu_Edit->setTitle(QApplication::translate("MainWindow", "&Edit", 0));
         menu_Select_Mode->setTitle(QApplication::translate("MainWindow", "&Select Mode", 0));
         menu_View->setTitle(QApplication::translate("MainWindow", "&View", 0));
+        menuExpand_panel->setTitle(QApplication::translate("MainWindow", "Expand panel", 0));
         menu_Run->setTitle(QApplication::translate("MainWindow", "&Run", 0));
     } // retranslateUi
 

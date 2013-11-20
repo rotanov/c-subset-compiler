@@ -1,1 +1,1 @@
-((a)
+typedef int a, b[4](), c()[2];

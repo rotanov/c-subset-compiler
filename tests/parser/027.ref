@@ -1,1 +1,1 @@
-ERROR: unexpected token OP_RPAREN : ")" at 1-1
+ERROR: function return type can't be either array or function

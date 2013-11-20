@@ -1,10 +1,4 @@
-+---------------
-|              |
-+---------     e
-|        |   
-+------  +---
-|     |  |  |
-+---  c  d  g
-|  |
-a  b
-
+variables:
+------------------------------------------------
+variable a of type pointer to void
+ERROR: variable b declared as void

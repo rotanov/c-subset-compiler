@@ -1,4 +1,3 @@
-a
-
-a
-
+variables:
+------------------------------------------------
+variable a of type const pointer to const pointer to int

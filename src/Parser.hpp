@@ -86,8 +86,12 @@ namespace Compiler
 
         void ParseTranslationUnit_(CallerType& caller);
 
-        CompoundStatement* ParseCompoundStatement_(CallerType& caller);
         Statement* ParseStatement_(CallerType& caller);
+        CompoundStatement* ParseCompoundStatement_(CallerType& caller);
+        SelectionStatement* ParseSelectionStatement_(CallerType& caller);
+        IterationStatement* ParseIterationStatement_(CallerType& caller);
+        JumpStatement* ParseJumpStatement_(CallerType& caller);
+        ExpressionStatement* ParseExpressionStatement_(CallerType& caller);
 
         void ThrowInvalidTokenError_(const Token& token, const std::string& descriptionText = "");
         void ThrowError_(const std::string& descriptionText);
@@ -103,29 +107,11 @@ namespace Compiler
 
         SymbolType* LookupType_(const std::string& name) const;
         SymbolVariable* LookupVariable_(const std::string& name) const;
-        SymbolFunction* LookupFuntion_(const std::string& name) const;
+        SymbolVariable* LookupFunction_(const std::string& name) const;
 
-        void AddType_(SymbolType* symType)
-        {
-            SymbolTable* symbols = symTables_.back();
-            switch (symType->GetSymbolType())
-            {
-                case ESymbolType::TYPE_STRUCT:
-                    if (symbols->GetScopeType() == EScopeType::PARAMETERS)
-                    {
-                        ThrowError_("type declarations not allowed in parameter list");
-                    }
-                    break;
-
-            }
-
-            if (symbols->LookupType(symType->name) != NULL)
-            {
-                ThrowError_("redefinition of type" + symType->name);
-            }
-
-            symbols->AddType(symType);
-        }
+        void AddType_(SymbolType* symType);
+        void AddVariable_(SymbolVariable* symVar);
+        void AddFunction_(SymbolVariable* symFun);
 
         template <typename R, typename C, class... ArgTypes>
         R LookupSymbolHelper_(const std::string& name, R (C::*lookuper)(ArgTypes...) const) const

@@ -52,6 +52,16 @@ private slots:
     void on_action_Parser_triggered();
     void onSyncScrollbars();
 
+    void on_actionOutput_triggered();
+
+    void on_actionInput_triggered();
+
+    void on_actionReference_triggered();
+
+    void on_actionLog_triggered();
+
+    void on_actionAll_equal_triggered();
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();

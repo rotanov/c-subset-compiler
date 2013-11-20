@@ -99,9 +99,21 @@
     <property name="title">
      <string>&amp;View</string>
     </property>
+    <widget class="QMenu" name="menuExpand_panel">
+     <property name="title">
+      <string>Expand panel</string>
+     </property>
+     <addaction name="actionInput"/>
+     <addaction name="actionOutput"/>
+     <addaction name="actionReference"/>
+     <addaction name="actionLog"/>
+     <addaction name="separator"/>
+     <addaction name="actionAll_equal"/>
+    </widget>
     <addaction name="action_Prev"/>
     <addaction name="action_Next"/>
     <addaction name="action_Log"/>
+    <addaction name="menuExpand_panel"/>
    </widget>
    <widget class="QMenu" name="menu_Run">
     <property name="title">
@@ -220,6 +232,46 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+4</string>
+   </property>
+  </action>
+  <action name="actionInput">
+   <property name="text">
+    <string>Input</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+1</string>
+   </property>
+  </action>
+  <action name="actionOutput">
+   <property name="text">
+    <string>Output</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+2</string>
+   </property>
+  </action>
+  <action name="actionReference">
+   <property name="text">
+    <string>Reference</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+3</string>
+   </property>
+  </action>
+  <action name="actionLog">
+   <property name="text">
+    <string>Log</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+4</string>
+   </property>
+  </action>
+  <action name="actionAll_equal">
+   <property name="text">
+    <string>All equal</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+5</string>
    </property>
   </action>
  </widget>

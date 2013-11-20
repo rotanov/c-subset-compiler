@@ -1,1 +1,1 @@
-ERROR: unexpected token TT_EOF : "" at 2-1, ')' expected
+ERROR: function return type can't be either array or function

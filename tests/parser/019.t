@@ -1,1 +1,1 @@
-a a
+int * const * const a;

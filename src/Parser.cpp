@@ -16,6 +16,7 @@ namespace Compiler
 //------------------------------------------------------------------------------
     Parser::Parser()
     {
+        // environment
         SymbolTable* internalSymbols = new SymbolTable(EScopeType::INTERNAL);
         internalSymbols->AddType(new SymbolChar);
         internalSymbols->AddType(new SymbolInt);
@@ -80,7 +81,7 @@ namespace Compiler
 
             default:
             {
-                ThrowInvalidTokenError_(token);
+                ThrowInvalidTokenError_(token, "unexpected in primary-expression");
                 tokenStack_.push_back(token);
                 return NULL;
                 break;
@@ -199,7 +200,7 @@ namespace Compiler
             }
             else
             {
-                ThrowInvalidTokenError_(colonToken, "':' expected");
+                ThrowInvalidTokenError_(colonToken, "':' expected in conditional-expression");
             }
         }
         else
@@ -226,7 +227,7 @@ namespace Compiler
                     token = WaitForTokenReady_(caller);
                     if (token != OP_RSQUARE)
                     {
-                        ThrowInvalidTokenError_(token, "']' expected");
+                        ThrowInvalidTokenError_(token, "']' expected in postfix-expression");
                     }
                     token = WaitForTokenReady_(caller);
                     break;
@@ -254,7 +255,7 @@ namespace Compiler
 
                         if (token != OP_RPAREN)
                         {
-                            ThrowInvalidTokenError_(token, "')' expected");
+                            ThrowInvalidTokenError_(token, "')' expected in postfix-expression");
                         }
                     }
                     else
@@ -469,7 +470,8 @@ namespace Compiler
         SymbolVariable* declarator = ParseOutermostDeclarator_(caller, declSpec);
         Token token = WaitForTokenReady_(caller);
 
-        if (declarator->GetSymbolType() == ESymbolType::FUNCTION
+        if (declarator->GetSymbolType() == ESymbolType::VARIABLE
+            && declarator ->GetTypeSymbol()->GetSymbolType() == ESymbolType::TYPE_FUNCTION
             && token == OP_LBRACE)
         {
             return declarator;
@@ -484,9 +486,13 @@ namespace Compiler
             }
             else if (token == OP_COMMA)
             {
-                token = WaitForTokenReady_(caller);
                 ParseOutermostDeclarator_(caller, declSpec);
             }
+            else if (token != OP_SEMICOLON)
+            {
+                ThrowInvalidTokenError_(token, "`,` or `;` expected in init-declarator-list");
+            }
+            token = WaitForTokenReady_(caller);
         }
 
         return NULL;
@@ -549,7 +555,7 @@ namespace Compiler
         {
             if (token == OP_LPAREN)
             {
-                SymbolTable* parametersSymTable = new SymbolTable(EScopeType::PARAMETERS);
+                SymbolTableWithOrder* parametersSymTable = new SymbolTableWithOrder(EScopeType::PARAMETERS);
                 SymbolFunctionType* type = new SymbolFunctionType(parametersSymTable);
                 symTables_.push_back(parametersSymTable);
                 temp = type;
@@ -586,7 +592,28 @@ namespace Compiler
         rightmostType->SetTypeSymbol(rightmostPointer);
         tokenStack_.push_back(token);
 
-        std::cout << declaratorVariable->GetQualifiedName() << std::endl;
+        //typedef int a()[];
+//        void* a;
+
+        if (declSpec.isTypedef)
+        {
+//            AddType_();
+        }
+        else
+        {
+            if (declaratorVariable->GetTypeSymbol()->GetSymbolType() == ESymbolType::TYPE_FUNCTION)
+            {
+                AddFunction_(declaratorVariable);
+            }
+            else
+            {
+                if (declaratorVariable->GetTypeSymbol()->GetSymbolType() == ESymbolType::TYPE_VOID)
+                {
+                    ThrowError_("variable " + declaratorVariable->name + " declared as void");
+                }
+                AddVariable_(declaratorVariable);
+            }
+        }
 
         return declaratorVariable;
     }
@@ -647,7 +674,7 @@ namespace Compiler
         {
             if (token == OP_LPAREN)
             {
-                SymbolTable* parametersSymTable = new SymbolTable(EScopeType::PARAMETERS);
+                SymbolTableWithOrder* parametersSymTable = new SymbolTableWithOrder(EScopeType::PARAMETERS);
                 SymbolFunctionType* type = new SymbolFunctionType(parametersSymTable);
                 temp = type;
                 symTables_.push_back(parametersSymTable);
@@ -721,7 +748,7 @@ namespace Compiler
                 ThrowError_("typedef storage class specifier can not appear in parameter declaration");
             }
 
-            symFuncType.AddParameter(ParseOutermostDeclarator_(caller, declSpec));
+            ParseOutermostDeclarator_(caller, declSpec);
 
             token = WaitForTokenReady_(caller);
 
@@ -753,7 +780,7 @@ namespace Compiler
             ThrowInvalidTokenError_(token, "anonymous struct shall be declared with struct-declaration-list");
         }
 
-        SymbolTable* fieldsSymTable = new SymbolTable(EScopeType::STRUCTURE);
+        SymbolTableWithOrder* fieldsSymTable = new SymbolTableWithOrder(EScopeType::STRUCTURE);
         SymbolStruct* symStruct = new SymbolStruct(fieldsSymTable, tagToken.text);
         AddType_(symStruct);
         symTables_.push_back(fieldsSymTable);
@@ -772,7 +799,7 @@ namespace Compiler
 
                 while (token != OP_SEMICOLON)
                 {
-                    symStruct->AddField(ParseOutermostDeclarator_(caller, declSpec));
+                    ParseOutermostDeclarator_(caller, declSpec);
                     token = WaitForTokenReady_(caller);
                     if (token != OP_COMMA
                         && token != OP_SEMICOLON)
@@ -792,28 +819,31 @@ namespace Compiler
 //------------------------------------------------------------------------------
     void Parser::ParseTranslationUnit_(CallerType& caller)
     {
-        Token token;
         Symbol* symbol = NULL;
+        Token token = WithdrawTokenIf_(caller, TT_EOF);
 
-        do
+        while (token != TT_EOF)
         {
             symbol = ParseDeclaration_(caller);
             if (symbol != NULL)
             {
-                SymbolFunction* symFun = static_cast<SymbolFunction*>(symbol);
-                symTables_.push_back(symFun->GetTypeSymbol()->GetSymbolTable());
-                // at this point symbol has ESymbolType::FUNCTION
+                SymbolVariable* symFun = static_cast<SymbolVariable*>(symbol);
+                SymbolFunctionType* symType = static_cast<SymbolFunctionType*>(symFun->GetTypeSymbol());
+                symTables_.push_back(symType->GetSymbolTable());
+                // at this point symbol has ESymbolType::VARIABLE of type ESymbolType::TYPE_FUNCTION
                 // and `{` already eaten
-                symFun->GetTypeSymbol()->SetBody(ParseCompoundStatement_(caller));
+                symType->SetBody(ParseCompoundStatement_(caller));
                 symTables_.pop_back();
             }
 
-            token = WaitForTokenReady_(caller);
-        } while (token != TT_EOF);
+            token = WithdrawTokenIf_(caller, TT_EOF);
+        }
+        // globals
+        FlushOutput_();
     }
 
 //------------------------------------------------------------------------------
-    CompoundStatement* Parser::ParseCompoundStatement_(Parser::CallerType& caller)
+    CompoundStatement* Parser::ParseCompoundStatement_(CallerType& caller)
     {
         SymbolTable* symTable = new SymbolTable(EScopeType::BLOCK);
         symTables_.push_back(symTable);
@@ -832,13 +862,77 @@ namespace Compiler
             {
                 compoundStatement->AddStatement(ParseStatement_(caller));
             }
+
             token = WithdrawTokenIf_(caller, OP_RBRACE);
+
+            if (token == TT_EOF)
+            {
+                ThrowInvalidTokenError_(token, "unexpected end of file");
+            }
         }
         symTables_.pop_back();
+        return compoundStatement;
     }
 
 //------------------------------------------------------------------------------
-    Statement* Parser::ParseStatement_(Parser::CallerType& caller)
+    SelectionStatement* Parser::ParseSelectionStatement_(CallerType& caller)
+    {
+        return NULL;
+    }
+
+//------------------------------------------------------------------------------
+    IterationStatement* Parser::ParseIterationStatement_(CallerType& caller)
+    {
+        return NULL;
+    }
+
+//------------------------------------------------------------------------------
+    JumpStatement* Parser::ParseJumpStatement_(CallerType& caller)
+    {
+        Token token = WaitForTokenReady_(caller);
+        JumpStatement* jumpStatement = new JumpStatement(token);
+        if (token == KW_RETURN)
+        {
+            token = WithdrawTokenIf_(caller, OP_SEMICOLON);
+            if (token != OP_SEMICOLON)
+            {
+                ASTNode* expression = ParseExpression_(caller);
+                jumpStatement->SetReturnExpression(expression);
+                token = WaitForTokenReady_(caller);
+            }
+        }
+        else
+        {
+            token = WaitForTokenReady_(caller);
+        }
+
+        if (token != OP_SEMICOLON)
+        {
+            ThrowInvalidTokenError_(token, "semicolon `;` expected at the end of jump-statement");
+        }
+        return jumpStatement;
+    }
+
+//------------------------------------------------------------------------------
+    ExpressionStatement* Parser::ParseExpressionStatement_(CallerType& caller)
+    {
+        ExpressionStatement* expressionStatement = new ExpressionStatement();
+        Token token = WithdrawTokenIf_(caller, OP_SEMICOLON);
+        if (token != OP_SEMICOLON)
+        {
+            ASTNode* expression = ParseExpression_(caller);
+            expressionStatement->SetExpression(expression);
+            token = WithdrawTokenIf_(caller, OP_SEMICOLON);
+            if (token != OP_SEMICOLON)
+            {
+                ThrowInvalidTokenError_(token, "semicolon expected at the end of expression-statement");
+            }
+        }
+        return expressionStatement;
+    }
+
+//------------------------------------------------------------------------------
+    Statement* Parser::ParseStatement_(CallerType& caller)
     {
         Token token = WithdrawTokenIf_(caller, OP_LBRACE);
         switch (token.type)
@@ -922,11 +1016,7 @@ namespace Compiler
 //------------------------------------------------------------------------------
     void Parser::FlushOutput_()
     {
-        for (auto& node : nodeStack_)
-        {
-            PrintAST(node);
-            std::cout << std::endl;
-        }
+        PrintSymbolTable(symTables_[1]);
     }
 
 //------------------------------------------------------------------------------
@@ -961,9 +1051,56 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    SymbolFunction* Parser::LookupFuntion_(const std::string& name) const
+    SymbolVariable* Parser::LookupFunction_(const std::string& name) const
     {
         return LookupSymbolHelper_(name, &SymbolTable::LookupFunction);
+    }
+
+//------------------------------------------------------------------------------
+    void Parser::AddType_(SymbolType* symType)
+    {
+        SymbolTable* symbols = symTables_.back();
+        switch (symType->GetSymbolType())
+        {
+            case ESymbolType::TYPE_STRUCT:
+                if (symbols->GetScopeType() == EScopeType::PARAMETERS)
+                {
+                    ThrowError_("type declarations not allowed in parameter list");
+                }
+                break;
+
+        }
+
+        if (symbols->LookupType(symType->name) != NULL)
+        {
+            ThrowError_("redefinition of type " + symType->name);
+        }
+
+        symbols->AddType(symType);
+    }
+
+//------------------------------------------------------------------------------
+    void Parser::AddVariable_(SymbolVariable* symVar)
+    {
+        SymbolTable* symbols = symTables_.back();
+        if (symbols->LookupVariable(symVar->name) != NULL)
+        {
+            ThrowError_("redeclaration of " + symVar->GetQualifiedName());
+        }
+
+        symbols->AddVariable(symVar);
+    }
+
+//------------------------------------------------------------------------------
+    void Parser::AddFunction_(SymbolVariable* symFun)
+    {
+        SymbolTable* symbols = symTables_.back();
+        if (symbols->LookupVariable(symFun->name) != NULL)
+        {
+            ThrowError_("redeclaration of " + symFun->GetQualifiedName());
+        }
+
+        symbols->AddFunction(symFun);
     }
 
 //------------------------------------------------------------------------------

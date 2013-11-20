@@ -8,6 +8,8 @@
 #include <iostream>
 
 #include "ASTNode.hpp"
+#include "SymbolTable.hpp"
+#include "Statement.hpp"
 
 namespace Compiler
 {
@@ -124,6 +126,89 @@ namespace Compiler
                 }
                 std::cout << std::endl;
                 line.clear();
+            }
+        }
+    }
+
+    void PrintSymbolTable(SymbolTable* symTable, int indentLevel)
+    {
+        // utility -------------------------------------------------------------
+        auto print = [&]() -> decltype(std::operator <<(std::cout, std::string()))
+        {
+            return std::cout << std::string(indentLevel * 2, ' ');
+        };
+
+        auto splitter = [&]()
+        {
+            print() << std::string(48 - indentLevel * 2, '-') << std::endl;
+        };
+
+        // types ---------------------------------------------------------------
+        if (symTable->types.size() > 0)
+        {
+            print() << "types:" << std::endl;
+            splitter();
+        }
+        for (auto type : symTable->types)
+        {
+            std::string typeName = type.first;
+            SymbolType* typeSym = type.second;
+            print() << typeSym->GetQualifiedName() << std::endl;
+
+            switch (typeSym->GetSymbolType())
+            {
+                case ESymbolType::TYPE_STRUCT:
+                {
+                    SymbolStruct* symStruct = static_cast<SymbolStruct*>(typeSym);
+                    PrintSymbolTable(symStruct->GetSymbolTable(), indentLevel + 1);
+                    break;
+                }
+
+                default:
+                {
+                    break;
+                }
+            }
+            print() << std::endl;
+        }
+
+        // variables -----------------------------------------------------------
+        if (symTable->variables.size() > 0)
+        {
+            print() << "variables:" << std::endl;
+            splitter();
+        }
+        for (auto var : symTable->variables)
+        {
+            std::string varName = var.first;
+            SymbolVariable* varSym = var.second;
+            print() << varSym->GetQualifiedName() << std::endl;
+        }
+
+        // functions -----------------------------------------------------------
+        if (symTable->functions.size() > 0)
+        {
+            print() << "functions:" << std::endl;
+            splitter();
+        }
+        for (auto function : symTable->functions)
+        {
+            std::string functionName = function.first;
+            SymbolVariable* functionSym = function.second;
+            print() << functionSym->GetQualifiedName() << std::endl;
+            SymbolFunctionType* symFunType = static_cast<SymbolFunctionType*>(functionSym->GetTypeSymbol());
+            CompoundStatement* body = symFunType->GetBody();
+            if (body != NULL)
+            {
+                for (int i = 0; i < body->GetChildCount(); i++)
+                {
+                    PrintAST(symFunType->GetBody()->GetChild(i));
+                    std::cout << std::endl << std::endl;
+                }
+            }
+            else
+            {
+                // function declaration present, but definition missing
             }
         }
     }

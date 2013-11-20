@@ -1,9 +1,5 @@
-+---------
-|        |
-+------  d
-|     |
-+---  c
-|  |
-a  b
-
-ERROR: unexpected token OP_RPAREN : ")" at 1-12
+variables:
+------------------------------------------------
+variable c of type int
+variable b of type int
+variable a of type int

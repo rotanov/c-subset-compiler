@@ -22,9 +22,10 @@ namespace Compiler
         TYPE_STRUCT,
         TYPE_FUNCTION,
         VARIABLE,
-        FUNCTION,
     };
 
+    // symbol tables with scope type of sctructure of parameters
+    // are of class SymbolTableWithOrder by agreement
     enum class EScopeType
     {
         UNDEFINED,
@@ -38,7 +39,6 @@ namespace Compiler
 
     class SymbolType;
     class SymbolVariable;
-    class SymbolFunction;
     class SymbolStruct;
 
 //------------------------------------------------------------------------------
@@ -76,18 +76,20 @@ namespace Compiler
         EScopeType GetScopeType() const;
 
         void AddType(SymbolType* symbolType);
-        void AddFunction(SymbolFunction* symbolFunction);
-        void AddVariable(SymbolVariable* symbolVariable);
+        void AddFunction(SymbolVariable* symbolVariable);
+        virtual void AddVariable(SymbolVariable* symbolVariable);
 
         SymbolVariable* LookupVariable(const std::string& name) const;
         SymbolType* LookupType(const std::string& name) const;
-        SymbolFunction* LookupFunction(const std::string& name) const;
+        SymbolVariable* LookupFunction(const std::string& name) const;
 
         TSymbols<SymbolVariable> variables;
         TSymbols<SymbolType> types;
-        TSymbols<SymbolFunction> functions;
+        TSymbols<SymbolVariable> functions;
 
-    private:
+    protected:
+        SymbolTable();
+
         template <typename T>
         T* LookupHelper_(const TSymbols<T>& container, const std::string& key) const
         {
@@ -102,6 +104,20 @@ namespace Compiler
         }
 
         EScopeType scope_{EScopeType::UNDEFINED};
+    };
+
+//------------------------------------------------------------------------------
+    class SymbolTableWithOrder : public SymbolTable
+    {
+    public:
+        SymbolTableWithOrder(const EScopeType scope);
+        virtual ~SymbolTableWithOrder();
+
+        virtual void AddVariable(SymbolVariable* symbolVariable);
+
+        std::vector<SymbolVariable*> orderedVariables;
+
+    private:
     };
 
 //------------------------------------------------------------------------------
@@ -127,6 +143,7 @@ namespace Compiler
 
         virtual ESymbolType GetSymbolType() const;
         virtual void SetTypeSymbol(SymbolType* symType);
+        SymbolType* GetTypeSymbol() const;
         virtual std::string GetQualifiedName() const;
 
     protected:
@@ -134,41 +151,23 @@ namespace Compiler
     };
 
 //------------------------------------------------------------------------------
-    class SymbolFunctionType;
-    class SymbolFunction : public Symbol
-    {
-    public:
-        SymbolFunction(const std::string& name);
-        SymbolFunction(const std::string& name, SymbolFunctionType* symType);
-
-        virtual ESymbolType GetSymbolType() const;
-        virtual void SetTypeSymbol(SymbolFunctionType *symType);
-        SymbolFunctionType* GetTypeSymbol() const;
-        virtual std::string GetQualifiedName() const;
-
-    private:
-        SymbolFunctionType* type_{NULL};
-    };
-
-//------------------------------------------------------------------------------
     class CompoundStatement;
     class SymbolFunctionType : public SymbolType
     {
     public:
-        SymbolFunctionType(SymbolTable* parametersSymTable);
+        SymbolFunctionType(SymbolTableWithOrder* parametersSymTable);
 
         virtual ESymbolType GetSymbolType() const;
         virtual void SetTypeSymbol(SymbolType *symType);
         virtual std::string GetQualifiedName() const;
         void AddParameter(SymbolVariable* parameter);
-        SymbolTable* GetSymbolTable() const;
+        SymbolTableWithOrder* GetSymbolTable() const;
         void SetBody(CompoundStatement* body);
         CompoundStatement* GetBody() const;
 
     private:
         SymbolType* returnType_{NULL};
-        std::vector<SymbolVariable*> orderedParameters_;
-        SymbolTable* parameters_{NULL};
+        SymbolTableWithOrder* parameters_{NULL};
         CompoundStatement* body_{NULL};
     };
 
@@ -176,15 +175,15 @@ namespace Compiler
     class SymbolStruct : public SymbolType
     {
     public:
-        SymbolStruct(SymbolTable* membersSymTable, const std::string name = "");
+        SymbolStruct(SymbolTableWithOrder* membersSymTable, const std::string name = "");
 
         virtual ESymbolType GetSymbolType() const;
         virtual std::string GetQualifiedName() const;
         void AddField(SymbolVariable* field);
+        SymbolTableWithOrder* GetSymbolTable() const;
 
     private:
-        SymbolTable* fields_{NULL};
-        std::vector<SymbolVariable*> orderedFields_;
+        SymbolTableWithOrder* fields_{NULL};
     };
 
 //------------------------------------------------------------------------------

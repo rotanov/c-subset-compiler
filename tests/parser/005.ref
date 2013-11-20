@@ -1,6 +1,3 @@
-+---
-|  |   
-a  +---
-   |  |
-   b  c
-
+variables:
+------------------------------------------------
+variable a of type pointer to void

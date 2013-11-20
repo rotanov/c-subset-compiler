@@ -1,1 +1,1 @@
-(a+b)(a+b)
+const int * * const a[3][2][1];

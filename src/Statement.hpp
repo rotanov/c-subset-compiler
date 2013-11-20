@@ -31,6 +31,11 @@ namespace Compiler
     class ExpressionStatement : public Statement
     {
     public:
+        ExpressionStatement();
+
+        void SetExpression(ASTNode* expression);
+        ASTNode* GetExpression() const;
+
     private:
 
     };
@@ -52,6 +57,10 @@ namespace Compiler
     class JumpStatement : public Statement
     {
     public:
+        JumpStatement(const Token& token);
+        void SetReturnExpression(ASTNode* expression);
+        ASTNode* GetReturnExpression() const;
+
     private:
 
     };
