@@ -1,0 +1,3 @@
+variables:
+------------------------------------------------
+variable fp1 of type pointer to function(variable <arg-n-1> of type int, ) returning pointer to array 10 of pointer to int

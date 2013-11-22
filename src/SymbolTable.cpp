@@ -79,7 +79,9 @@ namespace Compiler
 
         std::string key = symbolVariable->name;
 
-        assert(variables.find(key) == variables.end());
+        // wrong assert since we have forward declarations
+        // place proper checks at higher level
+        // assert(variables.find(key) == variables.end());
 
         variables[key] = symbolVariable;
     }

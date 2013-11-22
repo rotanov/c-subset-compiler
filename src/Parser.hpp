@@ -54,6 +54,7 @@ namespace Compiler
         std::vector<ASTNode*> nodeStack_;
         Coroutine parseCoroutine_;
         std::vector<SymbolTable*> symTables_;
+        int anonymousGenerator_{0};
 
         // expressions
         ASTNode* ParseTopLevelExpression_(CallerType& caller);
@@ -65,19 +66,19 @@ namespace Compiler
         ASTNode* ParseConditionalExpression_(CallerType& caller);
         ASTNode* ParsePostfixExpression_(CallerType& caller);
 
-//        // type-name
+        // type-name
         ASTNode* ParseTypeName_(CallerType& caller);
         ASTNode* ParseSpecifierQualifierList_(CallerType& caller);
-        ASTNode* ParseAbstractDeclarator_(CallerType& caller);
-        std::tuple<SymbolType*, SymbolType*> ParsePointer_(CallerType& caller, SymbolType* refType = NULL);
-        ASTNode* ParseDirectAbstractDeclarator_(CallerType& caller);
+
+        typedef std::tuple<SymbolType*, SymbolType*> PointerChainHeadTail;
+        PointerChainHeadTail ParsePointer_(CallerType& caller);
+
         ASTNode* ParseParameterList_(CallerType& caller);
 
         Symbol* ParseDeclaration_(CallerType& caller);
         DeclarationSpecifiers ParseDeclarationSpecifiers_(CallerType& caller);
         Symbol* ParseInitDeclaratorList_(CallerType& caller, DeclarationSpecifiers& declSpec);
-        SymbolVariable* ParseOutermostDeclarator_(CallerType& caller, DeclarationSpecifiers& declSpec);
-        Symbol* ParseInnerDeclarator_(CallerType& caller, SymbolVariable*& declaratorVariable);
+        SymbolVariable* ParseDeclarator_(CallerType& caller, DeclarationSpecifiers& declSpec);
         void ParseParameterList(CallerType& caller, SymbolFunctionType& symFuncType);
 
         // declaration
@@ -103,6 +104,9 @@ namespace Compiler
         void FlushOutput_();
 
         bool IsStartsDeclaration_(const Token& token) const;
+
+        std::string GenerateStuctName_();
+        std::string GenerateParameterName_();
 
         SymbolType* LookupType_(const std::string& name) const;
         SymbolVariable* LookupVariable_(const std::string& name) const;

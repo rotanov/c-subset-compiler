@@ -310,20 +310,15 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    std::tuple<SymbolType*, SymbolType*> Parser::ParsePointer_(Parser::CallerType& caller, SymbolType* refType /*= NULL*/)
+    Parser::PointerChainHeadTail Parser::ParsePointer_(Parser::CallerType& caller)
     {
         SymbolType* tail = new SymbolPointer();
-        SymbolType* head = refType != NULL ? refType : tail;
-        SymbolType* temp = refType;
-        Token token;
+        SymbolType* head = tail;
 
-        do
+        Token token(OP_STAR);
+
+        while (token == OP_STAR)
         {
-            if (temp != NULL)
-            {
-                tail->SetTypeSymbol(temp);
-            }
-
             token = WaitForTokenReady_(caller);
 
             bool constant = false;
@@ -339,11 +334,9 @@ namespace Compiler
 
             if (token == OP_STAR)
             {
-                temp = tail;
-                tail = new SymbolPointer();
+                tail = new SymbolPointer(tail);
             }
-
-        } while (token == OP_STAR);
+        }
 
         tokenStack_.push_back(token);
 
@@ -406,6 +399,8 @@ namespace Compiler
         while (token != OP_SEMICOLON
                && token != OP_LPAREN
                && token != OP_STAR
+               && token != OP_COMMA // unnamed parameter in fwd function declaration case
+               && token != OP_RPAREN // same as above, but last in parameter list
                && !identifierFound)
         {
             switch (token)
@@ -485,7 +480,7 @@ namespace Compiler
 //------------------------------------------------------------------------------
     Symbol* Parser::ParseInitDeclaratorList_(Parser::CallerType& caller, DeclarationSpecifiers& declSpec)
     {
-        SymbolVariable* declarator = ParseOutermostDeclarator_(caller, declSpec);
+        SymbolVariable* declarator = ParseDeclarator_(caller, declSpec);
         Token token = WaitForTokenReady_(caller);
 
         if (declarator->GetSymbolType() == ESymbolType::VARIABLE
@@ -504,7 +499,7 @@ namespace Compiler
             }
             else if (token == OP_COMMA)
             {
-                ParseOutermostDeclarator_(caller, declSpec);
+                ParseDeclarator_(caller, declSpec);
             }
             else if (token != OP_SEMICOLON)
             {
@@ -517,111 +512,137 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    SymbolVariable* Parser::ParseOutermostDeclarator_(Parser::CallerType& caller, DeclarationSpecifiers& declSpec)
+    SymbolVariable* Parser::ParseDeclarator_(Parser::CallerType& caller,
+                                             DeclarationSpecifiers& declSpec)
     {
         SymbolVariable* declaratorVariable = NULL;
-        Token token = WaitForTokenReady_(caller);
 
-        SymbolType* leftmostPointer = declSpec.typeSymbol;
-        SymbolType* rightmostPointer = NULL;
-        Symbol* centralType = NULL;
+        std::function<Symbol*()> f = [&]() -> Symbol*
+        {
+            SymbolType* leftmostPointer = NULL;
+            SymbolType* rightmostPointer = NULL;
+            Symbol* centralType = NULL;
+            Token token = WaitForTokenReady_(caller);
 
-        // pointer part
-        if (token == OP_STAR)
-        {
-            std::tie(leftmostPointer, rightmostPointer) = ParsePointer_(caller, leftmostPointer);
-            token = WaitForTokenReady_(caller);
-        }
-        else
-        {
-            rightmostPointer = leftmostPointer;
-        }
-
-        // direct declarator
-        if (token == TT_IDENTIFIER)
-        {
-            // TODO: more complex check
-            if (symTables_.back()->LookupVariable(token.text) != NULL)
+            // pointer part
+            if (token == OP_STAR)
             {
-                ThrowInvalidTokenError_(token, "redeclaration of identifier");
-            }
-            declaratorVariable = new SymbolVariable(token.text);
-            centralType = declaratorVariable;
-        }
-        else if (token == OP_LPAREN)
-        {
-            centralType = ParseInnerDeclarator_(caller, declaratorVariable);
-            token = WaitForTokenReady_(caller);
-            if (token != OP_RPAREN)
-            {
-                ThrowInvalidTokenError_(token, "`)` expected to close in declarator");
-            }
-        }
-        else
-        {
-            ThrowInvalidTokenError_(token, "identifier or `(` expected");
-        }
-
-        token = WaitForTokenReady_(caller);
-
-        Symbol* leftmostType = centralType;
-        Symbol* rightmostType = centralType;
-        SymbolType* temp = NULL;
-
-        while (token == OP_LPAREN
-               || token == OP_LSQUARE)
-        {
-            if (token == OP_LPAREN)
-            {
-                SymbolTableWithOrder* parametersSymTable = new SymbolTableWithOrder(EScopeType::PARAMETERS);
-                SymbolFunctionType* type = new SymbolFunctionType(parametersSymTable);
-                symTables_.push_back(parametersSymTable);
-                temp = type;
-
-                ParseParameterList(caller, *type);
-
-                symTables_.pop_back();
-
+                std::tie(leftmostPointer, rightmostPointer) =
+                    ParsePointer_(caller);
                 token = WaitForTokenReady_(caller);
+            }
 
+            // direct declarator
+            if (token == TT_IDENTIFIER)
+            {
+                declaratorVariable = new SymbolVariable(token.text);
+                centralType = declaratorVariable;
+            }
+            else if (token == OP_LPAREN)
+            {
+                centralType = f();
+                token = WaitForTokenReady_(caller);
                 if (token != OP_RPAREN)
                 {
-                    ThrowInvalidTokenError_(token, "closing `)` expected for parameter-list in declarator");
+                    ThrowInvalidTokenError_(token, "`)` expected to close in declarator");
                 }
             }
-            else if (token == OP_LSQUARE)
+            else
             {
-                SymbolArray* type = new SymbolArray();
-                temp = type;
-                ASTNode* initializer = ParseAssignmentExpression_(caller);
-                type->SetInitializer(initializer);
-                token = WaitForTokenReady_(caller);
-                if (token != OP_RSQUARE)
+                // now we are sure there is no identifier
+                // if we are in func parameters scope then we're allowed
+                // to declare it anonymous, else it is treated as error
+                SymbolTable* topSymTable = symTables_.back();
+                if (topSymTable->GetScopeType() == EScopeType::PARAMETERS)
                 {
-                    ThrowInvalidTokenError_(token, "closing `)` expected for parameter-list in declarator");
+                    tokenStack_.push_back(token);
+                    declaratorVariable = new SymbolVariable(GenerateParameterName_());
+                    centralType = declaratorVariable;
+                }
+                else
+                {
+                    ThrowInvalidTokenError_(token, "identifier or `(` expected");
                 }
             }
-
-            rightmostType->SetTypeSymbol(temp);
-            rightmostType = temp;
 
             token = WaitForTokenReady_(caller);
-        }
-        rightmostType->SetTypeSymbol(rightmostPointer);
-        tokenStack_.push_back(token);
 
-        //typedef int a()[];
-//        void* a;
+            Symbol* rightmostType = centralType;
+            SymbolType* temp = NULL;
+
+            while (token == OP_LPAREN
+                   || token == OP_LSQUARE)
+            {
+                if (token == OP_LPAREN)
+                {
+                    SymbolTableWithOrder* parametersSymTable =
+                        new SymbolTableWithOrder(EScopeType::PARAMETERS);
+                    SymbolFunctionType* type =
+                        new SymbolFunctionType(parametersSymTable);
+                    symTables_.push_back(parametersSymTable);
+                    temp = type;
+
+                    ParseParameterList(caller, *type);
+
+                    symTables_.pop_back();
+
+                    token = WaitForTokenReady_(caller);
+
+                    if (token != OP_RPAREN)
+                    {
+                        ThrowInvalidTokenError_(token, "closing `)` expected for parameter-list in declarator");
+                    }
+                }
+                else if (token == OP_LSQUARE)
+                {
+                    SymbolArray* type = new SymbolArray();
+                    temp = type;
+                    ASTNode* initializer = ParseAssignmentExpression_(caller);
+                    type->SetInitializer(initializer);
+                    token = WaitForTokenReady_(caller);
+                    if (token != OP_RSQUARE)
+                    {
+                        ThrowInvalidTokenError_(token, "closing `)` expected for parameter-list in declarator");
+                    }
+                }
+
+                rightmostType->SetTypeSymbol(temp);
+                rightmostType = temp;
+
+                token = WaitForTokenReady_(caller);
+            }
+            tokenStack_.push_back(token);
+
+            if (rightmostPointer != NULL)
+            {
+                rightmostType->SetTypeSymbol(rightmostPointer);
+                return leftmostPointer;
+            }
+            else
+            {
+                return rightmostType;
+            }
+
+        };
+
+        f()->SetTypeSymbol(declSpec.typeSymbol);
 
         if (declSpec.isTypedef)
         {
-            SymbolTypedef* symTypedef = new SymbolTypedef(declaratorVariable->name);
+            SymbolTypedef* symTypedef =
+                    new SymbolTypedef(declaratorVariable->name);
             symTypedef->SetTypeSymbol(declaratorVariable->GetTypeSymbol());
             AddType_(symTypedef);
         }
         else
         {
-            if (declaratorVariable->GetTypeSymbol()->GetSymbolType() == ESymbolType::TYPE_FUNCTION)
+            if (declaratorVariable->GetTypeSymbol()->GetSymbolType() == ESymbolType::TYPE_FUNCTION
+                // if we found function declaration at global scope
+                // there may be function body
+                // soo AddFunction_ shall be called at higher level
+                // !!! как проснёшься - сделай это и вообще начни отсюда
+                // и пройдись по букмаркам в коде.
+                && symTables_.size() == 2)
             {
                 AddFunction_(declaratorVariable);
             }
@@ -629,118 +650,14 @@ namespace Compiler
             {
                 if (declaratorVariable->GetTypeSymbol()->GetSymbolType() == ESymbolType::TYPE_VOID)
                 {
-                    ThrowError_("variable " + declaratorVariable->name + " declared as void");
+                    ThrowError_("variable " + declaratorVariable->name
+                                + " declared as void");
                 }
                 AddVariable_(declaratorVariable);
             }
         }
 
         return declaratorVariable;
-    }
-
-//------------------------------------------------------------------------------
-    Symbol* Parser::ParseInnerDeclarator_(Parser::CallerType& caller, SymbolVariable*& declaratorVariable)
-    {
-        Token token = WaitForTokenReady_(caller);
-
-        SymbolType* leftmostPointer = NULL;
-        SymbolType* rightmostPointer = NULL;
-        Symbol* centralType = NULL;
-        Symbol* leftmostFirstType = NULL;
-        Symbol* rightmostFirstType = NULL;
-
-        // pointer part
-        if (token == OP_STAR)
-        {
-            std::tie(leftmostPointer, rightmostPointer) = ParsePointer_(caller);
-            token = WaitForTokenReady_(caller);
-            leftmostFirstType = leftmostPointer;
-            rightmostFirstType = rightmostPointer;
-        }
-
-        // direct declarator
-        if (token == TT_IDENTIFIER)
-        {
-            // TODO: more complex check
-            if (symTables_.back()->LookupVariable(token.text) != NULL)
-            {
-                ThrowInvalidTokenError_(token, "redeclaration of identifier");
-            }
-            declaratorVariable = new SymbolVariable(token.text);
-            centralType = declaratorVariable;
-        }
-        else if (token == OP_LPAREN)
-        {
-            centralType = ParseInnerDeclarator_(caller, declaratorVariable);
-            token = WaitForTokenReady_(caller);
-            if (token != OP_RPAREN)
-            {
-                ThrowInvalidTokenError_(token, "`)` expected to close in declarator");
-            }
-        }
-        else
-        {
-            ThrowInvalidTokenError_(token, "identifier or `(` expected");
-        }
-
-        token = WaitForTokenReady_(caller);
-
-        Symbol* leftmostType = centralType;
-        Symbol* rightmostType = centralType;
-        SymbolType* temp = NULL;
-
-        while (token == OP_LPAREN
-               || token == OP_LSQUARE)
-        {
-            if (token == OP_LPAREN)
-            {
-                SymbolTableWithOrder* parametersSymTable = new SymbolTableWithOrder(EScopeType::PARAMETERS);
-                SymbolFunctionType* type = new SymbolFunctionType(parametersSymTable);
-                temp = type;
-                symTables_.push_back(parametersSymTable);
-
-                ParseParameterList(caller, *type);
-
-                symTables_.pop_back();
-
-                token = WaitForTokenReady_(caller);
-
-                if (token != OP_RPAREN)
-                {
-                    ThrowInvalidTokenError_(token, "closing `)` expected for parameter-list in declarator");
-                }
-            }
-            else if (token == OP_LSQUARE)
-            {
-                SymbolArray* type = new SymbolArray();
-                temp = type;
-                ASTNode* initializer = ParseAssignmentExpression_(caller);
-                type->SetInitializer(initializer);
-                token = WaitForTokenReady_(caller);
-                if (token != OP_RSQUARE)
-                {
-                    ThrowInvalidTokenError_(token, "closing `)` expected for parameter-list in declarator");
-                }
-            }
-
-            rightmostType->SetTypeSymbol(temp);
-            rightmostType = temp;
-
-            token = WaitForTokenReady_(caller);
-        }
-
-        tokenStack_.push_back(token);
-
-        if (rightmostPointer != NULL)
-        {
-            rightmostType->SetTypeSymbol(rightmostPointer);
-            return leftmostPointer;
-        }
-        else
-        {
-            return rightmostType;
-        }
-
     }
 
 //------------------------------------------------------------------------------
@@ -768,7 +685,7 @@ namespace Compiler
                 ThrowError_("typedef storage class specifier can not appear in parameter declaration");
             }
 
-            ParseOutermostDeclarator_(caller, declSpec);
+            ParseDeclarator_(caller, declSpec);
 
             token = WaitForTokenReady_(caller);
 
@@ -801,6 +718,13 @@ namespace Compiler
         }
 
         SymbolTableWithOrder* fieldsSymTable = new SymbolTableWithOrder(EScopeType::STRUCTURE);
+
+        // anonymous struct:
+        if (tagToken != TT_IDENTIFIER)
+        {
+            tagToken = Token(TT_IDENTIFIER, GenerateStuctName_());
+        }
+
         SymbolStruct* symStruct = new SymbolStruct(fieldsSymTable, tagToken.text);
         AddType_(symStruct);
         symTables_.push_back(fieldsSymTable);
@@ -819,7 +743,7 @@ namespace Compiler
 
                 while (token != OP_SEMICOLON)
                 {
-                    ParseOutermostDeclarator_(caller, declSpec);
+                    ParseDeclarator_(caller, declSpec);
                     token = WaitForTokenReady_(caller);
                     if (token != OP_COMMA
                         && token != OP_SEMICOLON)
@@ -1059,6 +983,20 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
+    std::string Parser::GenerateStuctName_()
+    {
+        anonymousGenerator_++;
+        return "<struct-n-" + std::to_string(anonymousGenerator_) + ">";
+    }
+
+//------------------------------------------------------------------------------
+    std::string Parser::GenerateParameterName_()
+    {
+        anonymousGenerator_++;
+        return "<arg-n-" + std::to_string(anonymousGenerator_) + ">";
+    }
+
+//------------------------------------------------------------------------------
     SymbolType* Parser::LookupType_(const std::string& name) const
     {
         return LookupSymbolHelper_(name, &SymbolTable::LookupType);
@@ -1123,12 +1061,44 @@ namespace Compiler
     void Parser::AddFunction_(SymbolVariable* symFun)
     {
         SymbolTable* symbols = symTables_.back();
-        if (symbols->LookupVariable(symFun->name) != NULL)
-        {
-            ThrowError_("redeclaration of " + symFun->GetQualifiedName());
-        }
 
-        symbols->AddFunction(symFun);
+        if (symTables_.size() == 2)
+        {
+            // adding function at global scope
+            SymbolVariable* symFunPresent = symbols->LookupFunction(symFun->name);
+            if (symFunPresent != NULL)
+            {
+                SymbolFunctionType* symFunTypePresent = static_cast<SymbolFunctionType*>(symFunPresent->GetTypeSymbol());
+                SymbolFunctionType* symFunTypeAdding = static_cast<SymbolFunctionType*>(symFun->GetTypeSymbol());
+
+                if (symFunTypeAdding->GetBody() != NULL)
+                {
+                    if (symFunTypePresent->GetBody() != NULL)
+                    {
+                        ThrowError_("redefinition of " + symFun->GetQualifiedName());
+                    }
+                    else
+                    {
+
+                    }
+                }
+            }
+            else
+            {
+                symbols->AddFunction(symFun);
+            }
+        }
+        else
+        {
+            if (symbols->LookupVariable(symFun->name) != NULL)
+            {
+                ThrowError_("redeclaration of " + symFun->GetQualifiedName());
+            }
+            else
+            {
+                symbols->AddFunction(symFun);
+            }
+        }
     }
 
 //------------------------------------------------------------------------------

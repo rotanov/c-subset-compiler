@@ -1,5 +1,5 @@
 typedef int MILES, KLICKSP(), BAZ[4][10];
-typedef struct { double hi, lo; } range;
+typedef struct { float hi, lo; } range;
 
 // valid:
 MILES distance;
