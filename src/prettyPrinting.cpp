@@ -132,6 +132,13 @@ namespace Compiler
 
     void PrintSymbolTable(SymbolTable* symTable, int indentLevel)
     {
+        assert(symTable != NULL);
+        SymbolTableWithOrder* symTableOrdered = NULL;
+        if (symTable->GetScopeType() == EScopeType::PARAMETERS
+            || symTable->GetScopeType() == EScopeType::STRUCTURE)
+        {
+            symTableOrdered = static_cast<SymbolTableWithOrder*>(symTable);
+        }
         // utility -------------------------------------------------------------
         auto print = [&]() -> decltype(std::operator <<(std::cout, std::string()))
         {
@@ -178,11 +185,21 @@ namespace Compiler
             print() << "variables:" << std::endl;
             splitter();
         }
-        for (auto var : symTable->variables)
+        if (symTableOrdered != NULL)
         {
-            std::string varName = var.first;
-            SymbolVariable* varSym = var.second;
-            print() << varSym->GetQualifiedName() << std::endl;
+            for (auto var : symTableOrdered->orderedVariables)
+            {
+                print() << var->GetQualifiedName() << std::endl;
+            }
+        }
+        else
+        {
+            for (auto var : symTable->variables)
+            {
+                std::string varName = var.first;
+                SymbolVariable* varSym = var.second;
+                print() << varSym->GetQualifiedName() << std::endl;
+            }
         }
 
         // functions -----------------------------------------------------------

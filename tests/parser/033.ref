@@ -1,0 +1,23 @@
+types:
+------------------------------------------------
+typedef range struct <struct-n-1>
+
+struct <struct-n-1>
+  variables:
+  ----------------------------------------------
+  variable hi of type float
+  variable lo of type float
+
+typedef BAZ array 4 of array 10 of int
+
+typedef KLICKSP function() returning int
+
+typedef MILES int
+
+variables:
+------------------------------------------------
+variable zp of type pointer to struct <struct-n-1>
+variable x of type struct <struct-n-1>
+variable z of type struct <struct-n-1>
+variable metricp of type pointer to function() returning int
+variable distance of type int

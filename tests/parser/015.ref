@@ -1,0 +1,3 @@
+functions:
+------------------------------------------------
+variable signal of type function(variable <arg-n-1> of type int, variable fp of type pointer to function(variable <arg-n-2> of type int, ) returning void, ) returning pointer to function(variable <arg-n-3> of type int, ) returning void

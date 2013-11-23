@@ -134,6 +134,7 @@ namespace Compiler
     };
 
 //------------------------------------------------------------------------------
+    class ASTNode;
     class SymbolVariable : public Symbol
     {
     public:
@@ -144,9 +145,11 @@ namespace Compiler
         virtual void SetTypeSymbol(SymbolType* symType);
         SymbolType* GetTypeSymbol() const;
         virtual std::string GetQualifiedName() const;
+        void SetInitializer(ASTNode* initializer);
 
     protected:
         SymbolType* type_{NULL};
+        ASTNode* initializer_{NULL};
     };
 
 //------------------------------------------------------------------------------
@@ -180,6 +183,8 @@ namespace Compiler
         virtual std::string GetQualifiedName() const;
         void AddField(SymbolVariable* field);
         SymbolTableWithOrder* GetSymbolTable() const;
+
+        bool complete{false};
 
     private:
         SymbolTableWithOrder* fields_{NULL};
@@ -251,7 +256,7 @@ namespace Compiler
         SymbolArray();
 
         virtual ESymbolType GetSymbolType() const;
-        void SetInitializer(ASTNode* initializerExpression);
+        void SetSizeInitializer(ASTNode* initializerExpression);
         virtual void SetTypeSymbol(SymbolType *symType);
 
         virtual std::string GetQualifiedName() const;

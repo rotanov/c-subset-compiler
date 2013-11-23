@@ -2,4 +2,4 @@
 // to array of pointer to function returning
 // const pointer to pointer to const int
 
-const int * * const (*(*a[3][2])[])()
+const int * * const (*(*a[3][2])[])();

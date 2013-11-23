@@ -485,7 +485,8 @@ namespace Compiler
 
         if (declarator->GetSymbolType() == ESymbolType::VARIABLE
             && declarator ->GetTypeSymbol()->GetSymbolType() == ESymbolType::TYPE_FUNCTION
-            && token == OP_LBRACE)
+            && token == OP_LBRACE
+            && symTables_.size() == 2) // function definition allowed only on the global level
         {
             return declarator;
         }
@@ -495,11 +496,14 @@ namespace Compiler
             if (token == OP_ASS)
             {
                 // Parse initializer
+                // TODO: complex initializer
+                ASTNode* initializerExpression = ParseAssignmentExpression_(caller);
+                declarator->SetInitializer(initializerExpression);
                 token = WaitForTokenReady_(caller);
             }
             else if (token == OP_COMMA)
             {
-                ParseDeclarator_(caller, declSpec);
+                declarator = ParseDeclarator_(caller, declSpec);
             }
             else if (token != OP_SEMICOLON)
             {
@@ -597,12 +601,17 @@ namespace Compiler
                 {
                     SymbolArray* type = new SymbolArray();
                     temp = type;
-                    ASTNode* initializer = ParseAssignmentExpression_(caller);
-                    type->SetInitializer(initializer);
-                    token = WaitForTokenReady_(caller);
+                    token = WithdrawTokenIf_(caller, OP_RSQUARE);
+
                     if (token != OP_RSQUARE)
                     {
-                        ThrowInvalidTokenError_(token, "closing `)` expected for parameter-list in declarator");
+                        ASTNode* sizeInitializer = ParseAssignmentExpression_(caller);
+                        type->SetSizeInitializer(sizeInitializer);
+                        token = WaitForTokenReady_(caller);
+                        if (token != OP_RSQUARE)
+                        {
+                            ThrowInvalidTokenError_(token, "closing `)` expected for parameter-list in declarator");
+                        }
                     }
                 }
 
@@ -640,8 +649,6 @@ namespace Compiler
                 // if we found function declaration at global scope
                 // there may be function body
                 // soo AddFunction_ shall be called at higher level
-                // !!! как проснёшься - сделай это и вообще начни отсюда
-                // и пройдись по букмаркам в коде.
                 && symTables_.size() == 2)
             {
                 AddFunction_(declaratorVariable);
@@ -740,6 +747,7 @@ namespace Compiler
                 {
                     ThrowError_("struct declaration can not contain typedef");
                 }
+                token = WithdrawTokenIf_(caller, OP_SEMICOLON);
 
                 while (token != OP_SEMICOLON)
                 {
@@ -757,6 +765,7 @@ namespace Compiler
         }
 
         symTables_.pop_back();
+        symStruct->complete = true;
         return symStruct;
     }
 
@@ -778,6 +787,7 @@ namespace Compiler
                 // and `{` already eaten
                 symType->SetBody(ParseCompoundStatement_(caller));
                 symTables_.pop_back();
+                AddFunction_(symFun);
             }
 
             token = WithdrawTokenIf_(caller, TT_EOF);
@@ -1054,6 +1064,17 @@ namespace Compiler
             ThrowError_("redeclaration of " + symVar->GetQualifiedName());
         }
 
+        if (symVar->GetTypeSymbol()->GetSymbolType() == ESymbolType::TYPE_STRUCT)
+        {
+            SymbolStruct* symStruct = static_cast<SymbolStruct*>(symVar->GetTypeSymbol());
+            if (!symStruct->complete)
+            {
+                ThrowError_("type " + symStruct->GetQualifiedName()
+                            + " is incomplete. cannot declare variable "
+                            + symVar->name + " of incomplete type");
+            }
+        }
+
         symbols->AddVariable(symVar);
     }
 
@@ -1079,8 +1100,13 @@ namespace Compiler
                     }
                     else
                     {
-
+                        symFunTypePresent->SetBody(symFunTypeAdding->GetBody());
+                        // TODO: delete symFun
                     }
+                }
+                else
+                {
+                    // TODO: assure signatures are the same
                 }
             }
             else

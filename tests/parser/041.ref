@@ -1,0 +1,20 @@
+types:
+------------------------------------------------
+struct A
+  types:
+  ----------------------------------------------
+  struct B
+    variables:
+    --------------------------------------------
+    variable test of type pointer to struct A
+  
+  variables:
+  ----------------------------------------------
+  variable a of type int
+  variable b of type float
+  variable c of type char
+  variable e of type pointer to void
+  variable eee of type struct B
+  variable t1 of type struct B
+
+ERROR: type struct A is incomplete. cannot declare variable t2 of incomplete type

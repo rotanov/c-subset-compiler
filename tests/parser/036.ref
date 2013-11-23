@@ -1,0 +1,7 @@
+variables:
+------------------------------------------------
+variable b of type array 4 of pointer to function() returning int
+variable a of type int
+functions:
+------------------------------------------------
+variable c of type function() returning pointer to array 2 of int

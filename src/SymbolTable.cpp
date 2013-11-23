@@ -147,6 +147,11 @@ namespace Compiler
         return "variable " + name + " of type " + type_->GetQualifiedName();
     }
 
+    void SymbolVariable::SetInitializer(ASTNode* initializer)
+    {
+        initializer_ = initializer;
+    }
+
     SymbolChar::SymbolChar()
         : SymbolType("char")
     {
@@ -333,7 +338,7 @@ namespace Compiler
         return ESymbolType::TYPE_ARRAY;
     }
 
-    void SymbolArray::SetInitializer(ASTNode* initializerExpression)
+    void SymbolArray::SetSizeInitializer(ASTNode* initializerExpression)
     {
         assert(initializerExpression != NULL);
         sizeInitializer_ = initializerExpression;
@@ -355,7 +360,8 @@ namespace Compiler
     {
         assert(elementType_ != NULL);
         std::string size;
-        if (sizeInitializer_->token == TT_LITERAL_INT)
+        if (sizeInitializer_ != NULL
+            && sizeInitializer_->token == TT_LITERAL_INT)
         {
             size = " " + sizeInitializer_->token.text;
         }
