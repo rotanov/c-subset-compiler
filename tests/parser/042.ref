@@ -1,0 +1,11 @@
+types:
+------------------------------------------------
+struct Foo
+  variables:
+  ----------------------------------------------
+  variable a of type int
+
+variables:
+------------------------------------------------
+variable t2 of type pointer to struct Foo
+variable t1 of type struct Foo
