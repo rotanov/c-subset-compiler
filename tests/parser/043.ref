@@ -1,0 +1,13 @@
+types:
+------------------------------------------------
+struct A
+  variables:
+  ----------------------------------------------
+  variable wahahaha of type int
+
+variables:
+------------------------------------------------
+variable b of type struct A
+variable noStructKwdPtr of type pointer to struct A
+variable c of type pointer to struct A
+ERROR: redefinition of type A, type is alreade complete

@@ -16,5 +16,5 @@ struct A
   variable e of type pointer to void
   variable eee of type struct B
   variable t1 of type struct B
+  variable t2 of type pointer to struct B
 
-ERROR: type struct A is incomplete. cannot declare variable t2 of incomplete type

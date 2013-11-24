@@ -1,0 +1,8 @@
+functions:
+------------------------------------------------
+variable main of type function() returning int
+return
+|
+0
+
+ERROR: redefinition of variable main of type function(variable a of type int) returning int

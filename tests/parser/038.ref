@@ -1,9 +1,9 @@
 types:
 ------------------------------------------------
-typedef pfv pointer to function(variable <arg-n-2> of type int, ) returning void
+typedef pfv pointer to function(variable <arg-n-2> of type int) returning void
 
-typedef fv function(variable <arg-n-1> of type int, ) returning void
+typedef fv function(variable <arg-n-1> of type int) returning void
 
 functions:
 ------------------------------------------------
-variable signal of type function(variable <arg-n-3> of type int, variable <arg-n-4> of type pointer to function(variable <arg-n-5> of type int, ) returning void, ) returning pointer to function(variable <arg-n-6> of type int, ) returning void
+variable signal of type function(variable <arg-n-3> of type int, variable <arg-n-4> of type pointer to function(variable <arg-n-5> of type int) returning void) returning pointer to function(variable <arg-n-6> of type int) returning void

@@ -86,12 +86,12 @@ namespace Compiler
         variables[key] = symbolVariable;
     }
 
-    SymbolVariable*SymbolTable::LookupVariable(const std::string& name) const
+    SymbolVariable* SymbolTable::LookupVariable(const std::string& name) const
     {
         return LookupHelper_(variables, name);
     }
 
-    SymbolType*SymbolTable::LookupType(const std::string& name) const
+    SymbolType* SymbolTable::LookupType(const std::string& name) const
     {
         return LookupHelper_(types, name);
     }
@@ -226,7 +226,11 @@ namespace Compiler
         std::string argStr;
         for (auto& a : parameters_->orderedVariables)
         {
-            argStr += a->GetQualifiedName() + ", ";
+            argStr += a->GetQualifiedName();
+            if (a != parameters_->orderedVariables.back())
+            {
+                argStr += ", ";
+            }
         }
         return "function(" + argStr + ") returning " + returnType_->GetQualifiedName();
     }
@@ -256,11 +260,9 @@ namespace Compiler
         return body_;
     }
 
-    SymbolStruct::SymbolStruct(SymbolTableWithOrder* membersSymTable, const std::string name)
+    SymbolStruct::SymbolStruct(const std::string name)
         : SymbolType(name)
-        , fields_(membersSymTable)
     {
-        assert(fields_ != NULL);
     }
 
     ESymbolType SymbolStruct::GetSymbolType() const
@@ -285,6 +287,7 @@ namespace Compiler
     void SymbolStruct::AddField(SymbolVariable* field)
     {
         assert(field != NULL);
+        assert(fields_ != NULL);
         fields_->AddVariable(field);
     }
 
@@ -292,6 +295,13 @@ namespace Compiler
     {
         assert(fields_ != NULL);
         return fields_;
+    }
+
+    void SymbolStruct::SetFieldsSymTable(SymbolTableWithOrder* fieldsSymTable)
+    {
+        assert(fieldsSymTable != NULL);
+        assert(fields_ == NULL);
+        fields_ = fieldsSymTable;
     }
 
     SymbolPointer::SymbolPointer()

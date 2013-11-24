@@ -10,5 +10,5 @@ struct A
     A* test;
   } eee;
   B t1;
-  A t2; // incomplete !
+  B* t2; // incomplete !
 };

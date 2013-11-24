@@ -485,10 +485,18 @@ namespace Compiler
 
         if (declarator->GetSymbolType() == ESymbolType::VARIABLE
             && declarator ->GetTypeSymbol()->GetSymbolType() == ESymbolType::TYPE_FUNCTION
-            && token == OP_LBRACE
-            && symTables_.size() == 2) // function definition allowed only on the global level
+            && !declSpec.isTypedef)
         {
-            return declarator;
+            if (token == OP_LBRACE
+                // function definition allowed only on the global level
+                && symTables_.size() == 2)
+            {
+                return declarator;
+            }
+            else if (symTables_.size() == 2)
+            {
+                AddFunction_(declarator);
+            }
         }
 
         while (token != OP_SEMICOLON)
@@ -497,13 +505,19 @@ namespace Compiler
             {
                 // Parse initializer
                 // TODO: complex initializer
-                ASTNode* initializerExpression = ParseAssignmentExpression_(caller);
-                declarator->SetInitializer(initializerExpression);
-                token = WaitForTokenReady_(caller);
+                ParseInitializer_(caller);
+//                declarator->SetInitializer(ParseInitializer_(caller));
             }
             else if (token == OP_COMMA)
             {
                 declarator = ParseDeclarator_(caller, declSpec);
+                if (declarator->GetSymbolType() == ESymbolType::VARIABLE
+                    && declarator->GetTypeSymbol()->GetSymbolType() == ESymbolType::TYPE_FUNCTION
+                    && symTables_.size() == 2
+                    && !declSpec.isTypedef)
+                {
+                    AddFunction_(declarator);
+                }
             }
             else if (token != OP_SEMICOLON)
             {
@@ -645,13 +659,15 @@ namespace Compiler
         }
         else
         {
-            if (declaratorVariable->GetTypeSymbol()->GetSymbolType() == ESymbolType::TYPE_FUNCTION
+            if (declaratorVariable->GetTypeSymbol()->GetSymbolType() == ESymbolType::TYPE_FUNCTION)
+            {
                 // if we found function declaration at global scope
                 // there may be function body
                 // soo AddFunction_ shall be called at higher level
-                && symTables_.size() == 2)
-            {
-                AddFunction_(declaratorVariable);
+                if (symTables_.size() != 2)
+                {
+                    AddFunction_(declaratorVariable);
+                }
             }
             else
             {
@@ -709,6 +725,21 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
+    Symbol* Parser::ParseInitializer_(Parser::CallerType& caller)
+    {
+        Token token = WithdrawTokenIf_(caller, OP_LBRACE);
+
+        if (token == OP_LBRACE)
+        {
+            token = WaitForTokenReady_(caller);
+        }
+        else
+        {
+            ASTNode* initializerExpression = ParseAssignmentExpression_(caller);
+        }
+    }
+
+//------------------------------------------------------------------------------
     SymbolStruct* Parser::ParseStructSpecifier_(Parser::CallerType& caller)
     {
         // `struct` already parsed
@@ -724,22 +755,53 @@ namespace Compiler
             ThrowInvalidTokenError_(token, "anonymous struct shall be declared with struct-declaration-list");
         }
 
-        SymbolTableWithOrder* fieldsSymTable = new SymbolTableWithOrder(EScopeType::STRUCTURE);
-
         // anonymous struct:
         if (tagToken != TT_IDENTIFIER)
         {
             tagToken = Token(TT_IDENTIFIER, GenerateStuctName_());
         }
 
-        SymbolStruct* symStruct = new SymbolStruct(fieldsSymTable, tagToken.text);
-        AddType_(symStruct);
-        symTables_.push_back(fieldsSymTable);
+        SymbolType* symStructPresent = LookupType_(tagToken.text);
 
-        token = WaitForTokenReady_(caller);
+        SymbolStruct* symStruct = NULL;
+        if (symStructPresent != NULL)
+        {
+            if (symStructPresent->GetSymbolType() == ESymbolType::TYPE_STRUCT)
+            {
+                // yup, it's actually a struct
+                symStruct = static_cast<SymbolStruct*>(symStructPresent);
+            }
+            else
+            {
+                // it's already here, but it's not struct
+                // let's see if it's on the stack's top
+                if (symTables_.back()->LookupType(tagToken.text) != NULL)
+                {
+                    ThrowError_("type " + tagToken.text + " already defined in this scope");
+                }
+            }
+        }
+
+        if (symStruct == NULL)
+        {
+            symStruct = new SymbolStruct(tagToken.text);
+            AddType_(symStruct);
+        }
+
+        token = WithdrawTokenIf_(caller, OP_LBRACE);
 
         if (token == OP_LBRACE)
         {
+            if (symStruct->complete)
+            {
+                ThrowError_("redefinition of type " + tagToken.text + ", type is alreade complete");
+            }
+
+            SymbolTableWithOrder* fieldsSymTable = new SymbolTableWithOrder(EScopeType::STRUCTURE);
+            symStruct->SetFieldsSymTable(fieldsSymTable);
+
+            symTables_.push_back(fieldsSymTable);
+
             while (token != OP_RBRACE)
             {
                 DeclarationSpecifiers declSpec = ParseDeclarationSpecifiers_(caller);
@@ -762,10 +824,11 @@ namespace Compiler
 
                 token = WithdrawTokenIf_(caller, OP_RBRACE);
             }
+
+            symTables_.pop_back();
+            symStruct->complete = true;
         }
 
-        symTables_.pop_back();
-        symStruct->complete = true;
         return symStruct;
     }
 
@@ -961,6 +1024,17 @@ namespace Compiler
     {
         Token token = WaitForTokenReady_(caller);
         if (token != tokenType)
+        {
+            tokenStack_.push_back(token);
+        }
+        return token;
+    }
+
+//------------------------------------------------------------------------------
+    Token Parser::WithdrawTokenIf_(Parser::CallerType& caller, bool condition)
+    {
+        Token token = WaitForTokenReady_(caller);
+        if (!condition)
         {
             tokenStack_.push_back(token);
         }

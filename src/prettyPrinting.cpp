@@ -167,7 +167,10 @@ namespace Compiler
                 case ESymbolType::TYPE_STRUCT:
                 {
                     SymbolStruct* symStruct = static_cast<SymbolStruct*>(typeSym);
-                    PrintSymbolTable(symStruct->GetSymbolTable(), indentLevel + 1);
+                    if (symStruct->complete)
+                    {
+                        PrintSymbolTable(symStruct->GetSymbolTable(), indentLevel + 1);
+                    }
                     break;
                 }
 

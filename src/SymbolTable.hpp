@@ -177,12 +177,13 @@ namespace Compiler
     class SymbolStruct : public SymbolType
     {
     public:
-        SymbolStruct(SymbolTableWithOrder* membersSymTable, const std::string name = "");
+        SymbolStruct(const std::string name = "");
 
         virtual ESymbolType GetSymbolType() const;
         virtual std::string GetQualifiedName() const;
         void AddField(SymbolVariable* field);
         SymbolTableWithOrder* GetSymbolTable() const;
+        void SetFieldsSymTable(SymbolTableWithOrder* fieldsSymTable);
 
         bool complete{false};
 

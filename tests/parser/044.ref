@@ -1,0 +1,69 @@
+types:
+------------------------------------------------
+typedef A array 2 of array 3 of int
+
+struct s
+  variables:
+  ----------------------------------------------
+  variable mem of type int
+
+variables:
+------------------------------------------------
+variable pci of type pointer to const int
+variable pi of type pointer to int
+variable ncs of type struct s
+variable a of type const array 2 of array 3 of int
+variable cs of type const struct s
+functions:
+------------------------------------------------
+variable main of type function() returning int
+(expression-statement)
+|     
+=-----
+|    | 
+ncs  cs
+
+(expression-statement)
+|    
+=----
+|   |  
+cs  ncs
+
+(expression-statement)
+|    
+=----
+|   |
+pi  &
+    |     
+    .-----
+    |    |  
+    ncs  mem
+
+(expression-statement)
+|    
+=----
+|   |
+pi  &
+    |    
+    .----
+    |   |  
+    cs  mem
+
+(expression-statement)
+|     
+=-----
+|    |
+pci  &
+     |    
+     .----
+     |   |  
+     cs  mem
+
+(expression-statement)
+|    
+=----
+|   |   
+pi  [---
+    |  |
+    a  0
+

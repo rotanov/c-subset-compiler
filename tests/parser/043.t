@@ -1,16 +1,36 @@
-int a = 2;
+// struct forward, ok
+struct A;
 
+// another struct forward, ok
+struct A;
+
+// wrong: A is still incomplete
+// struct A b;
+
+// still wrong, reason is same
+// A bb;
+
+// ok, pointers to incomplete types are pretty legal
+struct A* c;
+
+// this is also legal
+A* noStructKwdPtr;
+
+// actual A definition
 struct A
 {
-  int a;
-  float b;
-  char c;
-  void* e;
-
-  struct B
-  {
-    struct A* test; // !!! 
-  } eee;
-  B t1;
-  A t2; // incomplete !
+    int wahahaha;
 };
+
+// forward after A has been defined. still legal
+struct A;
+
+// now it's ok, A is complete
+struct A b;
+
+// wrong: A already defined
+struct A
+{
+   float wut; 
+};
+

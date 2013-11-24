@@ -81,6 +81,8 @@ namespace Compiler
         SymbolVariable* ParseDeclarator_(CallerType& caller, DeclarationSpecifiers& declSpec);
         void ParseParameterList(CallerType& caller, SymbolFunctionType& symFuncType);
 
+        Symbol* ParseInitializer_(CallerType& caller);
+
         // declaration
         SymbolStruct* ParseStructSpecifier_(CallerType& caller);
 
@@ -100,6 +102,7 @@ namespace Compiler
 
         // waits for token, returns it and pushes it back if token is not of tokenType
         Token WithdrawTokenIf_(CallerType& caller, const ETokenType& tokenType = TT_INVALID);
+        Token WithdrawTokenIf_(CallerType& caller, bool condition);
 
         void FlushOutput_();
 
