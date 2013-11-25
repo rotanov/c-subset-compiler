@@ -1,0 +1,27 @@
+types:
+------------------------------------------------
+struct ABC
+  types:
+  ----------------------------------------------
+  struct <struct-n-2>
+    variables:
+    --------------------------------------------
+    variable a of type int
+    variable b of type int
+  
+  variables:
+  ----------------------------------------------
+  variable foo of type float
+  variable bar of type float
+  variable baz of type struct <struct-n-2>
+
+struct <struct-n-1>
+  variables:
+  ----------------------------------------------
+  variable x of type int
+  variable y of type int
+
+variables:
+------------------------------------------------
+variable b of type struct ABC
+variable a of type struct <struct-n-1>

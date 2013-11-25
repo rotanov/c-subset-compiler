@@ -1,0 +1,6 @@
+variables:
+------------------------------------------------
+variable jkl of type pointer to pointer to pointer to float
+variable ghi of type pointer to pointer to int
+variable def of type pointer to float
+variable abc of type pointer to int

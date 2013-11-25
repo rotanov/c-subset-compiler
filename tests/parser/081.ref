@@ -1,0 +1,13 @@
+functions:
+------------------------------------------------
+variable f of type function() returning void
+  types:
+  ----------------------------------------------
+  struct MyStruct
+    variables:
+    --------------------------------------------
+    variable abc of type int
+    variable def of type int
+    variable ghi of type float
+    variable jkl of type int
+  

@@ -1,0 +1,46 @@
+functions:
+------------------------------------------------
+variable f of type function() returning void
+  types:
+  ----------------------------------------------
+  struct <struct-n-3>
+    types:
+    --------------------------------------------
+    struct <struct-n-4>
+      types:
+      ------------------------------------------
+      struct <struct-n-5>
+        variables:
+        ----------------------------------------
+        variable x of type int
+        variable y of type int
+      
+      variables:
+      ------------------------------------------
+      variable c of type float
+    
+    variables:
+    --------------------------------------------
+    variable a of type int
+    variable b of type float
+  
+  struct <struct-n-1>
+    types:
+    --------------------------------------------
+    struct <struct-n-2>
+      variables:
+      ------------------------------------------
+      variable foo of type int
+      variable bar of type int
+    
+  
+  struct A
+    types:
+    --------------------------------------------
+    struct B
+      variables:
+      ------------------------------------------
+      variable a of type int
+      variable b of type float
+    
+  

@@ -52,6 +52,7 @@ namespace Compiler
     private:
         std::vector<Token> tokenStack_;
         std::vector<ASTNode*> nodeStack_;
+        std::vector<IterationStatement*> iterationStatementStack_;
         Coroutine parseCoroutine_;
         std::vector<SymbolTable*> symTables_;
         int anonymousGenerator_{0};

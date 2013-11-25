@@ -1,0 +1,18 @@
+variables:
+------------------------------------------------
+variable a of type const int
+functions:
+------------------------------------------------
+variable f of type function() returning void
+  types:
+  ----------------------------------------------
+  typedef foo const int
+  
+  variables:
+  ----------------------------------------------
+  variable f of type const int
+  variable e of type const pointer to const int
+  variable d of type const pointer to int
+  variable g of type array 5 of const int
+  variable c of type pointer to const int
+  variable b of type const int

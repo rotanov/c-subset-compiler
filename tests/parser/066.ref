@@ -1,0 +1,26 @@
+types:
+------------------------------------------------
+struct <struct-n-2>
+  variables:
+  ----------------------------------------------
+  variable a of type int
+  variable b of type int
+
+struct <struct-n-1>
+  variables:
+  ----------------------------------------------
+  variable baz of type float
+
+struct second
+  variables:
+  ----------------------------------------------
+  variable foo of type int
+  variable bar of type float
+
+struct first
+  variables:
+  ----------------------------------------------
+  variable x of type float
+  variable y of type float
+  variable z of type float
+

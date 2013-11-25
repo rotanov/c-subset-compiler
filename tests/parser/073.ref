@@ -1,0 +1,16 @@
+types:
+------------------------------------------------
+struct bar
+  variables:
+  ----------------------------------------------
+  variable x of type int
+  variable y of type int
+
+typedef foo array 5 of pointer to float
+
+variables:
+------------------------------------------------
+variable c of type array 20 of struct bar
+variable b of type array 3 of array 2 of pointer to float
+variable abc of type array 5 of pointer to float
+variable a of type array 5 of pointer to int

@@ -1,0 +1,8 @@
+types:
+------------------------------------------------
+typedef baz float
+
+typedef bar int
+
+typedef foo int
+

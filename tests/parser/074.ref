@@ -1,0 +1,13 @@
+functions:
+------------------------------------------------
+variable h of type function(variable x of type float, variable r of type float, variable f of type float) returning float
+  variables:
+  ----------------------------------------------
+  variable x of type float
+  variable r of type float
+  variable f of type float
+variable g of type function(variable a of type int) returning void
+  variables:
+  ----------------------------------------------
+  variable a of type int
+variable f of type function() returning int

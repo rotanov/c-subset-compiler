@@ -1,0 +1,10 @@
+types:
+------------------------------------------------
+typedef abc array 6 of array 3 of array 8 of float
+
+typedef baz array 5 of int
+
+typedef bar pointer to pointer to pointer to float
+
+typedef foo pointer to int
+
