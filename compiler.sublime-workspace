@@ -472,6 +472,17 @@
 	},
 	"file_history":
 	[
+		"/D/dev/compiler/doc/next-week-task.txt",
+		"/D/dev/compiler/doc/LL(k).txt",
+		"/D/dev/compiler/doc/lexical-grammar.txt",
+		"/D/dev/compiler/doc/integral-types.txt",
+		"/D/dev/compiler/doc/declarations-test-draft.txt",
+		"/D/dev/compiler/doc/se-important-cases.txt",
+		"/D/dev/compiler/doc/simple-expression-grammar.txt",
+		"/D/dev/compiler/doc/tasks.todo",
+		"/D/dev/compiler/doc/tasks2.txt",
+		"/D/dev/compiler/doc/test-driver.txt",
+		"/D/dev/compiler/doc/tree-output-design.txt",
 		"/D/dev/compiler/doc/codegen2",
 		"/D/dev/compiler/doc/Генерация кода",
 		"/D/dev/compiler/doc/grammar",
@@ -495,7 +506,6 @@
 		"/H/dev/epicfail/src/to_draw_list.txt",
 		"/D/dev/compiler/tests/expression-parser/001.t",
 		"/D/dev/compiler/doc/simple-expression-grammar",
-		"/D/dev/compiler/doc/lexical-grammar.txt",
 		"/D/dev/compiler/doc/integral-types",
 		"/D/dev/compiler/tests/simple-expression-parser/000.t",
 		"/H/dev/epicfail/src/zadrawch@conference.jabber.ru-Log.txt",
@@ -525,10 +535,6 @@
 		"/D/dev/cppgm/dev/cppgm-starter-kits/pa1/tests/100-utf8.t",
 		"/D/dev/cppgm/dev/cppgm-starter-kits/pa1/tests/100-raw-string-literal.t",
 		"/D/dev/whiterra/repo/bin/res/json/resources.json",
-		"/D/dev/compiler/doc/tasks.todo",
-		"/D/dev/compiler/doc/tree-output-design.txt",
-		"/D/dev/compiler/doc/test-driver.txt",
-		"/D/dev/compiler/doc/se-important-cases.txt",
 		"/D/dev/compiler/scripts/run_scanner_tests.bat",
 		"/C/Users/mapho_000/Downloads/qq31-parenthesis/qq31-parenthesis/highlighter.cpp",
 		"/C/Users/mapho_000/Downloads/qq31-parenthesis/qq31-parenthesis/textedit.cpp",
@@ -593,13 +599,7 @@
 		"/D/dev/build-compiler-gcc_4_8-Release/release/(成年コミック) [雑誌] COMIC アンスリウム (Anthurium) Vol.2 2013年06月号/test.cpp",
 		"/D/dev/whiterra/rtr-res/xml/xml/resources.xml",
 		"/C/Users/mapho_000/Downloads/ktt7.tar/ktt7/ktt7/Tokenizer.hpp",
-		"/D/cppgm/dev/cppgm-dev/posttoken/posttoken.pro",
-		"/C/Users/mapho_000/Downloads/ktt7.tar/ktt7/ktt7/PostTokenStream.cpp",
-		"/D/cppgm/dev/cppgm-dev/pptoken/pptoken-ref",
-		"/D/cppgm/dev/cppgm-dev/posttoken/posttoken",
-		"/D/cppgm/dev/cppgm-dev/cppgm.pro",
-		"/D/cppgm/dev/cppgm-starter-kits/pa1/tests/100-raw-string-literal.t",
-		"/D/dev/whiterra/repo/bin/res/json/Levels/templates.json"
+		"/D/cppgm/dev/cppgm-dev/posttoken/posttoken.pro"
 	],
 	"find":
 	{
@@ -668,6 +668,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"☐",
 			"typedef-name",
 			"type-specifier",
 			"specifier-qualifier-",
@@ -794,8 +795,7 @@
 			"IDPREF",
 			"plus",
 			"twitch",
-			"twitch.tv",
-			"twitch.tv/"
+			"twitch.tv"
 		],
 		"highlight": true,
 		"in_selection": false,
