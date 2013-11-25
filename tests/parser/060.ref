@@ -1,0 +1,5 @@
+variables:
+------------------------------------------------
+variable baz of type float
+variable bar of type float
+variable foo of type int

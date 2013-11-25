@@ -1,0 +1,11 @@
+functions:
+------------------------------------------------
+variable f of type function() returning void
+  types:
+  ----------------------------------------------
+  typedef baz int
+  
+  typedef bar int
+  
+  typedef foo int
+  

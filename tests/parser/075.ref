@@ -1,0 +1,20 @@
+functions:
+------------------------------------------------
+variable g of type function(variable r of type int) returning void
+  variables:
+  ----------------------------------------------
+  variable r of type int
+>----------------------------------------------;
+  (-------------
+  |            |
+  __print_int  r
+
+<----------------------------------------------;
+variable f of type function(variable a of type int) returning int
+  variables:
+  ----------------------------------------------
+  variable a of type int
+>-----------------------------------------return
+  a
+
+<-----------------------------------------return

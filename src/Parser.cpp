@@ -653,7 +653,7 @@ namespace Compiler
         if (declSpec.isTypedef)
         {
             SymbolTypedef* symTypedef =
-                    new SymbolTypedef(declaratorVariable->name);
+                new SymbolTypedef(declaratorVariable->name);
             symTypedef->SetTypeSymbol(declaratorVariable->GetTypeSymbol());
             AddType_(symTypedef);
         }
@@ -960,45 +960,79 @@ namespace Compiler
         if (token == OP_LPAREN)
         {
             ForStatement* forStatement = new ForStatement();
+            iterationStatementStack_.push_back(forStatement);
             SymbolTable* symbols = new SymbolTable(EScopeType::LOOP);
             symTables_.push_back(symbols);
             forStatement->SetSymbolTable(symbols);
 
-            token = WithdrawTokenIf_(caller, false);
+            token = WaitForTokenReady_(caller);
             if (IsStartsDeclaration_(token))
             {
+                tokenStack_.push_back(token);
                 ParseDeclaration_(caller);
             }
             else
             {
-                ASTNode* initializingExpression = ParseExpression_(caller);
-                token = WaitForTokenReady_(caller);
-                if (token != OP_SEMICOLON)
+                ASTNode* initializingExpression = NULL;
+                if (token == OP_SEMICOLON)
                 {
-                    ThrowInvalidTokenError_(token, "`;` expected after clause-1 of `for` iteration-statement");
+                    initializingExpression = new ASTNode(Token(TT_INVALID, "stub"));
+                }
+                else
+                {
+                    tokenStack_.push_back(token);
+                    initializingExpression = ParseExpression_(caller);
+                    token = WaitForTokenReady_(caller);
+                    if (token != OP_SEMICOLON)
+                    {
+                        ThrowInvalidTokenError_(token, "`;` expected after clause-1 of `for` iteration-statement");
+                    }
                 }
                 forStatement->SetInitializingExpression(initializingExpression);
             }
 
-            ASTNode* controllingExpression = ParseExpression_(caller);
             token = WaitForTokenReady_(caller);
-            if (token != OP_SEMICOLON)
+            ASTNode* controllingExpression = NULL;
+            if (token == OP_SEMICOLON)
             {
-                ThrowInvalidTokenError_(token, "`;` expected after controlling expression of `for` iteration-statement");
+                controllingExpression = new ASTNode(Token(TT_INVALID, "stub"));
             }
+            else
+            {
+                tokenStack_.push_back(token);
+                controllingExpression = ParseExpression_(caller);\
+                token = WaitForTokenReady_(caller);
+                if (token != OP_SEMICOLON)
+                {
+                    ThrowInvalidTokenError_(token, "`;` expected after controlling expression of `for` iteration-statement");
+                }
+            }
+
             forStatement->SetControllingExpression(controllingExpression);
 
-            ASTNode* iterationExpression = ParseExpression_(caller);
             token = WaitForTokenReady_(caller);
-            if (token != OP_RPAREN)
+            ASTNode* iterationExpression = NULL;
+            if (token == OP_RPAREN)
             {
-                ThrowInvalidTokenError_(token, "`)` expected after iteration expression of `for` iteration-statement");
+                iterationExpression = new ASTNode(Token(TT_INVALID, "stub"));
             }
+            else
+            {
+                tokenStack_.push_back(token);
+                iterationExpression = ParseExpression_(caller);
+                token = WaitForTokenReady_(caller);
+                if (token != OP_RPAREN)
+                {
+                    ThrowInvalidTokenError_(token, "`)` expected after iteration expression of `for` iteration-statement");
+                }
+            }
+
             forStatement->SetIterationExpression(iterationExpression);
 
             Statement* statement = ParseStatement_(caller);
             symTables_.pop_back();
             forStatement->SetLoopStatement(statement);
+            iterationStatementStack_.pop_back();
 
             return forStatement;
         }
@@ -1014,6 +1048,7 @@ namespace Compiler
     {
         // `do` already eaten
         DoStatement* doStatement = new DoStatement();
+        iterationStatementStack_.push_back(doStatement);
         Statement* loopStatement = ParseStatement_(caller);
 
         Token token = WaitForTokenReady_(caller);
@@ -1044,6 +1079,7 @@ namespace Compiler
 
         doStatement->SetControllingExpression(controllingExpression);
         doStatement->SetLoopStatement(loopStatement);
+        iterationStatementStack_.pop_back();
         return doStatement;
     }
 
@@ -1052,6 +1088,7 @@ namespace Compiler
     {
         // `while` already eaten
         WhileStatement* whileStatement = new WhileStatement();
+        iterationStatementStack_.push_back(whileStatement);
 
         Token token = WaitForTokenReady_(caller);
         if (token != OP_LPAREN)
@@ -1071,6 +1108,7 @@ namespace Compiler
 
         whileStatement->SetControllingExpression(controllingExpression);
         whileStatement->SetLoopStatement(loopStatement);
+        iterationStatementStack_.pop_back();
         return whileStatement;
     }
 
@@ -1091,6 +1129,11 @@ namespace Compiler
         }
         else
         {
+            if (iterationStatementStack_.empty())
+            {
+                ThrowError_("`break` or `continue` statement must belong to loop");
+            }
+            jumpStatement->SetRefLoopStatement(iterationStatementStack_.back());
             token = WaitForTokenReady_(caller);
         }
 

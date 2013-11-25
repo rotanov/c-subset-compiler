@@ -66,6 +66,14 @@ namespace Compiler
         return children_.size() == 0 ? NULL : children_[0];
     }
 
+    void JumpStatement::SetRefLoopStatement(IterationStatement* iterationStatement)
+    {
+        assert(iterationStatement != NULL);
+        assert(token == KW_CONTINUE
+               || token == KW_BREAK);
+        refLoop_ = iterationStatement;
+    }
+
     SelectionStatement::SelectionStatement()
         : Statement(Token(KW_IF, "if"))
     {

@@ -1,0 +1,26 @@
+functions:
+------------------------------------------------
+variable main of type function() returning int
+>-----------------------------------------return
+  (---
+  |  |
+  f  5
+
+<-----------------------------------------return
+variable g of type function() returning int
+>-----------------------------------------return
+  2
+
+<-----------------------------------------return
+variable f of type function(variable a of type int) returning int
+  variables:
+  ----------------------------------------------
+  variable a of type int
+>-----------------------------------------return
+  *---
+  |  |
+  )  a
+  |
+  g
+
+<-----------------------------------------return

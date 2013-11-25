@@ -1,0 +1,1 @@
+ERROR: unexpected token TT_IDENTIFIER : "foo" at 13-18, only one type per declaration specification is expected

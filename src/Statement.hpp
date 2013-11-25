@@ -128,9 +128,10 @@ namespace Compiler
         void SetReturnExpression(ASTNode* expression);
         ASTNode* GetReturnExpression() const;
         virtual EStatementType GetStatementType() const { return EStatementType::JUMP; }
+        void SetRefLoopStatement(IterationStatement* iterationStatement);
 
     private:
-
+        IterationStatement* refLoop_{NULL};
     };
 
 } // namespace Compiler

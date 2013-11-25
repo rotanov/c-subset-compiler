@@ -1,7 +1,0 @@
-Vidya Видео карты.
-
-ISA -> VLB -> EISA -> PCI -> AGP -> PCI-E
-
-vidya insides:
-VRAM, GPU, контроллер шины, контроллер монитора (DAC)(ЦАП)
-ROM, I/O

@@ -1,0 +1,8 @@
+functions:
+------------------------------------------------
+variable f of type function() returning void
+  variables:
+  ----------------------------------------------
+  variable baz of type float
+  variable bar of type int
+  variable foo of type float

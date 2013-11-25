@@ -1,0 +1,6 @@
+variables:
+------------------------------------------------
+variable n of type array 6 of array 4 of array 3 of array 20 of float
+variable m of type array 2 of array 10 of int
+variable b of type array 7 of float
+variable a of type array 5 of int

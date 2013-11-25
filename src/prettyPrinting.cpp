@@ -169,6 +169,16 @@ namespace Compiler
             printn(n) << std::string(48 - n * 2, '-') << std::endl;
         };
 
+        auto prolog = [&](const std::string text, int n)
+        {
+            printn(n) << ">" << std::string(48 - n * 2 - 1 - text.size(), '-') << text << std::endl;
+        };
+
+        auto epilog = [&](const std::string text, int n)
+        {
+            printn(n) << "<" << std::string(48 - n * 2 - 1 - text.size(), '-') << text << std::endl;
+        };
+
         // types ---------------------------------------------------------------
         if (symTable->types.size() > 0)
         {
@@ -250,11 +260,13 @@ namespace Compiler
                 if (node->IsStatement())
                 {
                     Statement* statement = static_cast<Statement*>(node);
-                    printn(depth) << statement->token.text << std::endl;
-                    splittern(depth);
+                    // printn(depth) << statement->token.text << std::endl;
+                    // splittern(depth);
+                    prolog(statement->token.text, depth);
                     f(statement, depth + 1);
-                    splittern(depth);
-                    printn(depth) << "end of " << statement->token.text << std::endl;
+                    epilog(statement->token.text, depth);
+                    // splittern(depth);
+                    // printn(depth) << "end of " << statement->token.text << std::endl;
                 }
                 else
                 {
