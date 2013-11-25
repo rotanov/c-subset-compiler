@@ -894,13 +894,184 @@ namespace Compiler
 //------------------------------------------------------------------------------
     SelectionStatement* Parser::ParseSelectionStatement_(CallerType& caller)
     {
-        return NULL;
+        Token token = WithdrawTokenIf_(caller, KW_IF);
+        if (token == KW_IF)
+        {
+            SelectionStatement* selectionStatement = new SelectionStatement();
+            token = WithdrawTokenIf_(caller, OP_LPAREN);
+            if (token == OP_LPAREN)
+            {
+                ASTNode* conditionExpression = ParseExpression_(caller);
+                token = WaitForTokenReady_(caller);
+                if (token != OP_RPAREN)
+                {
+                    ThrowInvalidTokenError_(token, "`)` expected to close selection-statement condition expression");
+                }
+                selectionStatement->SetConditionExpression(conditionExpression);
+                Statement* statementForIf = ParseStatement_(caller);
+                selectionStatement->SetStatementForIf(statementForIf);
+                token = WithdrawTokenIf_(caller, KW_ELSE);
+                if (token == KW_ELSE)
+                {
+                    Statement* statementForElse = ParseStatement_(caller);
+                    selectionStatement->SetStatementForElse(statementForElse);
+                }
+                return selectionStatement;
+            }
+            else
+            {
+                ThrowInvalidTokenError_(token, "`(` expected after `if`");
+            }
+        }
+        else
+        {
+            return NULL;
+        }
     }
 
 //------------------------------------------------------------------------------
     IterationStatement* Parser::ParseIterationStatement_(CallerType& caller)
     {
+        Token token = WaitForTokenReady_(caller);
+        if (token == KW_FOR)
+        {
+            return ParseForStatement_(caller);
+        }
+        else if (token == KW_DO)
+        {
+            return ParseDoStatement_(caller);
+        }
+        else if (token == KW_WHILE)
+        {
+            return ParseWhileStatement_(caller);
+        }
+        else
+        {
+            ThrowInvalidTokenError_(token, "unexpected in the iteration statement");
+        }
         return NULL;
+    }
+
+//------------------------------------------------------------------------------
+    ForStatement* Parser::ParseForStatement_(Parser::CallerType& caller)
+    {
+        // `for` alread eaten
+        Token token = WaitForTokenReady_(caller);
+        if (token == OP_LPAREN)
+        {
+            ForStatement* forStatement = new ForStatement();
+            SymbolTable* symbols = new SymbolTable(EScopeType::LOOP);
+            symTables_.push_back(symbols);
+            forStatement->SetSymbolTable(symbols);
+
+            token = WithdrawTokenIf_(caller, false);
+            if (IsStartsDeclaration_(token))
+            {
+                ParseDeclaration_(caller);
+            }
+            else
+            {
+                ASTNode* initializingExpression = ParseExpression_(caller);
+                token = WaitForTokenReady_(caller);
+                if (token != OP_SEMICOLON)
+                {
+                    ThrowInvalidTokenError_(token, "`;` expected after clause-1 of `for` iteration-statement");
+                }
+                forStatement->SetInitializingExpression(initializingExpression);
+            }
+
+            ASTNode* controllingExpression = ParseExpression_(caller);
+            token = WaitForTokenReady_(caller);
+            if (token != OP_SEMICOLON)
+            {
+                ThrowInvalidTokenError_(token, "`;` expected after controlling expression of `for` iteration-statement");
+            }
+            forStatement->SetControllingExpression(controllingExpression);
+
+            ASTNode* iterationExpression = ParseExpression_(caller);
+            token = WaitForTokenReady_(caller);
+            if (token != OP_RPAREN)
+            {
+                ThrowInvalidTokenError_(token, "`)` expected after iteration expression of `for` iteration-statement");
+            }
+            forStatement->SetIterationExpression(iterationExpression);
+
+            Statement* statement = ParseStatement_(caller);
+            symTables_.pop_back();
+            forStatement->SetLoopStatement(statement);
+
+            return forStatement;
+        }
+        else
+        {
+            ThrowInvalidTokenError_(token, "`(` expected after '`for`");
+        }
+        return NULL;
+    }
+
+//------------------------------------------------------------------------------
+    DoStatement* Parser::ParseDoStatement_(Parser::CallerType& caller)
+    {
+        // `do` already eaten
+        DoStatement* doStatement = new DoStatement();
+        Statement* loopStatement = ParseStatement_(caller);
+
+        Token token = WaitForTokenReady_(caller);
+        if (token != KW_WHILE)
+        {
+            ThrowInvalidTokenError_(token, "`while` expected after loop-statement of `do` iteration-statement");
+        }
+
+        token = WaitForTokenReady_(caller);
+        if (token != OP_LPAREN)
+        {
+            ThrowInvalidTokenError_(token, "`(` expected before controlling-expression of `do` iteration-statement");
+        }
+
+        ASTNode* controllingExpression = ParseExpression_(caller);
+
+        token = WaitForTokenReady_(caller);
+        if (token != OP_RPAREN)
+        {
+            ThrowInvalidTokenError_(token, "`)` expected after controlling-expression of `do` iteration-statement");
+        }
+
+        token = WaitForTokenReady_(caller);
+        if (token != OP_SEMICOLON)
+        {
+            ThrowInvalidTokenError_(token, "`;` at the end of `do` iteration-statement");
+        }
+
+        doStatement->SetControllingExpression(controllingExpression);
+        doStatement->SetLoopStatement(loopStatement);
+        return doStatement;
+    }
+
+//------------------------------------------------------------------------------
+    WhileStatement* Parser::ParseWhileStatement_(Parser::CallerType& caller)
+    {
+        // `while` already eaten
+        WhileStatement* whileStatement = new WhileStatement();
+
+        Token token = WaitForTokenReady_(caller);
+        if (token != OP_LPAREN)
+        {
+            ThrowInvalidTokenError_(token, "`(` expected before controlling-expression of `while` iteration-statement");
+        }
+
+        ASTNode* controllingExpression = ParseExpression_(caller);
+
+        token = WaitForTokenReady_(caller);
+        if (token != OP_RPAREN)
+        {
+            ThrowInvalidTokenError_(token, "`)` expected after controlling-expression of `while` iteration-statement");
+        }
+
+        Statement* loopStatement = ParseStatement_(caller);
+
+        whileStatement->SetControllingExpression(controllingExpression);
+        whileStatement->SetLoopStatement(loopStatement);
+        return whileStatement;
     }
 
 //------------------------------------------------------------------------------

@@ -177,7 +177,6 @@ namespace Compiler
         TT_LITERAL_CHAR_ARRAY,
         TT_INVALID,
         TT_EOF,
-        TT_EXPRESSION_STATEMENT,
     };
 
     enum EFundamentalType

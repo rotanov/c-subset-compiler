@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstring>
+
 #include "constants.hpp"
 
 namespace Compiler
@@ -15,6 +17,12 @@ namespace Compiler
         Token(const ETokenType& type, const std::string& text);
         Token(const ETokenType &type);
         Token();
+        Token(Token&& token);
+        Token(const Token& token);
+
+        Token& operator =(const Token& token);
+        Token& operator =(Token&& token);
+
         ~Token();
 
         // !!! GCC bug: non static member initializer doesn't work for

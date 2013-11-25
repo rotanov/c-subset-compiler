@@ -13,8 +13,13 @@
 
 namespace Compiler
 {
-    void PrintAST(ASTNode* root)
+    void PrintAST(ASTNode* root, int indentLevel)
     {
+        auto print = [&]() -> decltype(std::operator <<(std::cout, std::string()))
+        {
+            return std::cout << std::string(indentLevel * 2, ' ');
+        };
+
         struct PrintTreeNode
         {
             std::string text;
@@ -96,6 +101,7 @@ namespace Compiler
         vector<PrintTreeNode*> line;
         depth = 0;
 
+        print();
         while (!queue.empty())
         {
             PrintTreeNode* next = queue.front();
@@ -113,6 +119,7 @@ namespace Compiler
             {
                 std::cout << std::endl;
                 depth = queue.front()->depth;
+                print();
                 for (auto node : line)
                 {
                     for (int i = 0; i < node->children.size(); i++)
@@ -125,6 +132,7 @@ namespace Compiler
                     }
                 }
                 std::cout << std::endl;
+                print();
                 line.clear();
             }
         }
@@ -145,9 +153,20 @@ namespace Compiler
             return std::cout << std::string(indentLevel * 2, ' ');
         };
 
+        auto printn = [&](int n) -> decltype(std::operator <<(std::cout, std::string()))
+        {
+            return std::cout << std::string(n * 2, ' ');
+        };
+
         auto splitter = [&]()
         {
             print() << std::string(48 - indentLevel * 2, '-') << std::endl;
+        };
+
+        auto splittern = [&](int n)
+        {
+            assert(48 - n >= 0);
+            printn(n) << std::string(48 - n * 2, '-') << std::endl;
         };
 
         // types ---------------------------------------------------------------
@@ -211,20 +230,55 @@ namespace Compiler
             print() << "functions:" << std::endl;
             splitter();
         }
+
+        std::function<void(Statement*, int)> f = [&](Statement* statement, int depth)
+        {
+            if (statement->GetStatementType() == EStatementType::COMPOUND)
+            {
+                CompoundStatement* compoundStatement = static_cast<CompoundStatement*>(statement);
+                PrintSymbolTable(compoundStatement->GetSymbolTable(), indentLevel + 1);
+            }
+            else if (statement->GetStatementType() == EStatementType::ITERATION_FOR)
+            {
+                ForStatement* forStatement = static_cast<ForStatement*>(statement);
+                PrintSymbolTable(forStatement->GetSymbolTable(), indentLevel + 1);
+            }
+
+            for (int i = 0; i < statement->GetChildCount(); i++)
+            {
+                ASTNode* node = statement->GetChild(i);
+                if (node->IsStatement())
+                {
+                    Statement* statement = static_cast<Statement*>(node);
+                    printn(depth) << statement->token.text << std::endl;
+                    splittern(depth);
+                    f(statement, depth + 1);
+                    splittern(depth);
+                    printn(depth) << "end of " << statement->token.text << std::endl;
+                }
+                else
+                {
+                    PrintAST(node, depth);
+                    std::cout << std::endl << std::endl;
+                }
+            }
+
+        };
+
         for (auto function : symTable->functions)
         {
             std::string functionName = function.first;
             SymbolVariable* functionSym = function.second;
             print() << functionSym->GetQualifiedName() << std::endl;
             SymbolFunctionType* symFunType = static_cast<SymbolFunctionType*>(functionSym->GetTypeSymbol());
+            if (symFunType->GetSymbolTable() != NULL)
+            {
+                PrintSymbolTable(symFunType->GetSymbolTable(), indentLevel + 1);
+            }
             CompoundStatement* body = symFunType->GetBody();
             if (body != NULL)
             {
-                for (int i = 0; i < body->GetChildCount(); i++)
-                {
-                    PrintAST(symFunType->GetBody()->GetChild(i));
-                    std::cout << std::endl << std::endl;
-                }
+                f(body, indentLevel);
             }
             else
             {

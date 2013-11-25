@@ -37,6 +37,7 @@ namespace Compiler
         STRUCTURE,
         BODY,
         BLOCK,
+        LOOP,
     };
 
     class SymbolType;

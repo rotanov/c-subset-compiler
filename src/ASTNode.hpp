@@ -20,6 +20,7 @@ namespace Compiler
 
         int GetChildCount() const;
         ASTNode* GetChild(const int index);
+        virtual bool IsStatement() const { return false; }
 
     protected:
         std::vector<ASTNode*> children_;

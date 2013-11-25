@@ -92,6 +92,9 @@ namespace Compiler
         CompoundStatement* ParseCompoundStatement_(CallerType& caller);
         SelectionStatement* ParseSelectionStatement_(CallerType& caller);
         IterationStatement* ParseIterationStatement_(CallerType& caller);
+        ForStatement* ParseForStatement_(CallerType& caller);
+        DoStatement* ParseDoStatement_(CallerType& caller);
+        WhileStatement* ParseWhileStatement_(CallerType& caller);
         JumpStatement* ParseJumpStatement_(CallerType& caller);
         ExpressionStatement* ParseExpressionStatement_(CallerType& caller);
 

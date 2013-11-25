@@ -1,0 +1,13 @@
+functions:
+------------------------------------------------
+variable main of type function() returning int
+for--------------
+|     |     |   |
+stub  <---  ++  {
+      |  |  |   |
+      i  n  i   ;
+                |             
+                (-------------
+                |      |     |
+                print  "%d"  i
+
