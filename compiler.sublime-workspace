@@ -59,29 +59,6 @@
 	},
 	"buffers":
 	[
-		{
-			"file": "doc/grammar",
-			"settings":
-			{
-				"buffer_size": 8759,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "/D/dev/ncc/src/parser.cpp",
-			"settings":
-			{
-				"buffer_size": 43024,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"settings":
-			{
-				"buffer_size": 0,
-				"line_ending": "Windows"
-			}
-		}
 	],
 	"build_system": "",
 	"command_palette":
@@ -527,6 +504,10 @@
 	},
 	"file_history":
 	[
+		"/D/dev/compiler/src/prettyPrinting.cpp",
+		"/D/dev/ncc/src/parser.cpp",
+		"/D/dev/compiler/doc/grammar",
+		"/D/dev/compiler/src/Parser.cpp",
 		"/D/dev/ncc/tests/parser-declarations/24-local-anonymous-struct.c",
 		"/D/dev/ncc/tests/parser-declarations/11-global-vars-of-struct-type.c",
 		"/D/dev/ncc/tests/parser-declarations/10-nested-global-structs.c",
@@ -539,14 +520,12 @@
 		"/D/dev/ncc/tests/parser-declarations/03-multiple-global-vars-of-internal-types.c",
 		"/D/dev/ncc/tests/parser-declarations/02-single-global-var-of-internal-type.c",
 		"/D/dev/ncc/tests/parser-declarations/01-empty.c",
-		"/D/dev/compiler/doc/grammar",
 		"/C/portableApplications/miranda-ng-v0.93.5_x64/Profiles/Satana/Logs/Jabber.ru/zadrawch@conference.jabber.ru.log",
 		"/C/portableApplications/Sublime/Data/Packages/User/Preferences.sublime-settings",
 		"/D/dev/ncc/include/parser.h",
 		"/D/dev/ncc/src/symbols.cpp",
 		"/D/dev/ncc/include/expressions.h",
 		"/D/dev/ncc/include/symbols.h",
-		"/D/dev/ncc/src/parser.cpp",
 		"/D/dev/compiler/tests/parser/040.t",
 		"/D/dev/compiler/tests/temp/081.t",
 		"/D/dev/compiler/tests/temp/080.t",
@@ -584,7 +563,6 @@
 		"/D/dev/compiler/tests/parser/001.t",
 		"/D/dev/whiterra/repo/game/src/Grid.cpp",
 		"/D/dev/compiler/src/Parser.hpp",
-		"/D/dev/compiler/src/Parser.cpp",
 		"/D/dev/compiler/src/utils.cpp",
 		"/D/dev/compiler/src/constants.hpp",
 		"/C/dev/boost_1_54_0/libs/context/src/asm/jump_i386_ms_pe_masm.asm",
@@ -653,8 +631,7 @@
 		"/D/dev/whiterra/ROADS_of_ROME_NG/error.log",
 		"/D/dev/compiler/bin/log.txt",
 		"/D/cppgm/dev/cppgm-dev/common/Tokenizer.hpp",
-		"/D/cppgm/dev/cppgm-dev/common/DebugPPTokenStream.hpp",
-		"/D/dev/whiterra/repo/src/fx_cCaustic.cpp"
+		"/D/cppgm/dev/cppgm-dev/common/DebugPPTokenStream.hpp"
 	],
 	"find":
 	{
@@ -938,227 +915,8 @@
 	"groups":
 	[
 		{
-			"selected": 2,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "doc/grammar",
-					"settings":
-					{
-						"buffer_size": 8759,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1128,
-								1128
-							]
-						],
-						"settings":
-						{
-							"BracketHighlighterBusy": false,
-							"bh_regions":
-							[
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close"
-							],
-							"encoding_helper_confidence": 0.938125,
-							"encoding_helper_encoding": "UTF-8",
-							"encoding_helper_encoding_sublime": "UTF-8",
-							"syntax": "Packages/Text/Plain text.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 108.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "/D/dev/ncc/src/parser.cpp",
-					"settings":
-					{
-						"buffer_size": 43024,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								23807,
-								23807
-							]
-						],
-						"settings":
-						{
-							"BracketHighlighterBusy": false,
-							"bh_regions":
-							[
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close"
-							],
-							"encoding_helper_confidence": 1.0,
-							"encoding_helper_encoding": "UTF-8",
-							"encoding_helper_encoding_sublime": "UTF-8",
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 15779.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"settings":
-					{
-						"buffer_size": 0,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"BracketHighlighterBusy": false,
-							"bh_regions":
-							[
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close"
-							],
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				}
 			]
 		}
 	],
