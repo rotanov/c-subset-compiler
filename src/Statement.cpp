@@ -9,20 +9,20 @@ namespace Compiler
 
     }
 
-    CompoundStatement::CompoundStatement(const Token& token, SymbolTable* symbols)
+    CompoundStatement::CompoundStatement(const Token& token, shared_ptr<SymbolTable> symbols)
         : Statement(Token(OP_LBRACE, "{"))
         , symbols_(symbols)
     {
 
     }
 
-    void CompoundStatement::AddStatement(Statement* statement)
+    void CompoundStatement::AddStatement(shared_ptr<Statement> statement)
     {
         assert(statement != NULL);
         children_.push_back(statement);
     }
 
-    SymbolTable* CompoundStatement::GetSymbolTable() const
+    shared_ptr<SymbolTable> CompoundStatement::GetSymbolTable() const
     {
         assert(symbols_ != NULL);
         return symbols_;
@@ -35,14 +35,14 @@ namespace Compiler
 
     }
 
-    void ExpressionStatement::SetExpression(ASTNode* expression)
+    void ExpressionStatement::SetExpression(shared_ptr<ASTNode> expression)
     {
         assert(expression != NULL);
         assert(children_.size() == 0);
         children_.push_back(expression);
     }
 
-    ASTNode*ExpressionStatement::GetExpression() const
+    shared_ptr<ASTNode> ExpressionStatement::GetExpression() const
     {
         return children_.size() == 0 ? NULL : children_[0];
     }
@@ -53,7 +53,7 @@ namespace Compiler
 
     }
 
-    void JumpStatement::SetReturnExpression(ASTNode* expression)
+    void JumpStatement::SetReturnExpression(shared_ptr<ASTNode> expression)
     {
         assert(expression != NULL);
         assert(children_.size() == 0);
@@ -61,12 +61,12 @@ namespace Compiler
         children_.push_back(expression);
     }
 
-    ASTNode*JumpStatement::GetReturnExpression() const
+    shared_ptr<ASTNode> JumpStatement::GetReturnExpression() const
     {
         return children_.size() == 0 ? NULL : children_[0];
     }
 
-    void JumpStatement::SetRefLoopStatement(IterationStatement* iterationStatement)
+    void JumpStatement::SetRefLoopStatement(shared_ptr<IterationStatement> iterationStatement)
     {
         assert(iterationStatement != NULL);
         assert(token == KW_CONTINUE
@@ -80,21 +80,21 @@ namespace Compiler
 
     }
 
-    void SelectionStatement::SetConditionExpression(ASTNode* conditionExpression)
+    void SelectionStatement::SetConditionExpression(shared_ptr<ASTNode> conditionExpression)
     {
         assert(conditionExpression != NULL);
         assert(children_.size() == 0);
         children_.push_back(conditionExpression);
     }
 
-    void SelectionStatement::SetStatementForIf(Statement* statement)
+    void SelectionStatement::SetStatementForIf(shared_ptr<Statement> statement)
     {
         assert(statement != NULL);
         assert(children_.size() == 1);
         children_.push_back(statement);
     }
 
-    void SelectionStatement::SetStatementForElse(Statement* statement)
+    void SelectionStatement::SetStatementForElse(shared_ptr<Statement> statement)
     {
         assert(statement != NULL);
         assert(children_.size() == 2);
@@ -113,25 +113,25 @@ namespace Compiler
 
     }
 
-    SymbolTable* ForStatement::GetSymbolTable() const
+    shared_ptr<SymbolTable> ForStatement::GetSymbolTable() const
     {
         return symbols_;
     }
 
-    void ForStatement::SetSymbolTable(SymbolTable* symbols)
+    void ForStatement::SetSymbolTable(shared_ptr<SymbolTable> symbols)
     {
         assert(symbols != NULL);
         symbols_ = symbols;
     }
 
-    void ForStatement::SetInitializingExpression(ASTNode* initializingExpression)
+    void ForStatement::SetInitializingExpression(shared_ptr<ASTNode> initializingExpression)
     {
         assert(initializingExpression != NULL);
         assert(children_.size() == 0);
         children_.push_back(initializingExpression);
     }
 
-    void ForStatement::SetControllingExpression(ASTNode* controllingExpression)
+    void ForStatement::SetControllingExpression(shared_ptr<ASTNode> controllingExpression)
     {
         assert(controllingExpression != NULL);
         assert(children_.size() == 1
@@ -140,19 +140,19 @@ namespace Compiler
         // no initializing expression
         if (children_.size() == 0)
         {
-            children_.push_back(new ASTNode(Token(TT_INVALID, "stub")));
+            children_.push_back(make_shared<ASTNode>(Token(TT_INVALID, "stub")));
         }
         children_.push_back(controllingExpression);
     }
 
-    void ForStatement::SetIterationExpression(ASTNode* iterationExpression)
+    void ForStatement::SetIterationExpression(shared_ptr<ASTNode> iterationExpression)
     {
         assert(children_.size() == 2);
         assert(iterationExpression != NULL);
         children_.push_back(iterationExpression);
     }
 
-    void ForStatement::SetLoopStatement(Statement* loopStatement)
+    void ForStatement::SetLoopStatement(shared_ptr<Statement> loopStatement)
     {
         assert(loopStatement != NULL);
         assert(children_.size() == 3);
@@ -165,14 +165,14 @@ namespace Compiler
 
     }
 
-    void DoStatement::SetControllingExpression(ASTNode* controllingExpression)
+    void DoStatement::SetControllingExpression(shared_ptr<ASTNode> controllingExpression)
     {
         assert(controllingExpression != NULL);
         assert(children_.size() == 0);
         children_.push_back(controllingExpression);
     }
 
-    void DoStatement::SetLoopStatement(Statement* loopStatement)
+    void DoStatement::SetLoopStatement(shared_ptr<Statement> loopStatement)
     {
         assert(loopStatement != NULL);
         assert(children_.size() == 1);
@@ -185,14 +185,14 @@ namespace Compiler
 
     }
 
-    void WhileStatement::SetControllingExpression(ASTNode* controllingExpression)
+    void WhileStatement::SetControllingExpression(shared_ptr<ASTNode> controllingExpression)
     {
         assert(controllingExpression != NULL);
         assert(children_.size() == 0);
         children_.push_back(controllingExpression);
     }
 
-    void WhileStatement::SetLoopStatement(Statement* loopStatement)
+    void WhileStatement::SetLoopStatement(shared_ptr<Statement> loopStatement)
     {
         assert(loopStatement != NULL);
         assert(children_.size() == 1);

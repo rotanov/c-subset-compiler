@@ -34,7 +34,7 @@ namespace Compiler
     {
     public:
         bool isTypedef{false};
-        SymbolType* typeSymbol{NULL};
+        shared_ptr<SymbolType> typeSymbol{NULL};
 
         // ???
         void Invalidate()
@@ -51,53 +51,53 @@ namespace Compiler
 
     private:
         std::vector<Token> tokenStack_;
-        std::vector<ASTNode*> nodeStack_;
-        std::vector<IterationStatement*> iterationStatementStack_;
+        std::vector<shared_ptr<ASTNode>> nodeStack_;
+        std::vector<shared_ptr<IterationStatement>> iterationStatementStack_;
         Coroutine parseCoroutine_;
-        std::vector<SymbolTable*> symTables_;
+        std::vector<shared_ptr<SymbolTable>> symTables_;
         int anonymousGenerator_{0};
 
         // expressions
         ASTNode* ParseTopLevelExpression_(CallerType& caller);
-        ASTNode* ParsePrimaryExpression_(CallerType& caller);
-        ASTNode* ParseBinaryOperator_(CallerType& caller, int priority);
-        ASTNode* ParseExpression_(CallerType& caller);
-        ASTNode* ParseAssignmentExpression_(CallerType& caller);
-        ASTNode* ParseUnaryExpression_(CallerType& caller);
-        ASTNode* ParseConditionalExpression_(CallerType& caller);
-        ASTNode* ParsePostfixExpression_(CallerType& caller);
+        shared_ptr<ASTNode> ParsePrimaryExpression_(CallerType& caller);
+        shared_ptr<ASTNode> ParseBinaryOperator_(CallerType& caller, int priority);
+        shared_ptr<ASTNode> ParseExpression_(CallerType& caller);
+        shared_ptr<ASTNode> ParseAssignmentExpression_(CallerType& caller);
+        shared_ptr<ASTNode> ParseUnaryExpression_(CallerType& caller);
+        shared_ptr<ASTNode> ParseConditionalExpression_(CallerType& caller);
+        shared_ptr<ASTNode> ParsePostfixExpression_(CallerType& caller);
 
         // type-name
         ASTNode* ParseTypeName_(CallerType& caller);
         ASTNode* ParseSpecifierQualifierList_(CallerType& caller);
 
-        typedef std::tuple<SymbolType*, SymbolType*> PointerChainHeadTail;
+        typedef std::tuple<shared_ptr<SymbolType>, shared_ptr<SymbolType>> PointerChainHeadTail;
         PointerChainHeadTail ParsePointer_(CallerType& caller);
 
         ASTNode* ParseParameterList_(CallerType& caller);
 
-        Symbol* ParseDeclaration_(CallerType& caller);
+        shared_ptr<Symbol> ParseDeclaration_(CallerType& caller);
         DeclarationSpecifiers ParseDeclarationSpecifiers_(CallerType& caller);
-        Symbol* ParseInitDeclaratorList_(CallerType& caller, DeclarationSpecifiers& declSpec);
-        SymbolVariable* ParseDeclarator_(CallerType& caller, DeclarationSpecifiers& declSpec);
+        shared_ptr<Symbol> ParseInitDeclaratorList_(CallerType& caller, DeclarationSpecifiers& declSpec);
+        shared_ptr<SymbolVariable> ParseDeclarator_(CallerType& caller, DeclarationSpecifiers& declSpec);
         void ParseParameterList(CallerType& caller, SymbolFunctionType& symFuncType);
 
-        Symbol* ParseInitializer_(CallerType& caller);
+        shared_ptr<Symbol> ParseInitializer_(CallerType& caller);
 
         // declaration
-        SymbolStruct* ParseStructSpecifier_(CallerType& caller);
+        shared_ptr<SymbolStruct> ParseStructSpecifier_(CallerType& caller);
 
         void ParseTranslationUnit_(CallerType& caller);
 
-        Statement* ParseStatement_(CallerType& caller);
-        CompoundStatement* ParseCompoundStatement_(CallerType& caller);
-        SelectionStatement* ParseSelectionStatement_(CallerType& caller);
-        IterationStatement* ParseIterationStatement_(CallerType& caller);
-        ForStatement* ParseForStatement_(CallerType& caller);
-        DoStatement* ParseDoStatement_(CallerType& caller);
-        WhileStatement* ParseWhileStatement_(CallerType& caller);
-        JumpStatement* ParseJumpStatement_(CallerType& caller);
-        ExpressionStatement* ParseExpressionStatement_(CallerType& caller);
+        shared_ptr<Statement> ParseStatement_(CallerType& caller);
+        shared_ptr<CompoundStatement> ParseCompoundStatement_(CallerType& caller);
+        shared_ptr<SelectionStatement> ParseSelectionStatement_(CallerType& caller);
+        shared_ptr<IterationStatement> ParseIterationStatement_(CallerType& caller);
+        shared_ptr<ForStatement> ParseForStatement_(CallerType& caller);
+        shared_ptr<DoStatement> ParseDoStatement_(CallerType& caller);
+        shared_ptr<WhileStatement> ParseWhileStatement_(CallerType& caller);
+        shared_ptr<JumpStatement> ParseJumpStatement_(CallerType& caller);
+        shared_ptr<ExpressionStatement> ParseExpressionStatement_(CallerType& caller);
 
         void ThrowInvalidTokenError_(const Token& token, const std::string& descriptionText = "");
         void ThrowError_(const std::string& descriptionText);
@@ -115,14 +115,14 @@ namespace Compiler
         std::string GenerateStuctName_();
         std::string GenerateParameterName_();
 
-        SymbolType* LookupType_(const std::string& name) const;
-        SymbolVariable* LookupVariable_(const std::string& name) const;
-        SymbolVariable* LookupFunction_(const std::string& name) const;
+        shared_ptr<SymbolType> LookupType_(const std::string& name) const;
+        shared_ptr<SymbolVariable> LookupVariable_(const std::string& name) const;
+        shared_ptr<SymbolVariable> LookupFunction_(const std::string& name) const;
 
-        void AddType_(SymbolType* symType);
-        void AddType_(SymbolType* symType, const std::string& name);
-        void AddVariable_(SymbolVariable* symVar);
-        void AddFunction_(SymbolVariable* symFun);
+        void AddType_(shared_ptr<SymbolType> symType);
+        void AddType_(shared_ptr<SymbolType> symType, const std::string& name);
+        void AddVariable_(shared_ptr<SymbolVariable> symVar);
+        void AddFunction_(shared_ptr<SymbolVariable> symFun);
 
         template <typename R, typename C, class... ArgTypes>
         R LookupSymbolHelper_(const std::string& name, R (C::*lookuper)(ArgTypes...) const) const
@@ -130,7 +130,7 @@ namespace Compiler
             R symbol = NULL;
             for (int i = symTables_.size() - 1; i >= 0; i--)
             {
-                symbol = (symTables_[i]->*lookuper)(name);
+                symbol = (symTables_[i].get()->*lookuper)(name);
                 if (symbol != NULL)
                 {
                     break;
@@ -141,6 +141,7 @@ namespace Compiler
 
     public:
         Parser();
+        virtual ~Parser();
 
         virtual void EmitInvalid(const string& source,
                                  const int line,

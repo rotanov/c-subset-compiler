@@ -17,15 +17,23 @@ namespace Compiler
     Parser::Parser()
     {
         // environment
-        SymbolTable* internalSymbols = new SymbolTable(EScopeType::INTERNAL);
-        internalSymbols->AddType(new SymbolChar);
-        internalSymbols->AddType(new SymbolInt);
-        internalSymbols->AddType(new SymbolFloat);
-        internalSymbols->AddType(new SymbolVoid);
+        shared_ptr<SymbolTable> internalSymbols = make_shared<SymbolTable>(EScopeType::INTERNAL);
+        internalSymbols->AddType(make_shared<SymbolChar>());
+        internalSymbols->AddType(make_shared<SymbolInt>());
+        internalSymbols->AddType(make_shared<SymbolFloat>());
+        internalSymbols->AddType(make_shared<SymbolVoid>());
         symTables_.push_back(internalSymbols);
-        SymbolTable* globalSymbols = new SymbolTable(EScopeType::GLOBAL);
+
+        shared_ptr<SymbolTable> globalSymbols = make_shared<SymbolTable>(EScopeType::GLOBAL);
         symTables_.push_back(globalSymbols);
+
         parseCoroutine_ = boost::move(Coroutine(boost::bind(&Parser::ParseTranslationUnit_, this, _1), Token()));
+    }
+
+//------------------------------------------------------------------------------
+    Parser::~Parser()
+    {
+        std::cout << symTables_.back().use_count() << std::endl;
     }
 
 //------------------------------------------------------------------------------
@@ -33,7 +41,7 @@ namespace Compiler
     {
         while (true)
         {
-            PrintAST(ParseExpression_(caller));
+            PrintAST(ParseExpression_(caller).get());
             std::cout << std::endl << std::endl;
 
             if (tokenStack_.empty())
@@ -51,7 +59,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ASTNode* Parser::ParsePrimaryExpression_(CallerType& caller)
+    shared_ptr<ASTNode> Parser::ParsePrimaryExpression_(CallerType& caller)
     {
         Token token = WaitForTokenReady_(caller);
         switch(token.type)
@@ -62,13 +70,13 @@ namespace Compiler
             case TT_LITERAL_CHAR:
             case TT_LITERAL_CHAR_ARRAY:
             {
-                return new ASTNode(token);
+                return make_shared<ASTNode>(token);
                 break;
             }
 
             case OP_LPAREN:
             {
-                ASTNode* r = ParseExpression_(caller);
+                shared_ptr<ASTNode> r = ParseExpression_(caller);
 
                 token = WaitForTokenReady_(caller);
                 if (token != OP_RPAREN)
@@ -90,9 +98,9 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ASTNode* Parser::ParseBinaryOperator_(CallerType& caller, int priority)
+    shared_ptr<ASTNode> Parser::ParseBinaryOperator_(CallerType& caller, int priority)
     {
-        ASTNode* left = NULL;
+        shared_ptr<ASTNode> left = NULL;
 
         if (nodeStack_.empty())
         {
@@ -109,7 +117,7 @@ namespace Compiler
         while (binaryOperatorTypeToPrecedence.find(token.type) != binaryOperatorTypeToPrecedence.end()
                && binaryOperatorTypeToPrecedence.at(token.type) >= priority)
         {
-            left = new ASTNodeBinaryOperator(token, left, ParseBinaryOperator_(caller, binaryOperatorTypeToPrecedence.at(token.type) + 1));
+            left = make_shared<ASTNodeBinaryOperator>(token, left, ParseBinaryOperator_(caller, binaryOperatorTypeToPrecedence.at(token.type) + 1));
             token = WaitForTokenReady_(caller);
         }
 
@@ -118,13 +126,13 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ASTNode* Parser::ParseExpression_(CallerType& caller)
+    shared_ptr<ASTNode> Parser::ParseExpression_(CallerType& caller)
     {
-        ASTNode* node = ParseAssignmentExpression_(caller);
+        shared_ptr<ASTNode> node = ParseAssignmentExpression_(caller);
         Token token = WaitForTokenReady_(caller);
         while (token == OP_COMMA)
         {
-            node = new ASTNodeBinaryOperator(token, node, ParseAssignmentExpression_(caller));
+            node = make_shared<ASTNodeBinaryOperator>(token, node, ParseAssignmentExpression_(caller));
             token = WaitForTokenReady_(caller);
         }
 
@@ -133,13 +141,13 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ASTNode* Parser::ParseAssignmentExpression_(CallerType& caller)
+    shared_ptr<ASTNode> Parser::ParseAssignmentExpression_(CallerType& caller)
     {
-        ASTNode* node = ParseUnaryExpression_(caller);
+        shared_ptr<ASTNode> node = ParseUnaryExpression_(caller);
         Token token = WaitForTokenReady_(caller);
         if (IsAssignmentOperator(token.type))
         {
-            return new ASTNodeAssignment(token, node, ParseAssignmentExpression_(caller));
+            return make_shared<ASTNodeAssignment>(token, node, ParseAssignmentExpression_(caller));
         }
         else
         {
@@ -152,7 +160,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ASTNode* Parser::ParseUnaryExpression_(CallerType& caller)
+    shared_ptr<ASTNode> Parser::ParseUnaryExpression_(CallerType& caller)
     {
         Token token = WaitForTokenReady_(caller);
 
@@ -160,19 +168,19 @@ namespace Compiler
             || token == OP_INC
             || token == OP_DEC)
         {
-            ASTNode* node = new ASTNodeUnaryOperator(token);
-            ASTNode* root = node;
+            shared_ptr<ASTNode> node = make_shared<ASTNodeUnaryOperator>(token);
+            shared_ptr<ASTNode> root = node;
             token = WaitForTokenReady_(caller);
             while (IsUnaryOperator(token.type)
                    || token == OP_INC
                    || token == OP_DEC)
             {
-                static_cast<ASTNodeUnaryOperator*>(node)->SetOperand(new ASTNodeUnaryOperator(token));
-                node = static_cast<ASTNodeUnaryOperator*>(node)->GetOperand();
+                static_pointer_cast<ASTNodeUnaryOperator>(node)->SetOperand(make_shared<ASTNodeUnaryOperator>(token));
+                node = static_pointer_cast<ASTNodeUnaryOperator>(node)->GetOperand();
                 token = WaitForTokenReady_(caller);
             }
             tokenStack_.push_back(token);
-            static_cast<ASTNodeUnaryOperator*>(node)->SetOperand(ParsePostfixExpression_(caller));
+            static_pointer_cast<ASTNodeUnaryOperator>(node)->SetOperand(ParsePostfixExpression_(caller));
             return root;
         }
         else
@@ -183,19 +191,19 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ASTNode* Parser::ParseConditionalExpression_(CallerType& caller)
+    shared_ptr<ASTNode> Parser::ParseConditionalExpression_(CallerType& caller)
     {
-        ASTNode* conditionNode = ParseBinaryOperator_(caller, 0);
+        shared_ptr<ASTNode> conditionNode = ParseBinaryOperator_(caller, 0);
         Token token = WaitForTokenReady_(caller);
 
         if (token == OP_QMARK)
         {
-            ASTNode* thenExpressionNode = ParseExpression_(caller);
+            shared_ptr<ASTNode> thenExpressionNode = ParseExpression_(caller);
             Token colonToken = WaitForTokenReady_(caller);
 
             if (colonToken == OP_COLON)
             {
-                return new ASTNodeConditionalOperator(token, conditionNode,
+                return make_shared<ASTNodeConditionalOperator>(token, conditionNode,
                     thenExpressionNode, ParseConditionalExpression_(caller));
             }
             else
@@ -211,9 +219,9 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ASTNode* Parser::ParsePostfixExpression_(CallerType& caller)
+    shared_ptr<ASTNode> Parser::ParsePostfixExpression_(CallerType& caller)
     {
-        ASTNode* node = ParsePrimaryExpression_(caller);
+        shared_ptr<ASTNode> node = ParsePrimaryExpression_(caller);
         Token token = WaitForTokenReady_(caller);
 
         while (true)
@@ -223,7 +231,7 @@ namespace Compiler
                 case OP_LSQUARE:
                 {
                     // postfix-expression '[' expression ']'
-                    node = new ASTNodeArraySubscript(token, node, ParseExpression_(caller));
+                    node = make_shared<ASTNodeArraySubscript>(token, node, ParseExpression_(caller));
                     token = WaitForTokenReady_(caller);
                     if (token != OP_RSQUARE)
                     {
@@ -242,12 +250,12 @@ namespace Compiler
                     if (token != OP_RPAREN)
                     {
                         tokenStack_.push_back(token);
-                        ASTNodeFunctionCall* fcallNode = new ASTNodeFunctionCall(prevToken, node);
+                        shared_ptr<ASTNodeFunctionCall> fcallNode = make_shared<ASTNodeFunctionCall>(prevToken, node);
                         node = fcallNode;
 
                         do
                         {
-                            ASTNode* nodeAssExpr = ParseAssignmentExpression_(caller);
+                            shared_ptr<ASTNode> nodeAssExpr = ParseAssignmentExpression_(caller);
                             fcallNode->AddArgumentExpressionNode(nodeAssExpr);
                             token = WaitForTokenReady_(caller);
 
@@ -260,7 +268,7 @@ namespace Compiler
                     }
                     else
                     {
-                        node = new ASTNodeFunctionCall(token, node);
+                        node = make_shared<ASTNodeFunctionCall>(token, node);
                     }
                     token = WaitForTokenReady_(caller);
                     break;
@@ -274,7 +282,7 @@ namespace Compiler
                     Token identifierToken = WaitForTokenReady_(caller);
                     if (identifierToken == TT_IDENTIFIER)
                     {
-                        node = new ASTNodeStructureAccess(token, node, new ASTNode(identifierToken));
+                        node = make_shared<ASTNodeStructureAccess>(token, node, make_shared<ASTNode>(identifierToken));
                     }
                     else
                     {
@@ -292,7 +300,7 @@ namespace Compiler
                     while (token == OP_INC
                            || token == OP_DEC)
                     {
-                        node = new ASTNodeUnaryOperator(token, node);
+                        node = make_shared<ASTNodeUnaryOperator>(token, node);
                         token = WaitForTokenReady_(caller);
                     }
                     break;
@@ -312,8 +320,8 @@ namespace Compiler
 //------------------------------------------------------------------------------
     Parser::PointerChainHeadTail Parser::ParsePointer_(Parser::CallerType& caller)
     {
-        SymbolType* tail = new SymbolPointer();
-        SymbolType* head = tail;
+        shared_ptr<SymbolType> tail = make_shared<SymbolPointer>();
+        shared_ptr<SymbolType> head = tail;
 
         Token token(OP_STAR);
 
@@ -327,14 +335,14 @@ namespace Compiler
                 if (!constant)
                 {
                     constant = true;
-                    tail = new SymbolConst(tail);
+                    tail = make_shared<SymbolConst>(tail);
                 }
                 token = WaitForTokenReady_(caller);
             }
 
             if (token == OP_STAR)
             {
-                tail = new SymbolPointer(tail);
+                tail = make_shared<SymbolPointer>(tail);
             }
         }
 
@@ -344,7 +352,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    Symbol* Parser::ParseDeclaration_(Parser::CallerType& caller)
+    shared_ptr<Symbol> Parser::ParseDeclaration_(Parser::CallerType& caller)
     {
         DeclarationSpecifiers declSpec = ParseDeclarationSpecifiers_(caller);
         Token token = WithdrawTokenIf_(caller, OP_SEMICOLON);
@@ -464,23 +472,23 @@ namespace Compiler
 
         if (declSpec.typeSymbol->GetSymbolType() == ESymbolType::TYPE_TYPEDEF)
         {
-            SymbolTypedef* symTypedef = static_cast<SymbolTypedef*>(declSpec.typeSymbol);
+            shared_ptr<SymbolTypedef> symTypedef = static_pointer_cast<SymbolTypedef>(declSpec.typeSymbol);
             declSpec.typeSymbol = symTypedef->GetTypeSymbol();
         }
 
         if (constant
             && declSpec.typeSymbol->GetSymbolType() != ESymbolType::TYPE_CONST)
         {
-            declSpec.typeSymbol = new SymbolConst(declSpec.typeSymbol);
+            declSpec.typeSymbol = make_shared<SymbolConst>(declSpec.typeSymbol);
         }
 
         return declSpec;
     }
 
 //------------------------------------------------------------------------------
-    Symbol* Parser::ParseInitDeclaratorList_(Parser::CallerType& caller, DeclarationSpecifiers& declSpec)
+    shared_ptr<Symbol> Parser::ParseInitDeclaratorList_(Parser::CallerType& caller, DeclarationSpecifiers& declSpec)
     {
-        SymbolVariable* declarator = ParseDeclarator_(caller, declSpec);
+        shared_ptr<SymbolVariable> declarator = ParseDeclarator_(caller, declSpec);
         Token token = WaitForTokenReady_(caller);
 
         if (declarator->GetSymbolType() == ESymbolType::VARIABLE
@@ -530,30 +538,28 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    SymbolVariable* Parser::ParseDeclarator_(Parser::CallerType& caller,
-                                             DeclarationSpecifiers& declSpec)
+    shared_ptr<SymbolVariable> Parser::ParseDeclarator_(Parser::CallerType& caller, DeclarationSpecifiers& declSpec)
     {
-        SymbolVariable* declaratorVariable = NULL;
+        shared_ptr<SymbolVariable> declaratorVariable = NULL;
 
-        std::function<Symbol*()> f = [&]() -> Symbol*
+        std::function<shared_ptr<Symbol>()> f = [&]() -> shared_ptr<Symbol>
         {
-            SymbolType* leftmostPointer = NULL;
-            SymbolType* rightmostPointer = NULL;
-            Symbol* centralType = NULL;
+            shared_ptr<SymbolType> leftmostPointer = NULL;
+            shared_ptr<SymbolType> rightmostPointer = NULL;
+            shared_ptr<Symbol> centralType = NULL;
             Token token = WaitForTokenReady_(caller);
 
             // pointer part
             if (token == OP_STAR)
             {
-                std::tie(leftmostPointer, rightmostPointer) =
-                    ParsePointer_(caller);
+                std::tie(leftmostPointer, rightmostPointer) = ParsePointer_(caller);
                 token = WaitForTokenReady_(caller);
             }
 
             // direct declarator
             if (token == TT_IDENTIFIER)
             {
-                declaratorVariable = new SymbolVariable(token.text);
+                declaratorVariable = make_shared<SymbolVariable>(token.text);
                 centralType = declaratorVariable;
             }
             else if (token == OP_LPAREN)
@@ -570,11 +576,11 @@ namespace Compiler
                 // now we are sure there is no identifier
                 // if we are in func parameters scope then we're allowed
                 // to declare it anonymous, else it is treated as error
-                SymbolTable* topSymTable = symTables_.back();
+                shared_ptr<SymbolTable> topSymTable = symTables_.back();
                 if (topSymTable->GetScopeType() == EScopeType::PARAMETERS)
                 {
                     tokenStack_.push_back(token);
-                    declaratorVariable = new SymbolVariable(GenerateParameterName_());
+                    declaratorVariable = make_shared<SymbolVariable>(GenerateParameterName_());
                     centralType = declaratorVariable;
                 }
                 else
@@ -585,18 +591,16 @@ namespace Compiler
 
             token = WaitForTokenReady_(caller);
 
-            Symbol* rightmostType = centralType;
-            SymbolType* temp = NULL;
+            shared_ptr<Symbol> rightmostType = centralType;
+            shared_ptr<SymbolType> temp = NULL;
 
             while (token == OP_LPAREN
                    || token == OP_LSQUARE)
             {
                 if (token == OP_LPAREN)
                 {
-                    SymbolTableWithOrder* parametersSymTable =
-                        new SymbolTableWithOrder(EScopeType::PARAMETERS);
-                    SymbolFunctionType* type =
-                        new SymbolFunctionType(parametersSymTable);
+                    shared_ptr<SymbolTableWithOrder> parametersSymTable = make_shared<SymbolTableWithOrder>(EScopeType::PARAMETERS);
+                    shared_ptr<SymbolFunctionType> type = make_shared<SymbolFunctionType>(parametersSymTable);
                     symTables_.push_back(parametersSymTable);
                     temp = type;
 
@@ -613,13 +617,13 @@ namespace Compiler
                 }
                 else if (token == OP_LSQUARE)
                 {
-                    SymbolArray* type = new SymbolArray();
+                    shared_ptr<SymbolArray> type = make_shared<SymbolArray>();
                     temp = type;
                     token = WithdrawTokenIf_(caller, OP_RSQUARE);
 
                     if (token != OP_RSQUARE)
                     {
-                        ASTNode* sizeInitializer = ParseAssignmentExpression_(caller);
+                        shared_ptr<ASTNode> sizeInitializer = ParseAssignmentExpression_(caller);
                         type->SetSizeInitializer(sizeInitializer);
                         token = WaitForTokenReady_(caller);
                         if (token != OP_RSQUARE)
@@ -652,8 +656,7 @@ namespace Compiler
 
         if (declSpec.isTypedef)
         {
-            SymbolTypedef* symTypedef =
-                new SymbolTypedef(declaratorVariable->name);
+            shared_ptr<SymbolTypedef> symTypedef = make_shared<SymbolTypedef>(declaratorVariable->name);
             symTypedef->SetTypeSymbol(declaratorVariable->GetTypeSymbol());
             AddType_(symTypedef);
         }
@@ -725,7 +728,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    Symbol* Parser::ParseInitializer_(Parser::CallerType& caller)
+    shared_ptr<Symbol> Parser::ParseInitializer_(Parser::CallerType& caller)
     {
         Token token = WithdrawTokenIf_(caller, OP_LBRACE);
 
@@ -735,12 +738,13 @@ namespace Compiler
         }
         else
         {
-            ASTNode* initializerExpression = ParseAssignmentExpression_(caller);
+            shared_ptr<ASTNode> initializerExpression = ParseAssignmentExpression_(caller);
         }
+        // TODO: return type/value, wtf?
     }
 
 //------------------------------------------------------------------------------
-    SymbolStruct* Parser::ParseStructSpecifier_(Parser::CallerType& caller)
+    shared_ptr<SymbolStruct> Parser::ParseStructSpecifier_(Parser::CallerType& caller)
     {
         // `struct` already parsed
         Token token = WithdrawTokenIf_(caller, TT_IDENTIFIER);
@@ -761,15 +765,15 @@ namespace Compiler
             tagToken = Token(TT_IDENTIFIER, GenerateStuctName_());
         }
 
-        SymbolType* symStructPresent = LookupType_(tagToken.text);
+        shared_ptr<SymbolType> symStructPresent = LookupType_(tagToken.text);
 
-        SymbolStruct* symStruct = NULL;
+        shared_ptr<SymbolStruct> symStruct = NULL;
         if (symStructPresent != NULL)
         {
             if (symStructPresent->GetSymbolType() == ESymbolType::TYPE_STRUCT)
             {
                 // yup, it's actually a struct
-                symStruct = static_cast<SymbolStruct*>(symStructPresent);
+                symStruct = static_pointer_cast<SymbolStruct>(symStructPresent);
             }
             else
             {
@@ -784,7 +788,7 @@ namespace Compiler
 
         if (symStruct == NULL)
         {
-            symStruct = new SymbolStruct(tagToken.text);
+            symStruct = make_shared<SymbolStruct>(tagToken.text);
             AddType_(symStruct);
         }
 
@@ -797,7 +801,7 @@ namespace Compiler
                 ThrowError_("redefinition of type " + tagToken.text + ", type is alreade complete");
             }
 
-            SymbolTableWithOrder* fieldsSymTable = new SymbolTableWithOrder(EScopeType::STRUCTURE);
+            shared_ptr<SymbolTableWithOrder> fieldsSymTable = make_shared<SymbolTableWithOrder>(EScopeType::STRUCTURE);
             symStruct->SetFieldsSymTable(fieldsSymTable);
 
             symTables_.push_back(fieldsSymTable);
@@ -835,16 +839,16 @@ namespace Compiler
 //------------------------------------------------------------------------------
     void Parser::ParseTranslationUnit_(CallerType& caller)
     {
-        Symbol* symbol = NULL;
+        shared_ptr<Symbol> symbol = NULL;
         Token token = WithdrawTokenIf_(caller, TT_EOF);
 
         while (token != TT_EOF)
         {
             symbol = ParseDeclaration_(caller);
-            if (symbol != NULL)
+            if (symbol != NULL) // ? nullptr ?
             {
-                SymbolVariable* symFun = static_cast<SymbolVariable*>(symbol);
-                SymbolFunctionType* symType = static_cast<SymbolFunctionType*>(symFun->GetTypeSymbol());
+                shared_ptr<SymbolVariable> symFun = static_pointer_cast<SymbolVariable>(symbol);
+                shared_ptr<SymbolFunctionType> symType = static_pointer_cast<SymbolFunctionType>(symFun->GetTypeSymbol());
                 symTables_.push_back(symType->GetSymbolTable());
                 // at this point symbol has ESymbolType::VARIABLE of type ESymbolType::TYPE_FUNCTION
                 // and `{` already eaten
@@ -860,11 +864,11 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    CompoundStatement* Parser::ParseCompoundStatement_(CallerType& caller)
+    shared_ptr<CompoundStatement> Parser::ParseCompoundStatement_(CallerType& caller)
     {
-        SymbolTable* symTable = new SymbolTable(EScopeType::BLOCK);
+        shared_ptr<SymbolTable> symTable = make_shared<SymbolTable>(EScopeType::BLOCK);
         symTables_.push_back(symTable);
-        CompoundStatement* compoundStatement = new CompoundStatement(Token(OP_LBRACE), symTable);
+        shared_ptr<CompoundStatement> compoundStatement = make_shared<CompoundStatement>(Token(OP_LBRACE), symTable);
 
         Token token = WithdrawTokenIf_(caller, OP_RBRACE);
 
@@ -892,28 +896,28 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    SelectionStatement* Parser::ParseSelectionStatement_(CallerType& caller)
+    shared_ptr<SelectionStatement> Parser::ParseSelectionStatement_(CallerType& caller)
     {
         Token token = WithdrawTokenIf_(caller, KW_IF);
         if (token == KW_IF)
         {
-            SelectionStatement* selectionStatement = new SelectionStatement();
+            shared_ptr<SelectionStatement> selectionStatement = make_shared<SelectionStatement>();
             token = WithdrawTokenIf_(caller, OP_LPAREN);
             if (token == OP_LPAREN)
             {
-                ASTNode* conditionExpression = ParseExpression_(caller);
+                shared_ptr<ASTNode> conditionExpression = ParseExpression_(caller);
                 token = WaitForTokenReady_(caller);
                 if (token != OP_RPAREN)
                 {
                     ThrowInvalidTokenError_(token, "`)` expected to close selection-statement condition expression");
                 }
                 selectionStatement->SetConditionExpression(conditionExpression);
-                Statement* statementForIf = ParseStatement_(caller);
+                shared_ptr<Statement> statementForIf = ParseStatement_(caller);
                 selectionStatement->SetStatementForIf(statementForIf);
                 token = WithdrawTokenIf_(caller, KW_ELSE);
                 if (token == KW_ELSE)
                 {
-                    Statement* statementForElse = ParseStatement_(caller);
+                    shared_ptr<Statement> statementForElse = ParseStatement_(caller);
                     selectionStatement->SetStatementForElse(statementForElse);
                 }
                 return selectionStatement;
@@ -930,7 +934,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    IterationStatement* Parser::ParseIterationStatement_(CallerType& caller)
+    shared_ptr<IterationStatement> Parser::ParseIterationStatement_(CallerType& caller)
     {
         Token token = WaitForTokenReady_(caller);
         if (token == KW_FOR)
@@ -953,15 +957,15 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ForStatement* Parser::ParseForStatement_(Parser::CallerType& caller)
+    shared_ptr<ForStatement> Parser::ParseForStatement_(Parser::CallerType& caller)
     {
         // `for` alread eaten
         Token token = WaitForTokenReady_(caller);
         if (token == OP_LPAREN)
         {
-            ForStatement* forStatement = new ForStatement();
+            shared_ptr<ForStatement> forStatement = make_shared<ForStatement>();
             iterationStatementStack_.push_back(forStatement);
-            SymbolTable* symbols = new SymbolTable(EScopeType::LOOP);
+            shared_ptr<SymbolTable> symbols = make_shared<SymbolTable>(EScopeType::LOOP);
             symTables_.push_back(symbols);
             forStatement->SetSymbolTable(symbols);
 
@@ -973,10 +977,10 @@ namespace Compiler
             }
             else
             {
-                ASTNode* initializingExpression = NULL;
+                shared_ptr<ASTNode> initializingExpression = NULL;
                 if (token == OP_SEMICOLON)
                 {
-                    initializingExpression = new ASTNode(Token(TT_INVALID, "stub"));
+                    initializingExpression = make_shared<ASTNode>(Token(TT_INVALID, "stub"));
                 }
                 else
                 {
@@ -992,10 +996,10 @@ namespace Compiler
             }
 
             token = WaitForTokenReady_(caller);
-            ASTNode* controllingExpression = NULL;
+            shared_ptr<ASTNode> controllingExpression = NULL;
             if (token == OP_SEMICOLON)
             {
-                controllingExpression = new ASTNode(Token(TT_INVALID, "stub"));
+                controllingExpression = make_shared<ASTNode>(Token(TT_INVALID, "stub"));
             }
             else
             {
@@ -1011,10 +1015,10 @@ namespace Compiler
             forStatement->SetControllingExpression(controllingExpression);
 
             token = WaitForTokenReady_(caller);
-            ASTNode* iterationExpression = NULL;
+            shared_ptr<ASTNode> iterationExpression = NULL;
             if (token == OP_RPAREN)
             {
-                iterationExpression = new ASTNode(Token(TT_INVALID, "stub"));
+                iterationExpression = make_shared<ASTNode>(Token(TT_INVALID, "stub"));
             }
             else
             {
@@ -1029,7 +1033,7 @@ namespace Compiler
 
             forStatement->SetIterationExpression(iterationExpression);
 
-            Statement* statement = ParseStatement_(caller);
+            shared_ptr<Statement> statement = ParseStatement_(caller);
             symTables_.pop_back();
             forStatement->SetLoopStatement(statement);
             iterationStatementStack_.pop_back();
@@ -1044,12 +1048,12 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    DoStatement* Parser::ParseDoStatement_(Parser::CallerType& caller)
+    shared_ptr<DoStatement> Parser::ParseDoStatement_(Parser::CallerType& caller)
     {
         // `do` already eaten
-        DoStatement* doStatement = new DoStatement();
+        shared_ptr<DoStatement> doStatement = make_shared<DoStatement>();
         iterationStatementStack_.push_back(doStatement);
-        Statement* loopStatement = ParseStatement_(caller);
+        shared_ptr<Statement> loopStatement = ParseStatement_(caller);
 
         Token token = WaitForTokenReady_(caller);
         if (token != KW_WHILE)
@@ -1063,7 +1067,7 @@ namespace Compiler
             ThrowInvalidTokenError_(token, "`(` expected before controlling-expression of `do` iteration-statement");
         }
 
-        ASTNode* controllingExpression = ParseExpression_(caller);
+        shared_ptr<ASTNode> controllingExpression = ParseExpression_(caller);
 
         token = WaitForTokenReady_(caller);
         if (token != OP_RPAREN)
@@ -1084,10 +1088,10 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    WhileStatement* Parser::ParseWhileStatement_(Parser::CallerType& caller)
+    shared_ptr<WhileStatement> Parser::ParseWhileStatement_(Parser::CallerType& caller)
     {
         // `while` already eaten
-        WhileStatement* whileStatement = new WhileStatement();
+        shared_ptr<WhileStatement> whileStatement = make_shared<WhileStatement>();
         iterationStatementStack_.push_back(whileStatement);
 
         Token token = WaitForTokenReady_(caller);
@@ -1096,7 +1100,7 @@ namespace Compiler
             ThrowInvalidTokenError_(token, "`(` expected before controlling-expression of `while` iteration-statement");
         }
 
-        ASTNode* controllingExpression = ParseExpression_(caller);
+        shared_ptr<ASTNode> controllingExpression = ParseExpression_(caller);
 
         token = WaitForTokenReady_(caller);
         if (token != OP_RPAREN)
@@ -1104,7 +1108,7 @@ namespace Compiler
             ThrowInvalidTokenError_(token, "`)` expected after controlling-expression of `while` iteration-statement");
         }
 
-        Statement* loopStatement = ParseStatement_(caller);
+        shared_ptr<Statement> loopStatement = ParseStatement_(caller);
 
         whileStatement->SetControllingExpression(controllingExpression);
         whileStatement->SetLoopStatement(loopStatement);
@@ -1113,16 +1117,16 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    JumpStatement* Parser::ParseJumpStatement_(CallerType& caller)
+    shared_ptr<JumpStatement> Parser::ParseJumpStatement_(CallerType& caller)
     {
         Token token = WaitForTokenReady_(caller);
-        JumpStatement* jumpStatement = new JumpStatement(token);
+        shared_ptr<JumpStatement> jumpStatement = make_shared<JumpStatement>(token);
         if (token == KW_RETURN)
         {
             token = WithdrawTokenIf_(caller, OP_SEMICOLON);
             if (token != OP_SEMICOLON)
             {
-                ASTNode* expression = ParseExpression_(caller);
+                shared_ptr<ASTNode> expression = ParseExpression_(caller);
                 jumpStatement->SetReturnExpression(expression);
                 token = WaitForTokenReady_(caller);
             }
@@ -1145,13 +1149,13 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ExpressionStatement* Parser::ParseExpressionStatement_(CallerType& caller)
+    shared_ptr<ExpressionStatement> Parser::ParseExpressionStatement_(CallerType& caller)
     {
-        ExpressionStatement* expressionStatement = new ExpressionStatement();
+        shared_ptr<ExpressionStatement> expressionStatement = make_shared<ExpressionStatement>();
         Token token = WithdrawTokenIf_(caller, OP_SEMICOLON);
         if (token != OP_SEMICOLON)
         {
-            ASTNode* expression = ParseExpression_(caller);
+            shared_ptr<ASTNode> expression = ParseExpression_(caller);
             expressionStatement->SetExpression(expression);
             token = WithdrawTokenIf_(caller, OP_SEMICOLON);
             if (token != OP_SEMICOLON)
@@ -1163,7 +1167,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    Statement* Parser::ParseStatement_(CallerType& caller)
+    shared_ptr<Statement> Parser::ParseStatement_(CallerType& caller)
     {
         Token token = WithdrawTokenIf_(caller, OP_LBRACE);
         switch (token.type)
@@ -1258,7 +1262,7 @@ namespace Compiler
 //------------------------------------------------------------------------------
     void Parser::FlushOutput_()
     {
-        PrintSymbolTable(symTables_[1]);
+        PrintSymbolTable(symTables_[1].get());
     }
 
 //------------------------------------------------------------------------------
@@ -1295,35 +1299,35 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    SymbolType* Parser::LookupType_(const std::string& name) const
+    shared_ptr<SymbolType> Parser::LookupType_(const std::string& name) const
     {
         return LookupSymbolHelper_(name, &SymbolTable::LookupType);
     }
 
 //------------------------------------------------------------------------------
-    SymbolVariable* Parser::LookupVariable_(const std::string& name) const
+    shared_ptr<SymbolVariable> Parser::LookupVariable_(const std::string& name) const
     {
         return LookupSymbolHelper_(name, &SymbolTable::LookupVariable);
     }
 
 //------------------------------------------------------------------------------
-    SymbolVariable* Parser::LookupFunction_(const std::string& name) const
+    shared_ptr<SymbolVariable> Parser::LookupFunction_(const std::string& name) const
     {
         return LookupSymbolHelper_(name, &SymbolTable::LookupFunction);
     }
 
 //------------------------------------------------------------------------------
-    void Parser::AddType_(SymbolType* symType)
+    void Parser::AddType_(shared_ptr<SymbolType> symType)
     {
         assert(symType != NULL);
         AddType_(symType, symType->name);
     }
 
 //------------------------------------------------------------------------------
-    void Parser::AddType_(SymbolType* symType, const std::string& name)
+    void Parser::AddType_(shared_ptr<SymbolType> symType, const std::string& name)
     {
         assert(symType != NULL);
-        SymbolTable* symbols = symTables_.back();
+        shared_ptr<SymbolTable> symbols = symTables_.back();
 
         switch (symType->GetSymbolType())
         {
@@ -1344,9 +1348,9 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    void Parser::AddVariable_(SymbolVariable* symVar)
+    void Parser::AddVariable_(shared_ptr<SymbolVariable> symVar)
     {
-        SymbolTable* symbols = symTables_.back();
+        shared_ptr<SymbolTable> symbols = symTables_.back();
         if (symbols->LookupVariable(symVar->name) != NULL)
         {
             ThrowError_("redeclaration of " + symVar->GetQualifiedName());
@@ -1354,7 +1358,7 @@ namespace Compiler
 
         if (symVar->GetTypeSymbol()->GetSymbolType() == ESymbolType::TYPE_STRUCT)
         {
-            SymbolStruct* symStruct = static_cast<SymbolStruct*>(symVar->GetTypeSymbol());
+            shared_ptr<SymbolStruct> symStruct = static_pointer_cast<SymbolStruct>(symVar->GetTypeSymbol());
             if (!symStruct->complete)
             {
                 ThrowError_("type " + symStruct->GetQualifiedName()
@@ -1367,18 +1371,18 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    void Parser::AddFunction_(SymbolVariable* symFun)
+    void Parser::AddFunction_(shared_ptr<SymbolVariable> symFun)
     {
-        SymbolTable* symbols = symTables_.back();
+        shared_ptr<SymbolTable> symbols = symTables_.back();
 
         if (symTables_.size() == 2)
         {
             // adding function at global scope
-            SymbolVariable* symFunPresent = symbols->LookupFunction(symFun->name);
+            shared_ptr<SymbolVariable> symFunPresent = symbols->LookupFunction(symFun->name);
             if (symFunPresent != NULL)
             {
-                SymbolFunctionType* symFunTypePresent = static_cast<SymbolFunctionType*>(symFunPresent->GetTypeSymbol());
-                SymbolFunctionType* symFunTypeAdding = static_cast<SymbolFunctionType*>(symFun->GetTypeSymbol());
+                shared_ptr<SymbolFunctionType> symFunTypePresent = static_pointer_cast<SymbolFunctionType>(symFunPresent->GetTypeSymbol());
+                shared_ptr<SymbolFunctionType> symFunTypeAdding = static_pointer_cast<SymbolFunctionType>(symFun->GetTypeSymbol());
 
                 if (symFunTypeAdding->GetBody() != NULL)
                 {

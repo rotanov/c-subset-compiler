@@ -19,11 +19,11 @@ namespace Compiler
         virtual ~ASTNode();
 
         int GetChildCount() const;
-        ASTNode* GetChild(const int index);
+        shared_ptr<ASTNode> GetChild(const int index);
         virtual bool IsStatement() const { return false; }
 
     protected:
-        std::vector<ASTNode*> children_;
+        std::vector<shared_ptr<ASTNode>> children_;
 
     };
 
@@ -31,7 +31,7 @@ namespace Compiler
     class ASTNodeBinaryOperator : public ASTNode
     {
     public:
-        ASTNodeBinaryOperator(const Token& token, ASTNode* left, ASTNode* right);
+        ASTNodeBinaryOperator(const Token& token, shared_ptr<ASTNode> left, shared_ptr<ASTNode> right);
 
     };
 
@@ -39,7 +39,7 @@ namespace Compiler
     class ASTNodeAssignment : public ASTNodeBinaryOperator
     {
     public:
-        ASTNodeAssignment(const Token& token, ASTNode* left, ASTNode* right);
+        ASTNodeAssignment(const Token& token, shared_ptr<ASTNode> left, shared_ptr<ASTNode> right);
 
     };
 
@@ -48,10 +48,10 @@ namespace Compiler
     {
     public:
         ASTNodeUnaryOperator(const Token& token);
-        ASTNodeUnaryOperator(const Token& token, ASTNode* node);
+        ASTNodeUnaryOperator(const Token& token, shared_ptr<ASTNode> node);
 
-        void SetOperand(ASTNode* node);
-        ASTNode* GetOperand();
+        void SetOperand(shared_ptr<ASTNode> node);
+        shared_ptr<ASTNode> GetOperand();
 
     };
 
@@ -59,8 +59,8 @@ namespace Compiler
     class ASTNodeConditionalOperator : public ASTNode
     {
     public:
-        ASTNodeConditionalOperator(const Token& token, ASTNode* condition,
-                                   ASTNode* thenExpression, ASTNode* elseExpression);
+        ASTNodeConditionalOperator(const Token& token, shared_ptr<ASTNode> condition,
+                                   shared_ptr<ASTNode> thenExpression, shared_ptr<ASTNode> elseExpression);
 
     };
 
@@ -68,7 +68,7 @@ namespace Compiler
     class ASTNodeArraySubscript : public ASTNodeBinaryOperator
     {
     public:
-        ASTNodeArraySubscript(const Token& token, ASTNode* left, ASTNode* right);
+        ASTNodeArraySubscript(const Token& token, shared_ptr<ASTNode> left, shared_ptr<ASTNode> right);
 
     };
 
@@ -76,9 +76,9 @@ namespace Compiler
     class ASTNodeFunctionCall : public ASTNode
     {
     public:
-        ASTNodeFunctionCall(const Token& token, ASTNode* caller);
+        ASTNodeFunctionCall(const Token& token, shared_ptr<ASTNode> caller);
 
-        void AddArgumentExpressionNode(ASTNode* node);
+        void AddArgumentExpressionNode(shared_ptr<ASTNode> node);
 
     };
 
@@ -86,7 +86,7 @@ namespace Compiler
     class ASTNodeStructureAccess : public ASTNode
     {
     public:
-        ASTNodeStructureAccess(const Token& token, ASTNode* lhs, ASTNode* rhs);
+        ASTNodeStructureAccess(const Token& token, shared_ptr<ASTNode> lhs, shared_ptr<ASTNode> rhs);
 
     };
 

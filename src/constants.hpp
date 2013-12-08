@@ -7,6 +7,9 @@
 #include <unordered_map>
 #include <stdexcept>
 
+#include <utility>
+#include <memory>
+
 namespace Compiler
 {
     using std::string;
@@ -14,6 +17,11 @@ namespace Compiler
     using std::unordered_set;
     using std::unordered_map;
     using std::map;
+
+    using std::shared_ptr;
+    using std::weak_ptr;
+    using std::make_shared;
+    using std::static_pointer_cast;
 
     constexpr int EndOfFile = -1;
 

@@ -1,15 +1,13 @@
 #include "ASTNode.hpp"
 
+#include <iostream>
+
 namespace Compiler
 {
 ////////////////////////////////////////////////////////////////////////////////
     ASTNode::~ASTNode()
     {
-        while(!children_.empty())
-        {
-            delete children_.back();
-            children_.pop_back();
-        }
+        std::cout << "ASTNode dead!";
     }
 
 //------------------------------------------------------------------------------
@@ -19,7 +17,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ASTNode* ASTNode::GetChild(const int index)
+    shared_ptr<ASTNode> ASTNode::GetChild(const int index)
     {
         assert(index >= 0 && index < children_.size());
         return children_[index];
@@ -33,7 +31,7 @@ namespace Compiler
     }
 
 ////////////////////////////////////////////////////////////////////////////////
-    ASTNodeBinaryOperator::ASTNodeBinaryOperator(const Token& token, ASTNode* left, ASTNode* right)
+    ASTNodeBinaryOperator::ASTNodeBinaryOperator(const Token& token, shared_ptr<ASTNode> left, shared_ptr<ASTNode> right)
         : ASTNode(token)
     {
         assert(left != NULL && right != NULL);
@@ -43,7 +41,7 @@ namespace Compiler
     }
 
 ////////////////////////////////////////////////////////////////////////////////
-    ASTNodeAssignment::ASTNodeAssignment(const Token& token, ASTNode* left, ASTNode* right)
+    ASTNodeAssignment::ASTNodeAssignment(const Token& token, shared_ptr<ASTNode> left, shared_ptr<ASTNode> right)
         : ASTNodeBinaryOperator(token, left, right)
     {
 
@@ -57,7 +55,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ASTNodeUnaryOperator::ASTNodeUnaryOperator(const Token& token, ASTNode* node)
+    ASTNodeUnaryOperator::ASTNodeUnaryOperator(const Token& token, shared_ptr<ASTNode> node)
         : ASTNode(token)
     {
         assert(node != NULL);
@@ -65,7 +63,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    void ASTNodeUnaryOperator::SetOperand(ASTNode* node)
+    void ASTNodeUnaryOperator::SetOperand(shared_ptr<ASTNode> node)
     {
         assert(children_.size() == 0);
         assert(node != NULL);
@@ -73,7 +71,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ASTNode*ASTNodeUnaryOperator::GetOperand()
+    shared_ptr<ASTNode> ASTNodeUnaryOperator::GetOperand()
     {
         assert(children_.size() == 1);
         return children_[0];
@@ -81,7 +79,7 @@ namespace Compiler
 
 ////////////////////////////////////////////////////////////////////////////////
     ASTNodeConditionalOperator::ASTNodeConditionalOperator(const Token& token,
-        ASTNode* condition, ASTNode* thenExpression, ASTNode* elseExpression)
+        shared_ptr<ASTNode> condition, shared_ptr<ASTNode> thenExpression, shared_ptr<ASTNode> elseExpression)
     // TOOD: dunno whatever the reason for token to be here
     // should it be `?` or `:`
         : ASTNode(token)
@@ -95,14 +93,14 @@ namespace Compiler
     }
 
 ////////////////////////////////////////////////////////////////////////////////
-    ASTNodeArraySubscript::ASTNodeArraySubscript(const Token& token, ASTNode* left, ASTNode* right)
+    ASTNodeArraySubscript::ASTNodeArraySubscript(const Token& token, shared_ptr<ASTNode> left, shared_ptr<ASTNode> right)
         : ASTNodeBinaryOperator(token, left, right)
     {
 
     }
 
 ////////////////////////////////////////////////////////////////////////////////
-    ASTNodeFunctionCall::ASTNodeFunctionCall(const Token& token, ASTNode* caller)
+    ASTNodeFunctionCall::ASTNodeFunctionCall(const Token& token, shared_ptr<ASTNode> caller)
         : ASTNode(token)
     {
         assert(caller != NULL);
@@ -110,7 +108,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    void ASTNodeFunctionCall::AddArgumentExpressionNode(ASTNode* node)
+    void ASTNodeFunctionCall::AddArgumentExpressionNode(shared_ptr<ASTNode> node)
     {
         assert(children_.size() > 0);
         assert(node != NULL);
@@ -118,7 +116,7 @@ namespace Compiler
     }
 
 ////////////////////////////////////////////////////////////////////////////////
-    ASTNodeStructureAccess::ASTNodeStructureAccess(const Token& token, ASTNode* lhs, ASTNode* rhs)
+    ASTNodeStructureAccess::ASTNodeStructureAccess(const Token& token, shared_ptr<ASTNode> lhs, shared_ptr<ASTNode> rhs)
         : ASTNode(token)
     {
         assert(lhs != NULL);

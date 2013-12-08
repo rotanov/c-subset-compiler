@@ -35,14 +35,14 @@ namespace Compiler
     class CompoundStatement : public Statement
     {
     public:
-        CompoundStatement(const Token& token, SymbolTable* symbols);
+        CompoundStatement(const Token& token, shared_ptr<SymbolTable> symbols);
 
-        void AddStatement(Statement* statement);
+        void AddStatement(shared_ptr<Statement> statement);
         virtual EStatementType GetStatementType() const { return EStatementType::COMPOUND; }
-        SymbolTable* GetSymbolTable() const;
+        shared_ptr<SymbolTable> GetSymbolTable() const;
 
     private:
-        SymbolTable* symbols_{NULL};
+        shared_ptr<SymbolTable> symbols_{NULL};
 
     };
 
@@ -51,8 +51,8 @@ namespace Compiler
     public:
         ExpressionStatement();
 
-        void SetExpression(ASTNode* expression);
-        ASTNode* GetExpression() const;
+        void SetExpression(shared_ptr<ASTNode> expression);
+        shared_ptr<ASTNode> GetExpression() const;
         virtual EStatementType GetStatementType() const { return EStatementType::EXPRESSION; }
 
     private:
@@ -64,9 +64,9 @@ namespace Compiler
     public:
         SelectionStatement();
 
-        void SetConditionExpression(ASTNode* conditionExpression);
-        void SetStatementForIf(Statement* statement);
-        void SetStatementForElse(Statement* statement);
+        void SetConditionExpression(shared_ptr<ASTNode> conditionExpression);
+        void SetStatementForIf(shared_ptr<Statement> statement);
+        void SetStatementForElse(shared_ptr<Statement> statement);
         virtual EStatementType GetStatementType() const { return EStatementType::SELECTION; }
 
     private:
@@ -76,8 +76,8 @@ namespace Compiler
     class IterationStatement : public Statement
     {
     public:
-        virtual void SetControllingExpression(ASTNode* controllingExpression) = 0;
-        virtual void SetLoopStatement(Statement* loopStatement) = 0;
+        virtual void SetControllingExpression(shared_ptr<ASTNode> controllingExpression) = 0;
+        virtual void SetLoopStatement(shared_ptr<Statement> loopStatement) = 0;
 
     protected:
         IterationStatement(const Token& token);
@@ -89,15 +89,15 @@ namespace Compiler
     public:
         ForStatement();
         virtual EStatementType GetStatementType() const { return EStatementType::ITERATION_FOR; }
-        SymbolTable* GetSymbolTable() const;
-        void SetSymbolTable(SymbolTable* symbols);
-        void SetInitializingExpression(ASTNode* initializingExpression);
-        virtual void SetControllingExpression(ASTNode* controllingExpression);
-        void SetIterationExpression(ASTNode* iterationExpression);
-        virtual void SetLoopStatement(Statement* loopStatement);
+        shared_ptr<SymbolTable> GetSymbolTable() const;
+        void SetSymbolTable(shared_ptr<SymbolTable> symbols);
+        void SetInitializingExpression(shared_ptr<ASTNode> initializingExpression);
+        virtual void SetControllingExpression(shared_ptr<ASTNode> controllingExpression);
+        void SetIterationExpression(shared_ptr<ASTNode> iterationExpression);
+        virtual void SetLoopStatement(shared_ptr<Statement> loopStatement);
 
     private:
-        SymbolTable* symbols_{NULL};
+        shared_ptr<SymbolTable> symbols_{NULL};
 
     };
 
@@ -106,8 +106,8 @@ namespace Compiler
     public:
         DoStatement();
         virtual EStatementType GetStatementType() const { return EStatementType::ITERATION_DO; }
-        virtual void SetControllingExpression(ASTNode* controllingExpression);
-        virtual void SetLoopStatement(Statement* loopStatement);
+        virtual void SetControllingExpression(shared_ptr<ASTNode> controllingExpression);
+        virtual void SetLoopStatement(shared_ptr<Statement> loopStatement);
 
     };
 
@@ -116,8 +116,8 @@ namespace Compiler
     public:
         WhileStatement();
         virtual EStatementType GetStatementType() const { return EStatementType::ITERATION_WHILE; }
-        virtual void SetControllingExpression(ASTNode* controllingExpression);
-        virtual void SetLoopStatement(Statement* loopStatement);
+        virtual void SetControllingExpression(shared_ptr<ASTNode> controllingExpression);
+        virtual void SetLoopStatement(shared_ptr<Statement> loopStatement);
 
     };
 
@@ -125,13 +125,13 @@ namespace Compiler
     {
     public:
         JumpStatement(const Token& token);
-        void SetReturnExpression(ASTNode* expression);
-        ASTNode* GetReturnExpression() const;
+        void SetReturnExpression(shared_ptr<ASTNode> expression);
+        shared_ptr<ASTNode> GetReturnExpression() const;
         virtual EStatementType GetStatementType() const { return EStatementType::JUMP; }
-        void SetRefLoopStatement(IterationStatement* iterationStatement);
+        void SetRefLoopStatement(shared_ptr<IterationStatement> iterationStatement);
 
     private:
-        IterationStatement* refLoop_{NULL};
+        shared_ptr<IterationStatement> refLoop_{NULL};
     };
 
 } // namespace Compiler

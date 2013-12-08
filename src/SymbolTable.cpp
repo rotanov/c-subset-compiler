@@ -3,6 +3,8 @@
 #include "ASTNode.hpp"
 #include "Statement.hpp"
 
+#include <iostream>
+
 namespace Compiler
 {
     Symbol::Symbol(const std::string& name)
@@ -13,10 +15,10 @@ namespace Compiler
 
     Symbol::~Symbol()
     {
-
+        std::cout << "destroyed symbol!\n";
     }
 
-    void Symbol::SetTypeSymbol(SymbolType* symType)
+    void Symbol::SetTypeSymbol(shared_ptr<SymbolType> symType)
     {
         throw std::logic_error("SetType not implemented for this symbol");
     }
@@ -44,7 +46,7 @@ namespace Compiler
         return scope_;
     }
 
-    void SymbolTable::AddType(SymbolType* symbolType)
+    void SymbolTable::AddType(shared_ptr<SymbolType> symbolType)
     {
         assert(symbolType != NULL);
         //        if (symbolType->GetSymbolType() == ESymbolType::TYPE_STRUCT)
@@ -54,14 +56,14 @@ namespace Compiler
         AddType(symbolType, symbolType->name);
     }
 
-    void SymbolTable::AddType(SymbolType* symbolType, const std::string& key)
+    void SymbolTable::AddType(shared_ptr<SymbolType> symbolType, const std::string& key)
     {
         assert(symbolType != NULL);
         assert(types.find(key) == types.end());
         types[key] = symbolType;
     }
 
-    void SymbolTable::AddFunction(SymbolVariable* symbolVariable)
+    void SymbolTable::AddFunction(shared_ptr<SymbolVariable> symbolVariable)
     {
         assert(symbolVariable != NULL);
         assert(symbolVariable->GetTypeSymbol()->GetSymbolType() == ESymbolType::TYPE_FUNCTION);
@@ -73,7 +75,7 @@ namespace Compiler
         functions[key] = symbolVariable;
     }
 
-    void SymbolTable::AddVariable(SymbolVariable* symbolVariable)
+    void SymbolTable::AddVariable(shared_ptr<SymbolVariable> symbolVariable)
     {
         assert(symbolVariable != NULL);
 
@@ -86,17 +88,17 @@ namespace Compiler
         variables[key] = symbolVariable;
     }
 
-    SymbolVariable* SymbolTable::LookupVariable(const std::string& name) const
+    shared_ptr<SymbolVariable> SymbolTable::LookupVariable(const std::string& name) const
     {
         return LookupHelper_(variables, name);
     }
 
-    SymbolType* SymbolTable::LookupType(const std::string& name) const
+    shared_ptr<SymbolType> SymbolTable::LookupType(const std::string& name) const
     {
         return LookupHelper_(types, name);
     }
 
-    SymbolVariable* SymbolTable::LookupFunction(const std::string& name) const
+    shared_ptr<SymbolVariable> SymbolTable::LookupFunction(const std::string& name) const
     {
         return LookupHelper_(functions, name);
     }
@@ -118,7 +120,7 @@ namespace Compiler
 
     }
 
-    SymbolVariable::SymbolVariable(const std::string& name, SymbolType* symType)
+    SymbolVariable::SymbolVariable(const std::string& name, shared_ptr<SymbolType> symType)
         : Symbol(name)
     {
         SetTypeSymbol(symType);
@@ -129,13 +131,13 @@ namespace Compiler
         return ESymbolType::VARIABLE;
     }
 
-    void SymbolVariable::SetTypeSymbol(SymbolType* symType)
+    void SymbolVariable::SetTypeSymbol(shared_ptr<SymbolType> symType)
     {
         assert(type_ == NULL);
         type_ = symType;
     }
 
-    SymbolType* SymbolVariable::GetTypeSymbol() const
+    shared_ptr<SymbolType> SymbolVariable::GetTypeSymbol() const
     {
         assert(type_ != NULL);
         return type_;
@@ -147,7 +149,7 @@ namespace Compiler
         return "variable " + name + " of type " + type_->GetQualifiedName();
     }
 
-    void SymbolVariable::SetInitializer(ASTNode* initializer)
+    void SymbolVariable::SetInitializer(shared_ptr<ASTNode> initializer)
     {
         initializer_ = initializer;
     }
@@ -196,7 +198,7 @@ namespace Compiler
         return ESymbolType::TYPE_VOID;
     }
 
-    SymbolFunctionType::SymbolFunctionType(SymbolTableWithOrder* parametersSymTable)
+    SymbolFunctionType::SymbolFunctionType(shared_ptr<SymbolTableWithOrder> parametersSymTable)
         : SymbolType("function")
         , parameters_(parametersSymTable)
     {
@@ -208,7 +210,7 @@ namespace Compiler
         return ESymbolType::TYPE_FUNCTION;
     }
 
-    void SymbolFunctionType::SetTypeSymbol(SymbolType* symType)
+    void SymbolFunctionType::SetTypeSymbol(shared_ptr<SymbolType> symType)
     {
         assert(symType != NULL);
         ESymbolType type = symType->GetSymbolType();
@@ -235,26 +237,26 @@ namespace Compiler
         return "function(" + argStr + ") returning " + returnType_->GetQualifiedName();
     }
 
-    void SymbolFunctionType::AddParameter(SymbolVariable* parameter)
+    void SymbolFunctionType::AddParameter(shared_ptr<SymbolVariable> parameter)
     {
         assert(parameter != NULL);
         parameters_->AddVariable(parameter);
     }
 
-    SymbolTableWithOrder* SymbolFunctionType::GetSymbolTable() const
+    shared_ptr<SymbolTableWithOrder> SymbolFunctionType::GetSymbolTable() const
     {
         assert(parameters_ != NULL);
         return parameters_;
     }
 
-    void SymbolFunctionType::SetBody(CompoundStatement* body)
+    void SymbolFunctionType::SetBody(shared_ptr<CompoundStatement> body)
     {
         assert(body_ == NULL);
         assert(body != NULL);
         body_ = body;
     }
 
-    CompoundStatement* SymbolFunctionType::GetBody() const
+    shared_ptr<CompoundStatement> SymbolFunctionType::GetBody() const
     {
 //        assert(body_ != NULL);
         return body_;
@@ -284,20 +286,20 @@ namespace Compiler
         return "struct " + name;// + membersStr + "\n";
     }
 
-    void SymbolStruct::AddField(SymbolVariable* field)
+    void SymbolStruct::AddField(shared_ptr<SymbolVariable> field)
     {
         assert(field != NULL);
         assert(fields_ != NULL);
         fields_->AddVariable(field);
     }
 
-    SymbolTableWithOrder* SymbolStruct::GetSymbolTable() const
+    shared_ptr<SymbolTableWithOrder> SymbolStruct::GetSymbolTable() const
     {
         assert(fields_ != NULL);
         return fields_;
     }
 
-    void SymbolStruct::SetFieldsSymTable(SymbolTableWithOrder* fieldsSymTable)
+    void SymbolStruct::SetFieldsSymTable(shared_ptr<SymbolTableWithOrder> fieldsSymTable)
     {
         assert(fieldsSymTable != NULL);
         assert(fields_ == NULL);
@@ -309,13 +311,13 @@ namespace Compiler
     {
     }
 
-    SymbolPointer::SymbolPointer(SymbolType* symType)
+    SymbolPointer::SymbolPointer(shared_ptr<SymbolType> symType)
         : SymbolType("pointer")
     {
         SetTypeSymbol(symType);
     }
 
-    SymbolType* SymbolPointer::GetRefSymbol() const
+    shared_ptr<SymbolType> SymbolPointer::GetRefSymbol() const
     {
         refSymbol_;
     }
@@ -325,7 +327,7 @@ namespace Compiler
         return ESymbolType::TYPE_POINTER;
     }
 
-    void SymbolPointer::SetTypeSymbol(SymbolType* symType)
+    void SymbolPointer::SetTypeSymbol(shared_ptr<SymbolType> symType)
     {
         assert(symType != NULL);
         refSymbol_ = symType;
@@ -348,13 +350,13 @@ namespace Compiler
         return ESymbolType::TYPE_ARRAY;
     }
 
-    void SymbolArray::SetSizeInitializer(ASTNode* initializerExpression)
+    void SymbolArray::SetSizeInitializer(shared_ptr<ASTNode> initializerExpression)
     {
         assert(initializerExpression != NULL);
         sizeInitializer_ = initializerExpression;
     }
 
-    void SymbolArray::SetTypeSymbol(SymbolType* symType)
+    void SymbolArray::SetTypeSymbol(shared_ptr<SymbolType> symType)
     {
         assert(symType != NULL);
         ESymbolType type = symType->GetSymbolType();
@@ -391,7 +393,7 @@ namespace Compiler
 
     }
 
-    void SymbolTableWithOrder::AddVariable(SymbolVariable* symbolVariable)
+    void SymbolTableWithOrder::AddVariable(shared_ptr<SymbolVariable> symbolVariable)
     {
         assert(symbolVariable != NULL);
 
@@ -409,13 +411,13 @@ namespace Compiler
 
     }
 
-    SymbolConst::SymbolConst(SymbolType* symType)
+    SymbolConst::SymbolConst(shared_ptr<SymbolType> symType)
         : SymbolType("const")
     {
         SetTypeSymbol(symType);
     }
 
-    SymbolType*SymbolConst::GetRefSymbol() const
+    shared_ptr<SymbolType> SymbolConst::GetRefSymbol() const
     {
         return refSymbol_;
     }
@@ -425,7 +427,7 @@ namespace Compiler
         return ESymbolType::TYPE_CONST;
     }
 
-    void SymbolConst::SetTypeSymbol(SymbolType* symType)
+    void SymbolConst::SetTypeSymbol(shared_ptr<SymbolType> symType)
     {
         assert(symType != NULL);
         refSymbol_ = symType;
@@ -444,7 +446,7 @@ namespace Compiler
 
     }
 
-    SymbolType*SymbolTypedef::GetTypeSymbol() const
+    shared_ptr<SymbolType> SymbolTypedef::GetTypeSymbol() const
     {
         return type_;
     }
@@ -454,7 +456,7 @@ namespace Compiler
         return ESymbolType::TYPE_TYPEDEF;
     }
 
-    void SymbolTypedef::SetTypeSymbol(SymbolType* symType)
+    void SymbolTypedef::SetTypeSymbol(shared_ptr<SymbolType> symType)
     {
         assert(symType != NULL);
         type_ = symType;

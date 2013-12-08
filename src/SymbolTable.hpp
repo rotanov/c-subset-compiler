@@ -5,9 +5,15 @@
 #include <unordered_map>
 #include <cassert>
 #include <stdexcept>
+#include <utility>
+#include <memory>
 
 namespace Compiler
 {
+    using std::shared_ptr;
+    using std::weak_ptr;
+    using std::make_shared;
+    using std::static_pointer_cast;
     // code-style note: since we have strongly typed enums there is a point to
     // rethink naming of enum members: they pollute namespace no more.
     // so prefixes are already removed, may be all-cpas should be too?
@@ -57,7 +63,7 @@ namespace Compiler
         // but sticking with it for now
         // because I just want it to work
         // !!! also confusing with type-of-symbol-getter above
-        virtual void SetTypeSymbol(SymbolType* symType);
+        virtual void SetTypeSymbol(shared_ptr<SymbolType> symType);
         virtual std::string GetQualifiedName() const = 0;
 
         std::string name{""};
@@ -71,21 +77,21 @@ namespace Compiler
     {
     public:
         template <typename T>
-        using TSymbols = std::unordered_map<std::string, T*>;
+        using TSymbols = std::unordered_map<std::string, shared_ptr<T>>;
 
         SymbolTable(const EScopeType scope);
         virtual ~SymbolTable();
 
         EScopeType GetScopeType() const;
 
-        void AddType(SymbolType* symbolType);
-        void AddType(SymbolType* symbolType, const std::string& key);
-        void AddFunction(SymbolVariable* symbolVariable);
-        virtual void AddVariable(SymbolVariable* symbolVariable);
+        void AddType(shared_ptr<SymbolType> symbolType);
+        void AddType(shared_ptr<SymbolType> symbolType, const std::string& key);
+        void AddFunction(shared_ptr<SymbolVariable> symbolVariable);
+        virtual void AddVariable(shared_ptr<SymbolVariable> symbolVariable);
 
-        SymbolVariable* LookupVariable(const std::string& name) const;
-        SymbolType* LookupType(const std::string& name) const;
-        SymbolVariable* LookupFunction(const std::string& name) const;
+        shared_ptr<SymbolVariable> LookupVariable(const std::string& name) const;
+        shared_ptr<SymbolType> LookupType(const std::string& name) const;
+        shared_ptr<SymbolVariable> LookupFunction(const std::string& name) const;
 
         TSymbols<SymbolVariable> variables;
         TSymbols<SymbolType> types;
@@ -95,7 +101,7 @@ namespace Compiler
         SymbolTable();
 
         template <typename T>
-        T* LookupHelper_(const TSymbols<T>& container, const std::string& key) const
+        shared_ptr<T> LookupHelper_(const TSymbols<T>& container, const std::string& key) const
         {
             if (container.find(key) != container.end())
             {
@@ -117,9 +123,9 @@ namespace Compiler
         SymbolTableWithOrder(const EScopeType scope);
         virtual ~SymbolTableWithOrder();
 
-        virtual void AddVariable(SymbolVariable* symbolVariable);
+        virtual void AddVariable(shared_ptr<SymbolVariable> symbolVariable);
 
-        std::vector<SymbolVariable*> orderedVariables;
+        std::vector<shared_ptr<SymbolVariable>> orderedVariables;
 
     private:
     };
@@ -140,17 +146,17 @@ namespace Compiler
     {
     public:
         SymbolVariable(const std::string& name);
-        SymbolVariable(const std::string &name, SymbolType* symType);
+        SymbolVariable(const std::string &name, shared_ptr<SymbolType> symType);
 
         virtual ESymbolType GetSymbolType() const;
-        virtual void SetTypeSymbol(SymbolType* symType);
-        SymbolType* GetTypeSymbol() const;
+        virtual void SetTypeSymbol(shared_ptr<SymbolType> symType);
+        shared_ptr<SymbolType> GetTypeSymbol() const;
         virtual std::string GetQualifiedName() const;
-        void SetInitializer(ASTNode* initializer);
+        void SetInitializer(shared_ptr<ASTNode> initializer);
 
     protected:
-        SymbolType* type_{NULL};
-        ASTNode* initializer_{NULL};
+        shared_ptr<SymbolType> type_{NULL};
+        shared_ptr<ASTNode> initializer_{NULL};
     };
 
 //------------------------------------------------------------------------------
@@ -158,20 +164,20 @@ namespace Compiler
     class SymbolFunctionType : public SymbolType
     {
     public:
-        SymbolFunctionType(SymbolTableWithOrder* parametersSymTable);
+        SymbolFunctionType(shared_ptr<SymbolTableWithOrder> parametersSymTable);
 
         virtual ESymbolType GetSymbolType() const;
-        virtual void SetTypeSymbol(SymbolType *symType);
+        virtual void SetTypeSymbol(shared_ptr<SymbolType> symType);
         virtual std::string GetQualifiedName() const;
-        void AddParameter(SymbolVariable* parameter);
-        SymbolTableWithOrder* GetSymbolTable() const;
-        void SetBody(CompoundStatement* body);
-        CompoundStatement* GetBody() const;
+        void AddParameter(shared_ptr<SymbolVariable> parameter);
+        shared_ptr<SymbolTableWithOrder> GetSymbolTable() const;
+        void SetBody(shared_ptr<CompoundStatement> body);
+        shared_ptr<CompoundStatement> GetBody() const;
 
     private:
-        SymbolType* returnType_{NULL};
-        SymbolTableWithOrder* parameters_{NULL};
-        CompoundStatement* body_{NULL};
+        shared_ptr<SymbolType> returnType_{NULL};
+        shared_ptr<SymbolTableWithOrder> parameters_{NULL};
+        shared_ptr<CompoundStatement> body_{NULL};
     };
 
 //------------------------------------------------------------------------------
@@ -182,14 +188,14 @@ namespace Compiler
 
         virtual ESymbolType GetSymbolType() const;
         virtual std::string GetQualifiedName() const;
-        void AddField(SymbolVariable* field);
-        SymbolTableWithOrder* GetSymbolTable() const;
-        void SetFieldsSymTable(SymbolTableWithOrder* fieldsSymTable);
+        void AddField(shared_ptr<SymbolVariable> field);
+        shared_ptr<SymbolTableWithOrder> GetSymbolTable() const;
+        void SetFieldsSymTable(shared_ptr<SymbolTableWithOrder> fieldsSymTable);
 
         bool complete{false};
 
     private:
-        SymbolTableWithOrder* fields_{NULL};
+        shared_ptr<SymbolTableWithOrder> fields_{NULL};
     };
 
 //------------------------------------------------------------------------------
@@ -237,16 +243,16 @@ namespace Compiler
     {
     public:
         SymbolPointer();
-        SymbolPointer(SymbolType* symType);
+        SymbolPointer(shared_ptr<SymbolType> symType);
 
-        SymbolType* GetRefSymbol() const;
+        shared_ptr<SymbolType> GetRefSymbol() const;
         virtual ESymbolType GetSymbolType() const;
-        virtual void SetTypeSymbol(SymbolType *symType);
+        virtual void SetTypeSymbol(shared_ptr<SymbolType> symType);
 
         virtual std::string GetQualifiedName() const;
 
     private:
-        SymbolType* refSymbol_{NULL};
+        shared_ptr<SymbolType> refSymbol_{NULL};
 
     };
 
@@ -258,14 +264,14 @@ namespace Compiler
         SymbolArray();
 
         virtual ESymbolType GetSymbolType() const;
-        void SetSizeInitializer(ASTNode* initializerExpression);
-        virtual void SetTypeSymbol(SymbolType *symType);
+        void SetSizeInitializer(shared_ptr<ASTNode> initializerExpression);
+        virtual void SetTypeSymbol(shared_ptr<SymbolType> symType);
 
         virtual std::string GetQualifiedName() const;
 
     private:
-        SymbolType* elementType_{NULL};
-        ASTNode* sizeInitializer_{NULL};
+        shared_ptr<SymbolType> elementType_{NULL};
+        shared_ptr<ASTNode> sizeInitializer_{NULL};
         unsigned size_{0};
 
     };
@@ -275,15 +281,15 @@ namespace Compiler
     {
     public:
         SymbolConst();
-        SymbolConst(SymbolType* symType);
+        SymbolConst(shared_ptr<SymbolType> symType);
 
-        SymbolType* GetRefSymbol() const;
+        shared_ptr<SymbolType> GetRefSymbol() const;
         virtual ESymbolType GetSymbolType() const;
-        virtual void SetTypeSymbol(SymbolType *symType);
+        virtual void SetTypeSymbol(shared_ptr<SymbolType> symType);
         virtual std::string GetQualifiedName() const;
 
     private:
-        SymbolType* refSymbol_{NULL};
+        shared_ptr<SymbolType> refSymbol_{NULL};
     };
 
 //------------------------------------------------------------------------------
@@ -292,13 +298,13 @@ namespace Compiler
     public:
         SymbolTypedef(const std::string& name);
 
-        SymbolType* GetTypeSymbol() const;
+        shared_ptr<SymbolType> GetTypeSymbol() const;
         virtual ESymbolType GetSymbolType() const;
-        virtual void SetTypeSymbol(SymbolType *symType);
+        virtual void SetTypeSymbol(shared_ptr<SymbolType> symType);
         virtual std::string GetQualifiedName() const;
 
     private:
-        SymbolType* type_{NULL};
+        shared_ptr<SymbolType> type_{NULL};
     };
 
 } // namespace Compiler

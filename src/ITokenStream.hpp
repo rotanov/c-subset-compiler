@@ -29,6 +29,11 @@ namespace Compiler
                                       const int column) = 0;
 
         virtual void EmitEof(const int line, const int column) = 0;
+
+        virtual ~ITokenStream()
+        {
+
+        }
     };
 
 } // namespace Compiler

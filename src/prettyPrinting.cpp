@@ -63,7 +63,7 @@ namespace Compiler
                     print->children.push_back(printNode);
 
                     depth++;
-                    f(next->GetChild(i), printNode, (maxLeft + spacing) * (i != 0) + estimate * (i == 0));
+                    f(next->GetChild(i).get(), printNode, (maxLeft + spacing) * (i != 0) + estimate * (i == 0));
                     prevMaxLeft = maxLeft;
                     maxLeft = *std::max_element(offsetByDepth.begin() + depth,
                                                     offsetByDepth.end());
@@ -188,7 +188,7 @@ namespace Compiler
         for (auto type : symTable->types)
         {
             std::string typeName = type.first;
-            SymbolType* typeSym = type.second;
+            SymbolType* typeSym = type.second.get();
             print() << typeSym->GetQualifiedName() << std::endl;
 
             switch (typeSym->GetSymbolType())
@@ -198,7 +198,7 @@ namespace Compiler
                     SymbolStruct* symStruct = static_cast<SymbolStruct*>(typeSym);
                     if (symStruct->complete)
                     {
-                        PrintSymbolTable(symStruct->GetSymbolTable(), indentLevel + 1);
+                        PrintSymbolTable(symStruct->GetSymbolTable().get(), indentLevel + 1);
                     }
                     break;
                 }
@@ -229,7 +229,7 @@ namespace Compiler
             for (auto var : symTable->variables)
             {
                 std::string varName = var.first;
-                SymbolVariable* varSym = var.second;
+                SymbolVariable* varSym = var.second.get();
                 print() << varSym->GetQualifiedName() << std::endl;
             }
         }
@@ -246,17 +246,17 @@ namespace Compiler
             if (statement->GetStatementType() == EStatementType::COMPOUND)
             {
                 CompoundStatement* compoundStatement = static_cast<CompoundStatement*>(statement);
-                PrintSymbolTable(compoundStatement->GetSymbolTable(), indentLevel + 1);
+                PrintSymbolTable(compoundStatement->GetSymbolTable().get(), indentLevel + 1);
             }
             else if (statement->GetStatementType() == EStatementType::ITERATION_FOR)
             {
                 ForStatement* forStatement = static_cast<ForStatement*>(statement);
-                PrintSymbolTable(forStatement->GetSymbolTable(), indentLevel + 1);
+                PrintSymbolTable(forStatement->GetSymbolTable().get(), indentLevel + 1);
             }
 
             for (int i = 0; i < statement->GetChildCount(); i++)
             {
-                ASTNode* node = statement->GetChild(i);
+                ASTNode* node = statement->GetChild(i).get();
                 if (node->IsStatement())
                 {
                     Statement* statement = static_cast<Statement*>(node);
@@ -280,14 +280,14 @@ namespace Compiler
         for (auto function : symTable->functions)
         {
             std::string functionName = function.first;
-            SymbolVariable* functionSym = function.second;
+            SymbolVariable* functionSym = function.second.get();
             print() << functionSym->GetQualifiedName() << std::endl;
-            SymbolFunctionType* symFunType = static_cast<SymbolFunctionType*>(functionSym->GetTypeSymbol());
+            SymbolFunctionType* symFunType = static_cast<SymbolFunctionType*>(functionSym->GetTypeSymbol().get());
             if (symFunType->GetSymbolTable() != NULL)
             {
-                PrintSymbolTable(symFunType->GetSymbolTable(), indentLevel + 1);
+                PrintSymbolTable(symFunType->GetSymbolTable().get(), indentLevel + 1);
             }
-            CompoundStatement* body = symFunType->GetBody();
+            CompoundStatement* body = symFunType->GetBody().get();
             if (body != NULL)
             {
                 f(body, indentLevel);
