@@ -9,7 +9,8 @@ QMAKE_CXXFLAGS += -std=c++11
 DESTDIR = ../bin
 
 INCLUDE = $$(INCLUDE)
-INCLUDEPATH += $$split(INCLUDE, ;)
+INCLUDE = $$split(INCLUDE, ;)
+for (path, INCLUDE):QMAKE_CXXFLAGS += -isystem $${path}
 
 LIB = $$(LIB)
 LIB = $$split(LIB, ;)
@@ -19,9 +20,13 @@ for(path, LIB):LIBS += -L$${path}
 
 DEFINES += BOOST_ALL_NO_LIB
 
+# TODO: investigte why it doesn't work
 #QMAKE_CXXFLAGS += -fsanitize=undefined
-QMAKE_CXXFLAGS += -Wreturn-type
 QMAKE_CXXFLAGS += -Werror=return-type
+QMAKE_CXXFLAGS += -Werror=non-virtual-dtor
+QMAKE_CXXFLAGS += -Wextra
+
+#QMAKE_CXXFLAGS += -Wno-unused-local-typedefs
 
 INCLUDEPATH += ../src
 
@@ -31,6 +36,8 @@ CONFIG(debug, debug|release) {
     TARGET = test-driver-debug
 } else {
     TARGET = test-driver-release
+
+#    To add debug information to release build:
 #    QMAKE_CXXFLAGS_RELEASE += -g
 #    QMAKE_CXXFLAGS_RELEASE -= -O2
 #    QMAKE_LFLAGS_RELEASE -= -Wl,-s
