@@ -468,7 +468,7 @@ namespace Compiler
 
     bool IsLiteral(const ETokenType& tokenType)
     {
-        return  TT_LITERAL_INT
+        return  tokenType == TT_LITERAL_INT
                 || TT_LITERAL_FLOAT
                 || TT_LITERAL_CHAR
                 || TT_LITERAL_CHAR_ARRAY;

@@ -1,4 +1,4 @@
-QT       += core gui
+QT += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -25,6 +25,10 @@ DEFINES += BOOST_ALL_NO_LIB
 QMAKE_CXXFLAGS += -Werror=return-type
 QMAKE_CXXFLAGS += -Werror=non-virtual-dtor
 QMAKE_CXXFLAGS += -Wextra
+
+# GCC handles C++11 class members inline
+# initialization wrong in context of warnings
+QMAKE_CXXFLAGS += -Wno-reorder
 
 #QMAKE_CXXFLAGS += -Wno-unused-local-typedefs
 

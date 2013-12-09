@@ -69,8 +69,8 @@ namespace Compiler
 
 
     private:
-        ExpressionASTNode* left_ = NULL;
-        ExpressionASTNode* right_ = NULL;
+        ExpressionASTNode* left_{NULL};
+        ExpressionASTNode* right_{NULL};
     };
 
     class ExpressionParser : public ITokenStream

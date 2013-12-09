@@ -9,7 +9,9 @@ namespace Compiler
         , text(text)
         , line(line)
         , column(column)
-        , intValue(0) // FUCK
+        // there is bug in GCC wich prevents me from
+        // C++11 style initialization of anonymous unions fields
+        , intValue(0)
     {
 
     }
@@ -17,14 +19,14 @@ namespace Compiler
 //------------------------------------------------------------------------------
     Token::Token(const ETokenType& type)
         : type(type)
-        , intValue(0) // FUCK
+        , intValue(0)
     {
 
     }
 
 //------------------------------------------------------------------------------
     Token::Token()
-        : intValue(0) // FUCK
+        : intValue(0)
     {
 
     }
@@ -33,7 +35,7 @@ namespace Compiler
     Token::Token(const ETokenType& type, const std::string& text)
         : type(type)
         , text(text)
-        , intValue(0) // FUCK
+        , intValue(0)
     {
 
     }

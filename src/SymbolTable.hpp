@@ -63,7 +63,7 @@ namespace Compiler
         // but sticking with it for now
         // because I just want it to work
         // !!! also confusing with type-of-symbol-getter above
-        virtual void SetTypeSymbol(shared_ptr<SymbolType> symType);
+        virtual void SetTypeSymbol(shared_ptr<SymbolType> /*symType*/);
         virtual std::string GetQualifiedName() const = 0;
 
         std::string name{""};

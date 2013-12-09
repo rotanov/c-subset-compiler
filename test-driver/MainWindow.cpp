@@ -79,6 +79,7 @@ std::map<CompilerMode, std::string> CompilerModeToTestDir =
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , cxxHighlighter_(NULL)
 
 {
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
@@ -96,7 +97,6 @@ MainWindow::MainWindow(QWidget *parent)
     {
         int index = static_cast<int>(i.first);
         std::vector<TestInfo>& tests = tests_[index];
-        int& testIndex = testIndexes_[index];
 
         QDir dir(QString().fromStdString(i.second),
                  QString("*.t"),
@@ -127,7 +127,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->qpteReference->setFont(QFont("Consolas", 12));
     ui->qpteLog->setFont(QFont("Consolas", 12));
 
-    CxxHighlighter* cxxHighlighter = new CxxHighlighter(ui->qpteInput->document());
+    cxxHighlighter_ = new CxxHighlighter(ui->qpteInput->document());
 
     debugStreamCout_ = new DebugStream(std::cout, ui->qpteOutput);
     debugStreamCerr_ = new DebugStream(std::cerr, ui->qpteOutput);
@@ -167,6 +167,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    delete cxxHighlighter_;
+    delete debugStreamCout_;
+    delete debugStreamCerr_;
     delete ui;
 }
 
@@ -272,10 +275,6 @@ void MainWindow::RunCompiler_(std::vector<char> &input)
     {
         std::cerr << "ERROR: " << e.what() << std::endl;
     }
-    catch (boost::coroutines::detail::forced_unwind)
-    {
-        throw;
-    }
     catch (boost::coroutines::detail::forced_unwind&)
     {
         throw;
@@ -346,7 +345,6 @@ void MainWindow::on_action_Run_Tests_for_Current_Mode_triggered()
     }
 
     int modeIndex = static_cast<int>(mode_);
-    int& testIndex = testIndexes_[modeIndex];
 
     QDir dir(QString().fromStdString(CompilerModeToTestDir[mode_]),
              QString("*.t"),

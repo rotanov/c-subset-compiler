@@ -98,11 +98,7 @@ namespace Compiler
                     print->right = new PrintTreeNode;
 
                     depth++;
-                    unsigned leftLength = f(next->GetLeft(), print->left, estimate);
-
                     int maxLeft = *std::max_element(offsetByDepth.begin() + depth, offsetByDepth.end());
-
-                    unsigned rightLength = f(next->GetRight(), print->right, maxLeft + spacing);
                     depth--;
 
                     assert(print != NULL);
@@ -160,7 +156,7 @@ namespace Compiler
                         continue;
                     }
                     bool flag = false;
-                    for (int i = 0; i < node->text.size(); i++)
+                    for (size_t i = 0; i < node->text.size(); i++)
                     {
                         if (!flag)
                         {
@@ -390,6 +386,9 @@ namespace Compiler
                                              const void *data, size_t nbytes,
                                              const int line, const int column)
     {
+        UNUSED(data);
+        UNUSED(nbytes);
+
         std::unordered_map<EFundamentalType, ETokenType> ftToTtMap =
         {
             {FT_INT, TT_LITERAL_INT},
@@ -410,6 +409,10 @@ namespace Compiler
                                                   const void *data, size_t nbytes,
                                                   const int line, const int column)
     {
+        UNUSED(data);
+        UNUSED(nbytes);
+        UNUSED(num_elements);
+
         assert(type == FT_CHAR);
         Token token(TT_LITERAL_CHAR_ARRAY, source, line, column);
         ThrowInvalidTokenError_(token);

@@ -5,6 +5,7 @@
 #include <QMainWindow>
 
 class QLabel;
+class CxxHighlighter;
 
 namespace Ui
 {
@@ -51,15 +52,10 @@ private slots:
     void OnQpteInputCursorPositionChanged();
     void on_action_Parser_triggered();
     void onSyncScrollbars();
-
     void on_actionOutput_triggered();
-
     void on_actionInput_triggered();
-
     void on_actionReference_triggered();
-
     void on_actionLog_triggered();
-
     void on_actionAll_equal_triggered();
 
 public:
@@ -75,6 +71,7 @@ private:
     QLabel* qlLineColumn_ = NULL;
     DebugStream* debugStreamCout_ = NULL; // YES WE CAN WHAT A RELIEF
     DebugStream* debugStreamCerr_ = NULL;
+    CxxHighlighter* cxxHighlighter_;
 
     void CompareOutputWithReference_();
     void SetMode_(const CompilerMode& mode);

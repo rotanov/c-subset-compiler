@@ -5,6 +5,8 @@
 
 #include "constants.hpp"
 
+#define UNUSED(expression) do { (void)(expression); } while (0)
+
 namespace Compiler
 {
     using std::vector;

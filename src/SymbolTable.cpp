@@ -18,7 +18,7 @@ namespace Compiler
 
     }
 
-    void Symbol::SetTypeSymbol(shared_ptr<SymbolType> symType)
+    void Symbol::SetTypeSymbol(shared_ptr<SymbolType> /*symType*/)
     {
         throw std::logic_error("SetType not implemented for this symbol");
     }

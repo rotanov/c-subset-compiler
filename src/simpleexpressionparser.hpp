@@ -51,8 +51,8 @@ namespace Compiler
         }
 
     private:
-        SimpleASTNode* left_ = NULL;
-        SimpleASTNode* right_ = NULL;
+        SimpleASTNode* left_{NULL};
+        SimpleASTNode* right_{NULL};
     };
 
     class SimpleExpressionParser : public ITokenStream

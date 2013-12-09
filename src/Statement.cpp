@@ -9,7 +9,7 @@ namespace Compiler
 
     }
 
-    CompoundStatement::CompoundStatement(const Token& token, shared_ptr<SymbolTable> symbols)
+    CompoundStatement::CompoundStatement(shared_ptr<SymbolTable> symbols)
         : Statement(Token(OP_LBRACE, "{"))
         , symbols_(symbols)
     {

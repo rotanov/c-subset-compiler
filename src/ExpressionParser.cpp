@@ -374,19 +374,14 @@ namespace Compiler
                          || (next->GetLeft() == NULL && next->GetRight() != NULL))
                 {
                     assert(print != NULL);
-                    ExpressionASTNode* validNode = next->GetLeft() != NULL ? next->GetLeft() : next->GetRight();
+
                     print->left = new PrintTreeNode;
 
                     depth++;
                     f(next->GetLeft(), print->left, estimate);
-
-                    int maxLeft = *std::max_element(offsetByDepth.begin() + depth, offsetByDepth.end());
-
                     depth--;
 
-
-                    print->text = std::string(spaceCount, ' ')
-                                  + next->token.value;
+                    print->text = std::string(spaceCount, ' ') + next->token.value;
                     print->depth = depth;
                     offsetByDepth[depth] += next->token.value.size() + spaceCount;
                 }
@@ -453,7 +448,7 @@ namespace Compiler
                     bool singleLeaf = node->left == NULL || node->right == NULL;
                     bool flag = false;
 
-                    for (int i = 0; i < node->text.size(); i++)
+                    for (size_t i = 0; i < node->text.size(); i++)
                     {
                         if (!flag)
                         {
@@ -576,6 +571,9 @@ namespace Compiler
                                              const void *data, size_t nbytes,
                                              const int line, const int column)
     {
+        UNUSED(data);
+        UNUSED(nbytes);
+
         std::unordered_map<EFundamentalType, ETokenType> ftToTtMap =
         {
             {FT_INT, TT_LITERAL_INT},
@@ -596,6 +594,10 @@ namespace Compiler
                                                   const void *data, size_t nbytes,
                                                   const int line, const int column)
     {
+        UNUSED(data);
+        UNUSED(nbytes);
+        UNUSED(num_elements);
+
         assert(type == FT_CHAR);
         Token token(TT_LITERAL_CHAR_ARRAY, "\"" + source + "\"", line, column);
         ResumeParse_(token);

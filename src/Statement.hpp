@@ -35,7 +35,7 @@ namespace Compiler
     class CompoundStatement : public Statement
     {
     public:
-        CompoundStatement(const Token& token, shared_ptr<SymbolTable> symbols);
+        CompoundStatement(shared_ptr<SymbolTable> symbols);
 
         void AddStatement(shared_ptr<Statement> statement);
         virtual EStatementType GetStatementType() const { return EStatementType::COMPOUND; }

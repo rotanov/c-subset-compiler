@@ -701,6 +701,8 @@ namespace Compiler
         // If, in a parameter declaration, an identifier can be treated either
         // as a typedef name or as a parameter name, it shall be taken as a typedef name.
 
+        // TODO: check size and types with symFuncType
+
         Token token = WaitForTokenReady_(caller);
 
         while (token != OP_RPAREN)
@@ -743,24 +745,8 @@ namespace Compiler
         {
             shared_ptr<ASTNode> initializerExpression = ParseAssignmentExpression_(caller);
         }
-        // TODO: return type/value, wtf?
+        // TODO: this is stub implementation, only eating up simple initializer
         return NULL;
-        // there was forgotten return
-        // so it crashed
-        // in release only
-        // in one test only (out of 99)
-        // wasted 6 hours in debugger
-        // fought g++ cl keys
-        // used print-debugging
-        // used hardcore debugging with dasm, memview
-        // so discovered this is UB
-        // and without return it was
-        // corrupting PARENT stack frame return address (in my case by half-byte)
-        // and it was overall pain
-        // vs treats this as an error by default
-        // so
-        // FUCK YOU GCC
-        // don't you dare ever forgot return statement, guys
     }
 
 //------------------------------------------------------------------------------
@@ -888,7 +874,7 @@ namespace Compiler
     {
         shared_ptr<SymbolTable> symTable = make_shared<SymbolTable>(EScopeType::BLOCK);
         symTables_.push_back(symTable);
-        shared_ptr<CompoundStatement> compoundStatement = make_shared<CompoundStatement>(Token(OP_LBRACE), symTable);
+        shared_ptr<CompoundStatement> compoundStatement = make_shared<CompoundStatement>(symTable);
 
         Token token = WithdrawTokenIf_(caller, OP_RBRACE);
 
@@ -1358,6 +1344,9 @@ namespace Compiler
                     ThrowError_("type declarations not allowed in parameter list");
                 }
                 break;
+
+            default:
+                break;
         }
 
         if (symbols->LookupType(name) != NULL)
@@ -1475,6 +1464,8 @@ namespace Compiler
                              const void *data, size_t nbytes,
                              const int line, const int column)
     {
+        UNUSED(nbytes);
+
         std::unordered_map<EFundamentalType, ETokenType> ftToTtMap =
         {
             {FT_INT, TT_LITERAL_INT},
@@ -1499,6 +1490,10 @@ namespace Compiler
             case FT_CHAR:
                 token.intValue = *reinterpret_cast<const char*>(data);
                 break;
+
+            default:
+                ThrowError_("invalid literal type");
+                break;
         }
         ResumeParse_(token);
     }
@@ -1510,6 +1505,7 @@ namespace Compiler
                                   const void *data, size_t nbytes,
                                   const int line, const int column)
     {
+        UNUSED(num_elements);
         assert(type == FT_CHAR);
         Token token(TT_LITERAL_CHAR_ARRAY, "\"" + source + "\"", line, column);
         token.charValue = new char [nbytes];

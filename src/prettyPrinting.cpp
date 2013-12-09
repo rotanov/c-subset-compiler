@@ -107,7 +107,7 @@ namespace Compiler
             PrintTreeNode* next = queue.front();
             queue.pop();
 
-            for (int i = 0; i < next->children.size(); i++)
+            for (size_t i = 0; i < next->children.size(); i++)
             {
                 queue.push(next->children[i]);
             }
@@ -122,7 +122,7 @@ namespace Compiler
                 print();
                 for (auto node : line)
                 {
-                    for (int i = 0; i < node->children.size(); i++)
+                    for (size_t i = 0; i < node->children.size(); i++)
                     {
                         std::string& text = node->children[i]->text;
                         auto leadingSpaceCount = text.find_first_not_of(' ');
@@ -161,12 +161,6 @@ namespace Compiler
         auto splitter = [&]()
         {
             print() << std::string(48 - indentLevel * 2, '-') << std::endl;
-        };
-
-        auto splittern = [&](int n)
-        {
-            assert(48 - n >= 0);
-            printn(n) << std::string(48 - n * 2, '-') << std::endl;
         };
 
         auto prolog = [&](const std::string text, int n)

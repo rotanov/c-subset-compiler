@@ -16,7 +16,7 @@ namespace Compiler
         : output_(output)
         , codePoints_(NULL)
         , codePointsCount_(0)
-        , codePointsAllocated_(NULL)
+        , codePointsAllocated_(0)
         , line_(1)
         , column_(1)
     {

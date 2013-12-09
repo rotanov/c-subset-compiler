@@ -38,7 +38,7 @@ std::streamsize DebugStream::xsputn(const char *p, std::streamsize n)
 {
     string_.append(p, p + n);
 
-    int pos = 0;
+    size_t pos = 0;
     while (pos != std::string::npos)
     {
         pos = string_.find('\n');

@@ -19,7 +19,7 @@ namespace Compiler
 //------------------------------------------------------------------------------
     shared_ptr<ASTNode> ASTNode::GetChild(const int index)
     {
-        assert(index >= 0 && index < children_.size());
+        assert(index >= 0 && static_cast<size_t>(index) < children_.size());
         return children_[index];
     }
 

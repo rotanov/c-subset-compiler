@@ -29,9 +29,9 @@ namespace Compiler
         // union member (in this particular case at least)
         union
         {
-            int intValue;
             float floatValue;
             char* charValue;
+            int intValue;
         };
 
         operator const ETokenType& () const;
