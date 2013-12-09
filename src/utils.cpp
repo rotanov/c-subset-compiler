@@ -474,5 +474,4 @@ namespace Compiler
                 || TT_LITERAL_CHAR_ARRAY;
     }
 
-
 } // namespace Compiler

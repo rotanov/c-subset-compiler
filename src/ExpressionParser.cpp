@@ -63,6 +63,7 @@ namespace Compiler
         };
 
         FlushOutput_();
+        return NULL;
     }
 
 //------------------------------------------------------------------------------
@@ -222,6 +223,7 @@ namespace Compiler
             tokenStack_.push_back(token);
             return node;
         }
+        return NULL;
     }
 
 //------------------------------------------------------------------------------

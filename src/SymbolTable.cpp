@@ -15,7 +15,7 @@ namespace Compiler
 
     Symbol::~Symbol()
     {
-        std::cout << "destroyed symbol!\n";
+
     }
 
     void Symbol::SetTypeSymbol(shared_ptr<SymbolType> symType)
@@ -319,7 +319,7 @@ namespace Compiler
 
     shared_ptr<SymbolType> SymbolPointer::GetRefSymbol() const
     {
-        refSymbol_;
+        return refSymbol_;
     }
 
     ESymbolType SymbolPointer::GetSymbolType() const

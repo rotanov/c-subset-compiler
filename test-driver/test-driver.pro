@@ -19,6 +19,10 @@ for(path, LIB):LIBS += -L$${path}
 
 DEFINES += BOOST_ALL_NO_LIB
 
+#QMAKE_CXXFLAGS += -fsanitize=undefined
+QMAKE_CXXFLAGS += -Wreturn-type
+QMAKE_CXXFLAGS += -Werror=return-type
+
 INCLUDEPATH += ../src
 
 CONFIG(debug, debug|release) {
@@ -27,6 +31,9 @@ CONFIG(debug, debug|release) {
     TARGET = test-driver-debug
 } else {
     TARGET = test-driver-release
+#    QMAKE_CXXFLAGS_RELEASE += -g
+#    QMAKE_CXXFLAGS_RELEASE -= -O2
+#    QMAKE_LFLAGS_RELEASE -= -Wl,-s
 }
 
 LIBS += \

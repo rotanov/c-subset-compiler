@@ -33,7 +33,7 @@ namespace Compiler
 //------------------------------------------------------------------------------
     Parser::~Parser()
     {
-        std::cout << symTables_.back().use_count() << std::endl;
+
     }
 
 //------------------------------------------------------------------------------
@@ -56,6 +56,7 @@ namespace Compiler
         };
 
         FlushOutput_();
+        return NULL;
     }
 
 //------------------------------------------------------------------------------
@@ -216,6 +217,7 @@ namespace Compiler
             tokenStack_.push_back(token);
             return conditionNode;
         }
+        return NULL;
     }
 
 //------------------------------------------------------------------------------
@@ -368,7 +370,8 @@ namespace Compiler
             // if we see `{` after declarator then it's function definition
             // and compound-statement should be parsed
             // else it is declaration
-            return ParseInitDeclaratorList_(caller, declSpec);
+            shared_ptr<Symbol> ravalue = ParseInitDeclaratorList_(caller, declSpec);
+            return ravalue;
         }
 
     }
@@ -741,6 +744,23 @@ namespace Compiler
             shared_ptr<ASTNode> initializerExpression = ParseAssignmentExpression_(caller);
         }
         // TODO: return type/value, wtf?
+        return NULL;
+        // there was forgotten return
+        // so it crashed
+        // in release only
+        // in one test only (out of 99)
+        // wasted 6 hours in debugger
+        // fought g++ cl keys
+        // used print-debugging
+        // used hardcore debugging with dasm, memview
+        // so discovered this is UB
+        // and without return it was
+        // corrupting PARENT stack frame return address (in my case by half-byte)
+        // and it was overall pain
+        // vs treats this as an error by default
+        // so
+        // FUCK YOU GCC
+        // don't you dare ever forgot return statement, guys
     }
 
 //------------------------------------------------------------------------------
@@ -931,6 +951,7 @@ namespace Compiler
         {
             return NULL;
         }
+        return NULL;
     }
 
 //------------------------------------------------------------------------------

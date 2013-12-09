@@ -41,11 +41,7 @@ namespace Compiler
 //------------------------------------------------------------------------------
     Token& Token::operator =(Token&& token)
     {
-        if (&token == this)
-        {
-            return *this;
-        }
-        else
+        if (&token != this)
         {
             if (type == TT_LITERAL_CHAR_ARRAY)
             {
@@ -69,6 +65,7 @@ namespace Compiler
                 intValue = token.intValue;
             }
         }
+        return *this;
     }
 
 //------------------------------------------------------------------------------
@@ -113,11 +110,7 @@ namespace Compiler
 //------------------------------------------------------------------------------
     Token& Token::operator =(const Token& token)
     {
-        if (&token == this)
-        {
-            return *this;
-        }
-        else
+        if (&token != this)
         {
             if (type == TT_LITERAL_CHAR_ARRAY)
             {
@@ -142,6 +135,7 @@ namespace Compiler
                 intValue = token.intValue;
             }
         }
+        return *this;
     }
 
 //------------------------------------------------------------------------------
