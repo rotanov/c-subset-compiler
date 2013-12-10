@@ -105,7 +105,7 @@ namespace Compiler
 
         if (nodeStack_.empty())
         {
-            left = ParseUnaryExpression_(caller);
+            left = ParseCastExpression_(caller);
         }
         else
         {
@@ -118,7 +118,8 @@ namespace Compiler
         while (binaryOperatorTypeToPrecedence.find(token.type) != binaryOperatorTypeToPrecedence.end()
                && binaryOperatorTypeToPrecedence.at(token.type) >= priority)
         {
-            left = make_shared<ASTNodeBinaryOperator>(token, left, ParseBinaryOperator_(caller, binaryOperatorTypeToPrecedence.at(token.type) + 1));
+            left = make_shared<ASTNodeBinaryOperator>(token, left,
+                ParseBinaryOperator_(caller, binaryOperatorTypeToPrecedence.at(token.type) + 1));
             token = WaitForTokenReady_(caller);
         }
 
@@ -144,51 +145,195 @@ namespace Compiler
 //------------------------------------------------------------------------------
     shared_ptr<ASTNode> Parser::ParseAssignmentExpression_(CallerType& caller)
     {
-        shared_ptr<ASTNode> node = ParseUnaryExpression_(caller);
-        Token token = WaitForTokenReady_(caller);
-        if (IsAssignmentOperator(token.type))
+        Token tokenParen = WaitForTokenReady_(caller);
+        if (tokenParen == OP_LPAREN)
         {
-            return make_shared<ASTNodeAssignment>(token, node, ParseAssignmentExpression_(caller));
+            Token tokenSpecQualifier = WaitForTokenReady_(caller);
+
+            tokenStack_.push_back(tokenSpecQualifier);
+            tokenStack_.push_back(tokenParen);
+
+            if (IsSpecifierQualifier_(tokenSpecQualifier))
+            {
+                // it is cast expression therefore conditional-expression here
+                return ParseConditionalExpression_(caller);
+            }
         }
         else
         {
-            // return node, so ParseBinOp will get it
-            // return token(binop) as well
-            tokenStack_.push_back(token);
-            nodeStack_.push_back(node);
-            return ParseConditionalExpression_(caller);
+            tokenStack_.push_back(tokenParen);
+        }
+
+        {
+            shared_ptr<ASTNode> node = ParseUnaryExpression_(caller);
+            Token token = WaitForTokenReady_(caller);
+            if (IsAssignmentOperator(token.type))
+            {
+                return make_shared<ASTNodeAssignment>(token, node, ParseAssignmentExpression_(caller));
+            }
+            else
+            {
+                // return node, so ParseBinOp will get it
+                // return token(binop) as well
+                tokenStack_.push_back(token);
+                nodeStack_.push_back(node);
+                return ParseConditionalExpression_(caller);
+            }
+        }
+    }
+
+//------------------------------------------------------------------------------
+    shared_ptr<ASTNode> Parser::ParseCastExpression_(Parser::CallerType& caller)
+    {
+        Token token = WithdrawTokenIf_(caller, OP_LPAREN);
+        if (token == OP_LPAREN)
+        {
+             token = WaitForTokenReady_(caller);
+            if (IsSpecifierQualifier_(token))
+            {
+                tokenStack_.push_back(token);
+                DeclarationSpecifiers declSpec = ParseDeclarationSpecifiers_(caller);
+
+                token = WaitForTokenReady_(caller);
+                if (token != OP_RPAREN)
+                {
+                    tokenStack_.push_back(token);
+
+                    shared_ptr<SymbolVariable> variable = ParseDeclarator_(caller, declSpec, true);
+                    shared_ptr<ASTNode> result = make_shared<ASTNodeCast>(make_shared<ASTNodeTypeName>(variable->GetTypeSymbol()), ParseCastExpression_(caller));
+
+                    token = WaitForTokenReady_(caller);
+                    if (token != OP_RPAREN)
+                    {
+                        ThrowInvalidTokenError_(token, "right parentesis expected");
+                    }
+
+                    return result;
+                }
+                else
+                {
+                    return make_shared<ASTNodeCast>(make_shared<ASTNodeTypeName>(declSpec.typeSymbol), ParseCastExpression_(caller));
+                }
+            }
+            else
+            {
+                tokenStack_.push_back(Token(OP_LPAREN, "("));
+                tokenStack_.push_back(token);
+                return ParseUnaryExpression_(caller);
+            }
+        }
+        else
+        {
+            return ParseUnaryExpression_(caller);
         }
     }
 
 //------------------------------------------------------------------------------
     shared_ptr<ASTNode> Parser::ParseUnaryExpression_(CallerType& caller)
     {
-        Token token = WaitForTokenReady_(caller);
+        Token token;
+        shared_ptr<ASTNode> head = NULL;
+        shared_ptr<ASTNode> next = NULL;
 
-        if (IsUnaryOperator(token.type)
-            || token == OP_INC
-            || token == OP_DEC)
+        auto SetNext = [&](shared_ptr<ASTNode> value)
         {
-            shared_ptr<ASTNode> node = make_shared<ASTNodeUnaryOperator>(token);
-            shared_ptr<ASTNode> root = node;
-            token = WaitForTokenReady_(caller);
-            while (IsUnaryOperator(token.type)
-                   || token == OP_INC
-                   || token == OP_DEC)
+              next = value;
+              if (head == nullptr)
+              {
+                  head = value;
+              }
+        };
+
+        auto SetOp = [&](shared_ptr<ASTNode> value)
+        {
+            if (next != nullptr)
             {
-                static_pointer_cast<ASTNodeUnaryOperator>(node)->SetOperand(make_shared<ASTNodeUnaryOperator>(token));
-                node = static_pointer_cast<ASTNodeUnaryOperator>(node)->GetOperand();
-                token = WaitForTokenReady_(caller);
+                static_pointer_cast<ASTNodeUnaryOperator>(next)->SetOperand(value);
             }
-            tokenStack_.push_back(token);
-            static_pointer_cast<ASTNodeUnaryOperator>(node)->SetOperand(ParsePostfixExpression_(caller));
-            return root;
-        }
-        else
+            SetNext(value);
+        };
+
+        bool parsing = true;
+        while (parsing)
         {
-            tokenStack_.push_back(token);
-            return ParsePostfixExpression_(caller);
+            token = WaitForTokenReady_(caller);
+            if (IsUnaryOperator(token)
+                || token == OP_INC
+                || token == OP_DEC
+                || token == KW_SIZEOF)
+            {
+                shared_ptr<ASTNode> temp = make_shared<ASTNodeUnaryOperator>(token);
+                SetOp(temp);
+            }
+            else
+            {
+                tokenStack_.push_back(token);
+
+                shared_ptr<ASTNode> temp;
+
+                if (next == nullptr
+                    || next->token == OP_INC
+                    || next->token == OP_DEC)
+                {
+                    temp = ParsePostfixExpression_(caller);
+                }
+                else if (IsUnaryOperator(next->token))
+                {
+                    temp = ParseCastExpression_(caller);
+                }
+                else if (next->token == KW_SIZEOF)
+                {
+                    token = WaitForTokenReady_(caller);
+
+                    if (token == OP_LPAREN)
+                    {
+                        token = WaitForTokenReady_(caller);
+                        if (IsSpecifierQualifier_(token))
+                        {
+                            tokenStack_.push_back(token);
+                            DeclarationSpecifiers declSpec = ParseDeclarationSpecifiers_(caller);
+                            token = WaitForTokenReady_(caller);
+                            if (token != OP_RPAREN)
+                            {
+                                tokenStack_.push_back(token);
+                                shared_ptr<SymbolVariable> variable = ParseDeclarator_(caller, declSpec, true);
+                                temp = make_shared<ASTNodeTypeName>(variable->GetTypeSymbol());
+
+                                token = WaitForTokenReady_(caller);
+                                if (token != OP_RPAREN)
+                                {
+                                    ThrowInvalidTokenError_(token, "right parentesis expected");
+                                }
+                            }
+                            else
+                            {
+                                temp = make_shared<ASTNodeTypeName>(declSpec.typeSymbol);
+                            }
+                        }
+                        else
+                        {
+                            tokenStack_.push_back(token);
+                            tokenStack_.push_back(Token(OP_LPAREN));
+                            temp = ParsePostfixExpression_(caller);
+                        }
+                    }
+                    else
+                    {
+                        tokenStack_.push_back(token);
+                        temp = ParsePostfixExpression_(caller);
+                    }
+                }
+                else
+                {
+                    assert(false);
+                }
+
+                SetOp(temp);
+                parsing = false;
+            }
         }
+        return head;
+
     }
 
 //------------------------------------------------------------------------------
@@ -541,7 +686,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    shared_ptr<SymbolVariable> Parser::ParseDeclarator_(Parser::CallerType& caller, DeclarationSpecifiers& declSpec)
+    shared_ptr<SymbolVariable> Parser::ParseDeclarator_(Parser::CallerType& caller, DeclarationSpecifiers& declSpec, bool abstract)
     {
         shared_ptr<SymbolVariable> declaratorVariable = NULL;
 
@@ -562,6 +707,10 @@ namespace Compiler
             // direct declarator
             if (token == TT_IDENTIFIER)
             {
+                if (abstract)
+                {
+                    ThrowInvalidTokenError_(token, "unexpected identifier in abstract-declarator");
+                }
                 declaratorVariable = make_shared<SymbolVariable>(token.text);
                 centralType = declaratorVariable;
             }
@@ -580,7 +729,8 @@ namespace Compiler
                 // if we are in func parameters scope then we're allowed
                 // to declare it anonymous, else it is treated as error
                 shared_ptr<SymbolTable> topSymTable = symTables_.back();
-                if (topSymTable->GetScopeType() == EScopeType::PARAMETERS)
+                if (topSymTable->GetScopeType() == EScopeType::PARAMETERS
+                    || abstract)
                 {
                     tokenStack_.push_back(token);
                     declaratorVariable = make_shared<SymbolVariable>(GenerateParameterName_());
@@ -880,7 +1030,7 @@ namespace Compiler
 
         while (token != OP_RBRACE)
         {
-            if (IsStartsDeclaration_(token))
+            if (IsDeclarationSpecifier_(token))
             {
                 // shall return NULL here
                 ParseDeclaration_(caller);
@@ -977,7 +1127,7 @@ namespace Compiler
             forStatement->SetSymbolTable(symbols);
 
             token = WaitForTokenReady_(caller);
-            if (IsStartsDeclaration_(token))
+            if (IsDeclarationSpecifier_(token))
             {
                 tokenStack_.push_back(token);
                 ParseDeclaration_(caller);
@@ -1273,7 +1423,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    bool Parser::IsStartsDeclaration_(const Token& token) const
+    bool Parser::IsDeclarationSpecifier_(const Token& token) const
     {
         if (token == TT_IDENTIFIER)
         {
@@ -1289,6 +1439,12 @@ namespace Compiler
                     || token == KW_FLOAT
                     || token == KW_STRUCT;
         }
+    }
+
+//------------------------------------------------------------------------------
+    bool Parser::IsSpecifierQualifier_(const Token& token) const
+    {
+        return IsDeclarationSpecifier_(token) && token != KW_TYPEDEF;
     }
 
 //------------------------------------------------------------------------------

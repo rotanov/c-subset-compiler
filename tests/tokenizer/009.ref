@@ -14,7 +14,9 @@
 ...1-.33: invalid %:%:
 ...1-.38: punctuation OP_SEMICOLON ;
 ...2-..1: punctuation OP_COLON :
-...2-..3: punctuation OP_DOTS ...
+...2-..3: punctuation OP_DOT .
+...2-..4: punctuation OP_DOT .
+...2-..5: punctuation OP_DOT .
 ...2-..7: identifier  new
 ...2-.11: identifier  delete
 ...2-.18: punctuation OP_QMARK ?

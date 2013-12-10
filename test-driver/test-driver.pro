@@ -24,6 +24,8 @@ DEFINES += BOOST_ALL_NO_LIB
 #QMAKE_CXXFLAGS += -fsanitize=undefined
 QMAKE_CXXFLAGS += -Werror=return-type
 QMAKE_CXXFLAGS += -Werror=non-virtual-dtor
+QMAKE_CXXFLAGS += -Werror=parentheses
+
 QMAKE_CXXFLAGS += -Wextra
 
 # GCC handles C++11 class members inline

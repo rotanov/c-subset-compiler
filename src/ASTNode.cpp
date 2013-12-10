@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "SymbolTable.hpp"
+
 namespace Compiler
 {
 ////////////////////////////////////////////////////////////////////////////////
@@ -123,6 +125,21 @@ namespace Compiler
         assert(rhs != NULL);
         children_.push_back(lhs);
         children_.push_back(rhs);
+    }
+
+////////////////////////////////////////////////////////////////////////////////
+    ASTNodeTypeName::ASTNodeTypeName(shared_ptr<SymbolType> typeNameSymbol)
+        : ASTNode(Token(TT_TYPE_NAME, typeNameSymbol->GetQualifiedName()))
+        , typeSymbol_(typeNameSymbol)
+    {
+
+    }
+
+////////////////////////////////////////////////////////////////////////////////
+    ASTNodeCast::ASTNodeCast(shared_ptr<ASTNodeTypeName> left, shared_ptr<ASTNode> right)
+        : ASTNodeBinaryOperator(Token(TT_CAST, "cast"), left, right)
+    {
+
     }
 
 

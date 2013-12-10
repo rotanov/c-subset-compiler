@@ -1,1 +1,1 @@
-ERROR: unexpected token TT_LITERAL : "88" at 1-7, identifier expected
+ERROR: unexpected token TT_LITERAL_INT : "88" at 1-7, identifier expected

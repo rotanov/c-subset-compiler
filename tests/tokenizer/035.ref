@@ -1,2 +1,4 @@
-...1-..1: punctuation OP_DOTS ...
+...1-..1: punctuation OP_DOT .
+...1-..2: punctuation OP_DOT .
+...1-..3: punctuation OP_DOT .
 eof

@@ -63,6 +63,7 @@ namespace Compiler
         shared_ptr<ASTNode> ParseBinaryOperator_(CallerType& caller, int priority);
         shared_ptr<ASTNode> ParseExpression_(CallerType& caller);
         shared_ptr<ASTNode> ParseAssignmentExpression_(CallerType& caller);
+        shared_ptr<ASTNode> ParseCastExpression_(CallerType& caller);
         shared_ptr<ASTNode> ParseUnaryExpression_(CallerType& caller);
         shared_ptr<ASTNode> ParseConditionalExpression_(CallerType& caller);
         shared_ptr<ASTNode> ParsePostfixExpression_(CallerType& caller);
@@ -79,7 +80,7 @@ namespace Compiler
         shared_ptr<Symbol> ParseDeclaration_(CallerType& caller);
         DeclarationSpecifiers ParseDeclarationSpecifiers_(CallerType& caller);
         shared_ptr<Symbol> ParseInitDeclaratorList_(CallerType& caller, DeclarationSpecifiers& declSpec);
-        shared_ptr<SymbolVariable> ParseDeclarator_(CallerType& caller, DeclarationSpecifiers& declSpec);
+        shared_ptr<SymbolVariable> ParseDeclarator_(CallerType& caller, DeclarationSpecifiers& declSpec, bool abstract = false);
         void ParseParameterList(CallerType& caller, SymbolFunctionType& symFuncType);
 
         shared_ptr<Symbol> ParseInitializer_(CallerType& caller);
@@ -110,7 +111,8 @@ namespace Compiler
 
         void FlushOutput_();
 
-        bool IsStartsDeclaration_(const Token& token) const;
+        bool IsDeclarationSpecifier_(const Token& token) const;
+        bool IsSpecifierQualifier_(const Token& token) const;
 
         std::string GenerateStuctName_();
         std::string GenerateParameterName_();

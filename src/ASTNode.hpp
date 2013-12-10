@@ -90,4 +90,22 @@ namespace Compiler
 
     };
 
+////////////////////////////////////////////////////////////////////////////////
+    class SymbolType;
+    class ASTNodeTypeName : public ASTNode
+    {
+    public:
+        ASTNodeTypeName(shared_ptr<SymbolType> typeNameSymbol);
+
+    private:
+        shared_ptr<SymbolType> typeSymbol_{NULL};
+    };
+
+////////////////////////////////////////////////////////////////////////////////
+    class ASTNodeCast : public ASTNodeBinaryOperator
+    {
+    public:
+        ASTNodeCast(shared_ptr<ASTNodeTypeName> left, shared_ptr<ASTNode> right);
+    };
+
 } // namespace Compiler

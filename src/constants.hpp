@@ -184,6 +184,12 @@ namespace Compiler
         TT_LITERAL_CHAR,
         TT_LITERAL_CHAR_ARRAY,
         TT_INVALID,
+
+        // for type-name in cast-expression and sizeof
+        // bad design, yeah
+        TT_TYPE_NAME,
+        TT_CAST,
+
         TT_EOF,
     };
 

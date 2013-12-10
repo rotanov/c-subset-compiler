@@ -1,1 +1,1 @@
-ERROR: unexpected token TT_LITERAL : "2.0" at 1-5, identifier expected
+ERROR: unexpected token TT_LITERAL_FLOAT : "2.0" at 1-5, identifier expected
