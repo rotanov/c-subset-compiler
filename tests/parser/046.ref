@@ -7,6 +7,7 @@ variable main of type function(variable argc of type int, variable argv of type 
   variable argv of type array of pointer to char
   variables:
   ----------------------------------------------
+  variable b of type int
   variable a of type int
 >---------------------------------------------if
   ==--

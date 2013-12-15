@@ -1,6 +1,7 @@
 int main(int argc, char* argv[])
 {
 	int a;
+	int b;
 
 	if (1 == 1)
          {

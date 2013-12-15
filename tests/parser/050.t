@@ -1,4 +1,5 @@
 int a;
+int n = 10;
 
 int main(int argc)
 {

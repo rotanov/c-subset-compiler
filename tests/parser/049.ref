@@ -1,3 +1,6 @@
+variables:
+------------------------------------------------
+variable a of type int
 functions:
 ------------------------------------------------
 variable main of type function() returning int

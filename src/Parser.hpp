@@ -58,7 +58,6 @@ namespace Compiler
         int anonymousGenerator_{0};
 
         // expressions
-        ASTNode* ParseTopLevelExpression_(CallerType& caller);
         shared_ptr<ASTNode> ParsePrimaryExpression_(CallerType& caller);
         shared_ptr<ASTNode> ParseBinaryOperator_(CallerType& caller, int priority);
         shared_ptr<ASTNode> ParseExpression_(CallerType& caller);

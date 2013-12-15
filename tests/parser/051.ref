@@ -1,1 +1,4 @@
+functions:
+------------------------------------------------
+variable main of type function() returning int
 ERROR: `break` or `continue` statement must belong to loop

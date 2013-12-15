@@ -4,6 +4,8 @@ variable main of type function() returning int
   variables:
   ----------------------------------------------
   variable <arg-n-1> of type pointer to array of array of const int
+  variable b of type int
+  variable a of type int
 >----------------------------------------------;
   --
   | 

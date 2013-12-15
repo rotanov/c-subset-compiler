@@ -37,29 +37,6 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ASTNode* Parser::ParseTopLevelExpression_(CallerType& caller)
-    {
-        while (true)
-        {
-            PrintAST(ParseExpression_(caller).get());
-            std::cout << std::endl << std::endl;
-
-            if (tokenStack_.empty())
-            {
-                throw std::runtime_error("token stack empty");
-            }
-            else if (tokenStack_.back() == TT_EOF)
-            {
-                break;
-            }
-
-        };
-
-        FlushOutput_();
-        return NULL;
-    }
-
-//------------------------------------------------------------------------------
     shared_ptr<ASTNode> Parser::ParsePrimaryExpression_(CallerType& caller)
     {
         Token token = WaitForTokenReady_(caller);
@@ -71,6 +48,13 @@ namespace Compiler
             case TT_LITERAL_CHAR:
             case TT_LITERAL_CHAR_ARRAY:
             {
+                if (token.type == TT_IDENTIFIER
+                    && !(LookupFunction_(token.text)
+                         || LookupVariable_(token.text)))
+                {
+                    ThrowInvalidTokenError_(token, "undeclared identifier");
+                }
+
                 return make_shared<ASTNode>(token);
                 break;
             }
@@ -695,7 +679,7 @@ namespace Compiler
             shared_ptr<SymbolType> leftmostPointer = NULL;
             shared_ptr<SymbolType> rightmostPointer = NULL;
             shared_ptr<Symbol> centralType = NULL;
-            Token token = WaitForTokenReady_(caller);
+            Token token = WaitForTokenReady_(caller);            
 
             // pointer part
             if (token == OP_STAR)
@@ -1004,13 +988,25 @@ namespace Compiler
             if (symbol != NULL) // ? nullptr ?
             {
                 shared_ptr<SymbolVariable> symFun = static_pointer_cast<SymbolVariable>(symbol);
+                // allowing recursive calls
+                AddFunction_(symFun);
+                symFun = LookupFunction_(symFun->name);
                 shared_ptr<SymbolFunctionType> symType = static_pointer_cast<SymbolFunctionType>(symFun->GetTypeSymbol());
                 symTables_.push_back(symType->GetSymbolTable());
                 // at this point symbol has ESymbolType::VARIABLE of type ESymbolType::TYPE_FUNCTION
                 // and `{` already eaten
-                symType->SetBody(ParseCompoundStatement_(caller));
-                symTables_.pop_back();
-                AddFunction_(symFun);
+
+                if (symType->GetBody() != NULL)
+                {
+                    // TODO: invalid error message because token here is a return type of function beging redeclared
+                    // we need to pass somehow column and line of a function declaration through symbol variable
+                    ThrowInvalidTokenError_(token, "redefinition of " + symFun->GetQualifiedName());
+                }
+                else
+                {
+                    symType->SetBody(ParseCompoundStatement_(caller));
+                }
+                symTables_.pop_back();                
             }
 
             token = WithdrawTokenIf_(caller, TT_EOF);
@@ -1550,22 +1546,7 @@ namespace Compiler
                 shared_ptr<SymbolFunctionType> symFunTypePresent = static_pointer_cast<SymbolFunctionType>(symFunPresent->GetTypeSymbol());
                 shared_ptr<SymbolFunctionType> symFunTypeAdding = static_pointer_cast<SymbolFunctionType>(symFun->GetTypeSymbol());
 
-                if (symFunTypeAdding->GetBody() != NULL)
-                {
-                    if (symFunTypePresent->GetBody() != NULL)
-                    {
-                        ThrowError_("redefinition of " + symFun->GetQualifiedName());
-                    }
-                    else
-                    {
-                        symFunTypePresent->SetBody(symFunTypeAdding->GetBody());
-                        // TODO: delete symFun
-                    }
-                }
-                else
-                {
-                    // TODO: assure signatures are the same
-                }
+                // TODO: assure signatures are the same
             }
             else
             {

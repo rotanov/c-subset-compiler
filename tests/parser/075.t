@@ -5,5 +5,5 @@ int f(int a)
 
 void g(int r)
 {
-  __print_int(r);
+  print("%d", r);
 }

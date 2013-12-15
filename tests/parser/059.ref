@@ -1,6 +1,10 @@
 functions:
 ------------------------------------------------
 variable main of type function() returning int
+  variables:
+  ----------------------------------------------
+  variable i of type int
+  variable n of type int
 >--------------------------------------------for
   =---
   |  |
