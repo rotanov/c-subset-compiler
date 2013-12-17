@@ -1,0 +1,4 @@
+functions:
+------------------------------------------------
+variable f of type function() returning int
+ERROR: declaration of function f - incompatible signature

@@ -65,6 +65,7 @@ namespace Compiler
         // !!! also confusing with type-of-symbol-getter above
         virtual void SetTypeSymbol(shared_ptr<SymbolType> /*symType*/);
         virtual std::string GetQualifiedName() const = 0;
+        virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const = 0;
 
         std::string name{""};
 
@@ -153,6 +154,7 @@ namespace Compiler
         shared_ptr<SymbolType> GetTypeSymbol() const;
         virtual std::string GetQualifiedName() const;
         void SetInitializer(shared_ptr<ASTNode> initializer);
+        virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
 
     protected:
         shared_ptr<SymbolType> type_{NULL};
@@ -173,6 +175,8 @@ namespace Compiler
         shared_ptr<SymbolTableWithOrder> GetSymbolTable() const;
         void SetBody(shared_ptr<CompoundStatement> body);
         shared_ptr<CompoundStatement> GetBody() const;
+        shared_ptr<SymbolType> GetReturnType() const;
+        virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
 
     private:
         shared_ptr<SymbolType> returnType_{NULL};
@@ -191,6 +195,7 @@ namespace Compiler
         void AddField(shared_ptr<SymbolVariable> field);
         shared_ptr<SymbolTableWithOrder> GetSymbolTable() const;
         void SetFieldsSymTable(shared_ptr<SymbolTableWithOrder> fieldsSymTable);
+        virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
 
         bool complete{false};
 
@@ -205,7 +210,7 @@ namespace Compiler
         SymbolChar();
 
         virtual ESymbolType GetSymbolType() const;
-
+        virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
     };
 
 //------------------------------------------------------------------------------
@@ -215,7 +220,7 @@ namespace Compiler
         SymbolInt();
 
         virtual ESymbolType GetSymbolType() const;
-
+        virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
     };
 
 //------------------------------------------------------------------------------
@@ -225,7 +230,7 @@ namespace Compiler
         SymbolFloat();
 
         virtual ESymbolType GetSymbolType() const;
-
+        virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
     };
 
 //------------------------------------------------------------------------------
@@ -235,7 +240,7 @@ namespace Compiler
         SymbolVoid();
 
         virtual ESymbolType GetSymbolType() const;
-
+        virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
     };
 
 //------------------------------------------------------------------------------
@@ -248,8 +253,8 @@ namespace Compiler
         shared_ptr<SymbolType> GetRefSymbol() const;
         virtual ESymbolType GetSymbolType() const;
         virtual void SetTypeSymbol(shared_ptr<SymbolType> symType);
-
         virtual std::string GetQualifiedName() const;
+        virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
 
     private:
         shared_ptr<SymbolType> refSymbol_{NULL};
@@ -266,8 +271,9 @@ namespace Compiler
         virtual ESymbolType GetSymbolType() const;
         void SetSizeInitializer(shared_ptr<ASTNode> initializerExpression);
         virtual void SetTypeSymbol(shared_ptr<SymbolType> symType);
-
         virtual std::string GetQualifiedName() const;
+        shared_ptr<SymbolType> GetTypeSymbol() const;
+        virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
 
     private:
         shared_ptr<SymbolType> elementType_{NULL};
@@ -287,6 +293,7 @@ namespace Compiler
         virtual ESymbolType GetSymbolType() const;
         virtual void SetTypeSymbol(shared_ptr<SymbolType> symType);
         virtual std::string GetQualifiedName() const;
+        virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
 
     private:
         shared_ptr<SymbolType> refSymbol_{NULL};
@@ -302,6 +309,7 @@ namespace Compiler
         virtual ESymbolType GetSymbolType() const;
         virtual void SetTypeSymbol(shared_ptr<SymbolType> symType);
         virtual std::string GetQualifiedName() const;
+        virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
 
     private:
         shared_ptr<SymbolType> type_{NULL};

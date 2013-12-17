@@ -154,6 +154,19 @@ namespace Compiler
         initializer_ = initializer;
     }
 
+    bool SymbolVariable::IfTypeFits(shared_ptr<Symbol> symbol) const
+    {
+        if (symbol->GetSymbolType() == ESymbolType::VARIABLE)
+        {
+            assert(type_ != NULL);
+            return type_->IfTypeFits(static_pointer_cast<SymbolVariable>(symbol)->GetTypeSymbol());
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     SymbolChar::SymbolChar()
         : SymbolType("char")
     {
@@ -163,6 +176,11 @@ namespace Compiler
     ESymbolType SymbolChar::GetSymbolType() const
     {
         return ESymbolType::TYPE_CHAR;
+    }
+
+    bool SymbolChar::IfTypeFits(shared_ptr<Symbol> symbol) const
+    {
+        return symbol->GetSymbolType() == ESymbolType::TYPE_CHAR;
     }
 
     SymbolInt::SymbolInt()
@@ -176,6 +194,12 @@ namespace Compiler
         return ESymbolType::TYPE_INT;
     }
 
+    bool SymbolInt::IfTypeFits(shared_ptr<Symbol> symbol) const
+    {
+        return symbol->GetSymbolType() == ESymbolType::TYPE_INT;
+                // || symbol->GetSymbolType() == ESymbolType::TYPE_CHAR;
+    }
+
     SymbolFloat::SymbolFloat()
         : SymbolType("float")
     {
@@ -184,7 +208,14 @@ namespace Compiler
 
     ESymbolType SymbolFloat::GetSymbolType() const
     {
-        return ESymbolType::TYPE_INT;
+        return ESymbolType::TYPE_FLOAT;
+    }
+
+    bool SymbolFloat::IfTypeFits(shared_ptr<Symbol> symbol) const
+    {
+        return symbol->GetSymbolType() == ESymbolType::TYPE_FLOAT;
+               //|| symbol->GetSymbolType() == ESymbolType::TYPE_INT
+               //|| symbol->GetSymbolType() == ESymbolType::TYPE_CHAR;
     }
 
     SymbolVoid::SymbolVoid()
@@ -196,6 +227,11 @@ namespace Compiler
     ESymbolType SymbolVoid::GetSymbolType() const
     {
         return ESymbolType::TYPE_VOID;
+    }
+
+    bool SymbolVoid::IfTypeFits(shared_ptr<Symbol> symbol) const
+    {
+        return symbol->GetSymbolType() == ESymbolType::TYPE_VOID;
     }
 
     SymbolFunctionType::SymbolFunctionType(shared_ptr<SymbolTableWithOrder> parametersSymTable)
@@ -262,6 +298,33 @@ namespace Compiler
         return body_;
     }
 
+    shared_ptr<SymbolType> SymbolFunctionType::GetReturnType() const
+    {
+        assert(returnType_ != NULL);
+        return returnType_;
+    }
+
+    bool SymbolFunctionType::IfTypeFits(shared_ptr<Symbol> symbol) const
+    {
+        if (symbol->GetSymbolType() == ESymbolType::TYPE_FUNCTION)
+        {
+            shared_ptr<SymbolFunctionType> funSym = static_pointer_cast<SymbolFunctionType>(symbol);
+            bool r = returnType_->IfTypeFits(funSym->GetReturnType());
+            r = r && (parameters_->orderedVariables.size()
+                      == funSym->GetSymbolTable()->orderedVariables.size());
+
+            for (int i = 0; r && i < parameters_->orderedVariables.size(); i++)
+            {
+                r = r && (parameters_->orderedVariables[i]->IfTypeFits(funSym->GetSymbolTable()->orderedVariables[i]));
+            }
+            return r;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     SymbolStruct::SymbolStruct(const std::string name)
         : SymbolType(name)
     {
@@ -275,14 +338,14 @@ namespace Compiler
     std::string SymbolStruct::GetQualifiedName() const
     {
         // TODO: don't print members everytime
-//        std::string membersStr;
-//        if (fields_ != NULL)
-//        {
-//            for (auto& s : fields_->variables)
-//            {
-//                membersStr += "\n    " + s.second->GetQualifiedName();
-//            }
-//        }
+        //        std::string membersStr;
+        //        if (fields_ != NULL)
+        //        {
+        //            for (auto& s : fields_->variables)
+        //            {
+        //                membersStr += "\n    " + s.second->GetQualifiedName();
+        //            }
+        //        }
         return "struct " + name;// + membersStr + "\n";
     }
 
@@ -304,6 +367,12 @@ namespace Compiler
         assert(fieldsSymTable != NULL);
         assert(fields_ == NULL);
         fields_ = fieldsSymTable;
+    }
+
+    bool SymbolStruct::IfTypeFits(shared_ptr<Symbol> symbol) const
+    {
+        // TODO: implement
+        return false;
     }
 
     SymbolPointer::SymbolPointer()
@@ -337,6 +406,12 @@ namespace Compiler
     {
         assert(refSymbol_ != NULL);
         return name + " to " + refSymbol_->GetQualifiedName();
+    }
+
+    bool SymbolPointer::IfTypeFits(shared_ptr<Symbol> symbol) const
+    {
+        return symbol->GetSymbolType() == ESymbolType::TYPE_POINTER
+                && refSymbol_->IfTypeFits(static_pointer_cast<SymbolPointer>(symbol)->GetRefSymbol());
     }
 
     SymbolArray::SymbolArray()
@@ -378,6 +453,19 @@ namespace Compiler
             size = " " + sizeInitializer_->token.text;
         }
         return name + size + " of " + elementType_->GetQualifiedName();
+    }
+
+    shared_ptr<SymbolType> SymbolArray::GetTypeSymbol() const
+    {
+        assert(elementType_ != NULL);
+        return elementType_;
+    }
+
+    bool SymbolArray::IfTypeFits(shared_ptr<Symbol> symbol) const
+    {
+        // TODO: add dims check
+        return symbol->GetSymbolType() == ESymbolType::TYPE_ARRAY
+                && elementType_->IfTypeFits(static_pointer_cast<SymbolArray>(symbol)->GetTypeSymbol());
     }
 
     SymbolTableWithOrder::SymbolTableWithOrder(const EScopeType scope)
@@ -440,6 +528,12 @@ namespace Compiler
         return name + " " + refSymbol_->GetQualifiedName();
     }
 
+    bool SymbolConst::IfTypeFits(shared_ptr<Symbol> symbol) const
+    {
+        return symbol->GetSymbolType() == ESymbolType::TYPE_CONST
+                && refSymbol_->IfTypeFits(static_pointer_cast<SymbolConst>(symbol)->GetRefSymbol());
+    }
+
     SymbolTypedef::SymbolTypedef(const std::string& name)
         : SymbolType(name)
     {
@@ -465,6 +559,12 @@ namespace Compiler
     std::string SymbolTypedef::GetQualifiedName() const
     {
         return "typedef " + name + " " + type_->GetQualifiedName();
+    }
+
+    bool SymbolTypedef::IfTypeFits(shared_ptr<Symbol> symbol) const
+    {
+        return symbol->GetSymbolType() == ESymbolType::TYPE_TYPEDEF
+                && type_->IfTypeFits(static_pointer_cast<SymbolTypedef>(symbol)->GetTypeSymbol());
     }
 
 } // namespace Compiler

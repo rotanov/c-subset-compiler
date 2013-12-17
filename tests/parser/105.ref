@@ -1,0 +1,6 @@
+functions:
+------------------------------------------------
+variable f of type function(variable a of type array of array of pointer to int) returning void
+  variables:
+  ----------------------------------------------
+  variable a of type array of array of pointer to int

@@ -14,7 +14,7 @@ int main()
 int main();
 
 // but this yields in redefinition
-int main(int a)
+int main()
 {
 
 }

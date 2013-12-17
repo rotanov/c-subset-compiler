@@ -6,8 +6,8 @@ variable g of type function(variable r of type int) returning void
   variable r of type int
 >----------------------------------------------;
   (-------------
-  |            |
-  __print_int  r
+  |      |     |
+  print  "%d"  r
 
 <----------------------------------------------;
 variable f of type function(variable a of type int) returning int

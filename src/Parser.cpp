@@ -22,6 +22,10 @@ namespace Compiler
         internalSymbols->AddType(make_shared<SymbolInt>());
         internalSymbols->AddType(make_shared<SymbolFloat>());
         internalSymbols->AddType(make_shared<SymbolVoid>());
+        internalSymbols->AddVariable(
+            make_shared<SymbolVariable>("print",
+                make_shared<SymbolFunctionType>(
+                    make_shared<SymbolTableWithOrder>(EScopeType::PARAMETERS))));
         symTables_.push_back(internalSymbols);
 
         shared_ptr<SymbolTable> globalSymbols = make_shared<SymbolTable>(EScopeType::GLOBAL);
@@ -1545,8 +1549,10 @@ namespace Compiler
             {
                 shared_ptr<SymbolFunctionType> symFunTypePresent = static_pointer_cast<SymbolFunctionType>(symFunPresent->GetTypeSymbol());
                 shared_ptr<SymbolFunctionType> symFunTypeAdding = static_pointer_cast<SymbolFunctionType>(symFun->GetTypeSymbol());
-
-                // TODO: assure signatures are the same
+                if (!symFunTypePresent->IfTypeFits(symFunTypeAdding))
+                {
+                    ThrowError_("declaration of function " + symFun->name + " - incompatible signature");
+                }
             }
             else
             {

@@ -1,5 +1,6 @@
 variables:
 ------------------------------------------------
+variable n of type int
 variable a of type int
 functions:
 ------------------------------------------------
