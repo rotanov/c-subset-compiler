@@ -10,6 +10,7 @@
 #include "ASTNode.hpp"
 #include "SymbolTable.hpp"
 #include "Statement.hpp"
+#include "utils.hpp"
 
 namespace Compiler
 {
@@ -251,7 +252,7 @@ namespace Compiler
             for (int i = 0; i < statement->GetChildCount(); i++)
             {
                 ASTNode* node = statement->GetChild(i).get();
-                if (node->IsStatement())
+                if (IsStatement(node->token))
                 {
                     Statement* statement = static_cast<Statement*>(node);
                     // printn(depth) << statement->token.text << std::endl;

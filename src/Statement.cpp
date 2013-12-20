@@ -50,7 +50,9 @@ namespace Compiler
     JumpStatement::JumpStatement(const Token& token)
         : Statement(token)
     {
-
+        assert(token == KW_CONTINUE
+               || token == KW_RETURN
+               || token == KW_BREAK);
     }
 
     void JumpStatement::SetReturnExpression(shared_ptr<ASTNode> expression)

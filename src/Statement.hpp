@@ -7,6 +7,7 @@
 
 namespace Compiler
 {
+//------------------------------------------------------------------------------
     enum class EStatementType
     {
         COMPOUND,
@@ -18,18 +19,20 @@ namespace Compiler
         EXPRESSION,
     };
 
+//------------------------------------------------------------------------------
     class Statement : public ASTNode
     {
     public:
         Statement(const Token& token);
 
-        virtual bool IsStatement() const { return true; }
+        // this one really could be derived from the token
         virtual EStatementType GetStatementType() const = 0;
 
     private:
 
     };
 
+//------------------------------------------------------------------------------
     class SymbolTable;
 
     class CompoundStatement : public Statement
@@ -46,6 +49,7 @@ namespace Compiler
 
     };
 
+//------------------------------------------------------------------------------
     class ExpressionStatement : public Statement
     {
     public:
@@ -59,6 +63,7 @@ namespace Compiler
 
     };
 
+//------------------------------------------------------------------------------
     class SelectionStatement : public Statement
     {
     public:
@@ -73,6 +78,7 @@ namespace Compiler
 
     };
 
+//------------------------------------------------------------------------------
     class IterationStatement : public Statement
     {
     public:
@@ -84,6 +90,7 @@ namespace Compiler
 
     };
 
+//------------------------------------------------------------------------------
     class ForStatement : public IterationStatement
     {
     public:
@@ -101,6 +108,7 @@ namespace Compiler
 
     };
 
+//------------------------------------------------------------------------------
     class DoStatement : public IterationStatement
     {
     public:
@@ -111,6 +119,7 @@ namespace Compiler
 
     };
 
+//------------------------------------------------------------------------------
     class WhileStatement : public IterationStatement
     {
     public:
@@ -121,6 +130,7 @@ namespace Compiler
 
     };
 
+//------------------------------------------------------------------------------
     class JumpStatement : public Statement
     {
     public:

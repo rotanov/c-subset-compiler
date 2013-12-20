@@ -474,4 +474,24 @@ namespace Compiler
                 || TT_LITERAL_CHAR_ARRAY;
     }
 
+    bool IsStatement(const ETokenType& tokenType)
+    {
+        switch (tokenType)
+        {
+            case OP_LBRACE:
+            case OP_SEMICOLON:
+            case KW_IF:
+            case KW_FOR:
+            case KW_DO:
+            case KW_WHILE:
+            case KW_CONTINUE:
+            case KW_BREAK:
+            case KW_RETURN:
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
 } // namespace Compiler

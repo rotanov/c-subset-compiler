@@ -103,12 +103,13 @@ namespace Compiler
 
         Token token = WaitForTokenReady_(caller);
 
-        while (binaryOperatorTypeToPrecedence.find(token.type) != binaryOperatorTypeToPrecedence.end()
-               && binaryOperatorTypeToPrecedence.at(token.type) >= priority)
+        auto it = binaryOperatorTypeToPrecedence.find(token.type);
+        while (it != binaryOperatorTypeToPrecedence.end()
+               && it->second >= priority)
         {
-            left = make_shared<ASTNodeBinaryOperator>(token, left,
-                ParseBinaryOperator_(caller, binaryOperatorTypeToPrecedence.at(token.type) + 1));
+            left = make_shared<ASTNodeBinaryOperator>(token, left, ParseBinaryOperator_(caller, it->second + 1));
             token = WaitForTokenReady_(caller);
+            it = binaryOperatorTypeToPrecedence.find(token.type);
         }
 
         tokenStack_.push_back(token);

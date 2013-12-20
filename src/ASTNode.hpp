@@ -20,7 +20,6 @@ namespace Compiler
 
         int GetChildCount() const;
         shared_ptr<ASTNode> GetChild(const int index);
-        virtual bool IsStatement() const { return false; }
 
     protected:
         std::vector<shared_ptr<ASTNode>> children_;

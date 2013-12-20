@@ -65,23 +65,7 @@ namespace Compiler
 
     bool IsLiteral(const ETokenType& tokenType);
 
-    class PostTokenError : public std::exception
-    {
-    public:
-        PostTokenError(const std::string& text)
-            : text_(text)
-        {
-
-        }
-
-        virtual const char* what() const _GLIBCXX_USE_NOEXCEPT
-        {
-            return text_.c_str();
-        }
-
-    private:
-        string text_;
-    };
+    bool IsStatement(const ETokenType& tokenType);
 
 
 } // namespace Compiler
