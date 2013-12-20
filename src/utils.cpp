@@ -419,61 +419,91 @@ namespace Compiler
 //------------------------------------------------------------------------------
     bool IsUnaryOperator(const ETokenType& tokenType)
     {
-        return tokenType == OP_AMP
-                || tokenType == OP_STAR
-                || tokenType == OP_PLUS
-                || tokenType == OP_MINUS
-                || tokenType == OP_COMPL
-                || tokenType == OP_LNOT;
+        switch (tokenType)
+        {
+            case OP_AMP:
+            case OP_STAR:
+            case OP_PLUS:
+            case OP_MINUS:
+            case OP_COMPL:
+            case OP_LNOT:
+                return true;
+
+            default:
+                return false;
+        }
     }
 
 //------------------------------------------------------------------------------
     bool IsAssignmentOperator(const ETokenType& tokenType)
     {
-        return tokenType == OP_ASS
-                || tokenType == OP_STARASS
-                || tokenType == OP_DIVASS
-                || tokenType == OP_MODASS
-                || tokenType == OP_PLUSASS
-                || tokenType == OP_MINUSASS
-                || tokenType == OP_LSHIFTASS
-                || tokenType == OP_RSHIFTASS
-                || tokenType == OP_BANDASS
-                || tokenType == OP_XORASS
-                || tokenType == OP_BORASS;
+        switch (tokenType)
+        {
+            case OP_ASS:
+            case OP_STARASS:
+            case OP_DIVASS:
+            case OP_MODASS:
+            case OP_PLUSASS:
+            case OP_MINUSASS:
+            case OP_LSHIFTASS:
+            case OP_RSHIFTASS:
+            case OP_BANDASS:
+            case OP_XORASS:
+            case OP_BORASS:
+                return true;
+
+            default:
+                return false;
+        }
     }
 
 //------------------------------------------------------------------------------
     bool IsBinaryOperator(const ETokenType& tokenType)
     {
-        return tokenType == OP_STAR
-                || tokenType == OP_DIV
-                || tokenType == OP_MOD
-                || tokenType == OP_PLUS
-                || tokenType == OP_MINUS
-                || tokenType == OP_LSHIFT
-                || tokenType == OP_RSHIFT
-                || tokenType == OP_LT
-                || tokenType == OP_GT
-                || tokenType == OP_LE
-                || tokenType == OP_GE
-                || tokenType == OP_EQ
-                || tokenType == OP_NE
-                || tokenType == OP_AMP
-                || tokenType == OP_XOR
-                || tokenType == OP_BOR
-                || tokenType == OP_LAND
-                || tokenType == OP_LOR;
+        switch (tokenType)
+        {
+            case OP_STAR:
+            case OP_DIV:
+            case OP_MOD:
+            case OP_PLUS:
+            case OP_MINUS:
+            case OP_LSHIFT:
+            case OP_RSHIFT:
+            case OP_LT:
+            case OP_GT:
+            case OP_LE:
+            case OP_GE:
+            case OP_EQ:
+            case OP_NE:
+            case OP_AMP:
+            case OP_XOR:
+            case OP_BOR:
+            case OP_LAND:
+            case OP_LOR:
+                return true;
+
+            default:
+                return false;
+        }
     }
 
+//------------------------------------------------------------------------------
     bool IsLiteral(const ETokenType& tokenType)
     {
-        return  tokenType == TT_LITERAL_INT
-                || TT_LITERAL_FLOAT
-                || TT_LITERAL_CHAR
-                || TT_LITERAL_CHAR_ARRAY;
+        switch (tokenType)
+        {
+            case TT_LITERAL_INT:
+            case TT_LITERAL_FLOAT:
+            case TT_LITERAL_CHAR:
+            case TT_LITERAL_CHAR_ARRAY:
+                return true;
+
+            default:
+                return false;
+        }
     }
 
+//------------------------------------------------------------------------------
     bool IsStatement(const ETokenType& tokenType)
     {
         switch (tokenType)

@@ -58,13 +58,10 @@ namespace Compiler
 
     std::string TokenTypeToString(const ETokenType tokenType);
 
-    // TODO: implement this three in terms of unordered_set or switch()
     bool IsUnaryOperator(const ETokenType& tokenType);
     bool IsAssignmentOperator(const ETokenType& tokenType);
     bool IsBinaryOperator(const ETokenType& tokenType);
-
     bool IsLiteral(const ETokenType& tokenType);
-
     bool IsStatement(const ETokenType& tokenType);
 
 
