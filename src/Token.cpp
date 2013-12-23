@@ -1,5 +1,9 @@
 #include "Token.hpp"
 
+#include <sstream>
+
+#include "utils.hpp"
+
 namespace Compiler
 {
 //------------------------------------------------------------------------------
@@ -153,6 +157,19 @@ namespace Compiler
     Compiler::Token::operator const ETokenType&() const
     {
         return type;
+    }
+
+//------------------------------------------------------------------------------
+    void ThrowInvalidTokenError(const Token& token, const std::string& descriptionText)
+    {
+        std::stringstream ss;
+        ss << "unexpected token " << TokenTypeToString(token.type) << " : \""
+           << token.text << "\" at " << token.line << "-" << token.column;
+        if (!descriptionText.empty())
+        {
+            ss << ", " << descriptionText;
+        }
+        throw std::logic_error(ss.str());
     }
 
 } // namespace Compiler

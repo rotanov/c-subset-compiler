@@ -25,7 +25,21 @@ namespace Compiler
         return children_[index];
     }
 
-//------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
+    void ASTNode::SetType(shared_ptr<SymbolType> type)
+    {
+        assert(type != NULL);
+        type_ = type;
+    }
+
+    //------------------------------------------------------------------------------
+    shared_ptr<SymbolType> ASTNode::GetType() const
+    {
+        assert(type_ != NULL);
+        return type_;
+    }
+
+    //------------------------------------------------------------------------------
     ASTNode::ASTNode(const Token &token)
         : token(token)
     {
@@ -46,7 +60,10 @@ namespace Compiler
     ASTNodeAssignment::ASTNodeAssignment(const Token& token, shared_ptr<ASTNode> left, shared_ptr<ASTNode> right)
         : ASTNodeBinaryOperator(token, left, right)
     {
-
+        if (!IsLValue(left))
+        {
+            ThrowInvalidTokenError(token, "left operand of assignment must be modifiable lvalue");
+        }
     }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -98,6 +115,7 @@ namespace Compiler
     ASTNodeArraySubscript::ASTNodeArraySubscript(const Token& token, shared_ptr<ASTNode> left, shared_ptr<ASTNode> right)
         : ASTNodeBinaryOperator(token, left, right)
     {
+        assert(token == OP_LSQUARE);
 
     }
 
@@ -140,6 +158,24 @@ namespace Compiler
         : ASTNodeBinaryOperator(Token(TT_CAST, "cast"), left, right)
     {
 
+    }
+
+//------------------------------------------------------------------------------
+    bool IsLValue(shared_ptr<ASTNode> node)
+    {
+        assert(node != NULL);
+        Token token = node->token;
+        switch (token)
+        {
+            case TT_IDENTIFIER:
+                return true;
+
+            case OP_LSQUARE:
+                return IsLValue(node->GetChild(0));
+
+            default:
+                return false;
+        }
     }
 
 

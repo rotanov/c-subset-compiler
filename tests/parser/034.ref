@@ -1,1 +1,5 @@
+types:
+------------------------------------------------
+typedef a int
+
 ERROR: type of an array elements can't be either void or function

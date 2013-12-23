@@ -30,6 +30,11 @@ namespace Compiler
 
         virtual void EmitEof(const int line, const int column) = 0;
 
+        virtual void Flush() const
+        {
+
+        }
+
         virtual ~ITokenStream()
         {
 

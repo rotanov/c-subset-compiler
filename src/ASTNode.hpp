@@ -9,6 +9,7 @@
 
 namespace Compiler
 {
+    class SymbolType;
 ////////////////////////////////////////////////////////////////////////////////
     class ASTNode
     {
@@ -20,10 +21,12 @@ namespace Compiler
 
         int GetChildCount() const;
         shared_ptr<ASTNode> GetChild(const int index);
+        void SetType(shared_ptr<SymbolType> type);
+        shared_ptr<SymbolType> GetType() const;
 
     protected:
         std::vector<shared_ptr<ASTNode>> children_;
-
+        shared_ptr<SymbolType> type_{NULL};
     };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -90,7 +93,6 @@ namespace Compiler
     };
 
 ////////////////////////////////////////////////////////////////////////////////
-    class SymbolType;
     class ASTNodeTypeName : public ASTNode
     {
     public:
@@ -106,5 +108,8 @@ namespace Compiler
     public:
         ASTNodeCast(shared_ptr<ASTNodeTypeName> left, shared_ptr<ASTNode> right);
     };
+
+
+    bool IsLValue(shared_ptr<ASTNode> node);
 
 } // namespace Compiler

@@ -273,6 +273,7 @@ void MainWindow::RunCompiler_(std::vector<char> &input)
     }
     catch (std::exception& e)
     {
+        output->Flush();
         std::cerr << "ERROR: " << e.what() << std::endl;
     }
     catch (boost::coroutines::detail::forced_unwind&)

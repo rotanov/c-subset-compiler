@@ -99,7 +99,6 @@ namespace Compiler
         shared_ptr<JumpStatement> ParseJumpStatement_(CallerType& caller);
         shared_ptr<ExpressionStatement> ParseExpressionStatement_(CallerType& caller);
 
-        void ThrowInvalidTokenError_(const Token& token, const std::string& descriptionText = "");
         void ThrowError_(const std::string& descriptionText);
         void ResumeParse_(const Token& token);
         Token WaitForTokenReady_(CallerType& caller);
@@ -107,8 +106,6 @@ namespace Compiler
         // waits for token, returns it and pushes it back if token is not of tokenType
         Token WithdrawTokenIf_(CallerType& caller, const ETokenType& tokenType = TT_INVALID);
         Token WithdrawTokenIf_(CallerType& caller, bool condition);
-
-        void FlushOutput_();
 
         bool IsDeclarationSpecifier_(const Token& token) const;
         bool IsSpecifierQualifier_(const Token& token) const;
@@ -144,38 +141,46 @@ namespace Compiler
         Parser();
         virtual ~Parser();
 
-        virtual void EmitInvalid(const string& source,
-                                 const int line,
-                                 const int column);
+        virtual void Flush() const;
 
-        virtual void EmitKeyword(const string& source,
-                                 ETokenType token_type,
-                                 const int line,
-                                 const int column);
+        virtual void EmitInvalid(
+            const string& source,
+            const int line,
+            const int column);
 
-        virtual void EmitPunctuation(const string& source,
-                                     ETokenType token_type,
-                                     const int line,
-                                     const int column);
+        virtual void EmitKeyword(
+            const string& source,
+            ETokenType token_type,
+            const int line,
+            const int column);
 
-        virtual void EmitIdentifier(const string& source,
-                                    const int line,
-                                    const int column);
+        virtual void EmitPunctuation(
+            const string& source,
+            ETokenType token_type,
+            const int line,
+            const int column);
 
-        virtual void EmitLiteral(const string& source,
-                                 EFundamentalType type,
-                                 const void* data,
-                                 size_t nbytes,
-                                 const int line,
-                                 const int column);
+        virtual void EmitIdentifier(
+            const string& source,
+            const int line,
+            const int column);
 
-        virtual void EmitLiteralArray(const string& source,
-                                      size_t num_elements,
-                                      EFundamentalType type,
-                                      const void* data,
-                                      size_t nbytes,
-                                      const int line,
-                                      const int column);
+        virtual void EmitLiteral(
+            const string& source,
+            EFundamentalType type,
+            const void* data,
+            size_t nbytes,
+            const int line,
+            const int column);
+
+        virtual void EmitLiteralArray(
+            const string& source,
+            size_t num_elements,
+            EFundamentalType type,
+            const void* data,
+            size_t nbytes,
+            const int line,
+            const int column);
 
         virtual void EmitEof(const int line, const int column);
 

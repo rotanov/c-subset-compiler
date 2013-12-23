@@ -22,6 +22,7 @@ namespace Compiler
         internalSymbols->AddType(make_shared<SymbolInt>());
         internalSymbols->AddType(make_shared<SymbolFloat>());
         internalSymbols->AddType(make_shared<SymbolVoid>());
+        // TODO: set print return (ref) type to `void`
         internalSymbols->AddVariable(
             make_shared<SymbolVariable>("print",
                 make_shared<SymbolFunctionType>(
@@ -52,14 +53,54 @@ namespace Compiler
             case TT_LITERAL_CHAR:
             case TT_LITERAL_CHAR_ARRAY:
             {
-                if (token.type == TT_IDENTIFIER
-                    && !(LookupFunction_(token.text)
-                         || LookupVariable_(token.text)))
+                string text = token.text;
+                shared_ptr<SymbolType> type;
+
+                switch (token.type)
                 {
-                    ThrowInvalidTokenError_(token, "undeclared identifier");
+                    case TT_IDENTIFIER:
+                        if (!(LookupFunction_(text)
+                              || LookupVariable_(text)))
+                        {
+                            ThrowInvalidTokenError(token, "undeclared identifier");
+                        }
+
+                        if (LookupVariable_(text) != NULL)
+                        {
+                            type = LookupVariable_(text)->GetRefSymbol();
+                        }
+
+                        if (type == NULL)
+                        {
+                            type = LookupFunction_(text)->GetRefSymbol();
+                        }
+
+                        break;
+
+                    case TT_LITERAL_INT:
+                        type = LookupType_("int");
+                        break;
+
+                    case TT_LITERAL_FLOAT:
+                        type = LookupType_("float");
+                        break;
+
+                    case TT_LITERAL_CHAR:
+                        type = LookupType_("char");
+                        break;
+
+                    case TT_LITERAL_CHAR_ARRAY:
+                        type = make_shared<SymbolArray>();
+                        break;
+
+                    default:
+                        assert(false);
+                        break;
                 }
 
-                return make_shared<ASTNode>(token);
+                shared_ptr<ASTNode> node = make_shared<ASTNode>(token);
+                node->SetType(type);
+                return node;
                 break;
             }
 
@@ -70,7 +111,7 @@ namespace Compiler
                 token = WaitForTokenReady_(caller);
                 if (token != OP_RPAREN)
                 {
-                    ThrowInvalidTokenError_(token, "')' expected");
+                    ThrowInvalidTokenError(token, "')' expected");
                 }
                 return r;
                 break;
@@ -78,7 +119,7 @@ namespace Compiler
 
             default:
             {
-                ThrowInvalidTokenError_(token, "unexpected in primary-expression");
+                ThrowInvalidTokenError(token, "unexpected in primary-expression");
                 tokenStack_.push_back(token);
                 return NULL;
                 break;
@@ -189,12 +230,15 @@ namespace Compiler
                     tokenStack_.push_back(token);
 
                     shared_ptr<SymbolVariable> variable = ParseDeclarator_(caller, declSpec, true);
-                    shared_ptr<ASTNode> result = make_shared<ASTNodeCast>(make_shared<ASTNodeTypeName>(variable->GetTypeSymbol()), ParseCastExpression_(caller));
+                    shared_ptr<ASTNode> result = make_shared<ASTNodeCast>(
+                                                   make_shared<ASTNodeTypeName>(
+                                                     variable->GetRefSymbol()),
+                                                   ParseCastExpression_(caller));
 
                     token = WaitForTokenReady_(caller);
                     if (token != OP_RPAREN)
                     {
-                        ThrowInvalidTokenError_(token, "right parentesis expected");
+                        ThrowInvalidTokenError(token, "right parentesis expected");
                     }
 
                     return result;
@@ -286,12 +330,12 @@ namespace Compiler
                             {
                                 tokenStack_.push_back(token);
                                 shared_ptr<SymbolVariable> variable = ParseDeclarator_(caller, declSpec, true);
-                                temp = make_shared<ASTNodeTypeName>(variable->GetTypeSymbol());
+                                temp = make_shared<ASTNodeTypeName>(variable->GetRefSymbol());
 
                                 token = WaitForTokenReady_(caller);
                                 if (token != OP_RPAREN)
                                 {
-                                    ThrowInvalidTokenError_(token, "right parentesis expected");
+                                    ThrowInvalidTokenError(token, "right parentesis expected");
                                 }
                             }
                             else
@@ -343,7 +387,7 @@ namespace Compiler
             }
             else
             {
-                ThrowInvalidTokenError_(colonToken, "':' expected in conditional-expression");
+                ThrowInvalidTokenError(colonToken, "':' expected in conditional-expression");
             }
         }
         else
@@ -371,7 +415,7 @@ namespace Compiler
                     token = WaitForTokenReady_(caller);
                     if (token != OP_RSQUARE)
                     {
-                        ThrowInvalidTokenError_(token, "']' expected in postfix-expression");
+                        ThrowInvalidTokenError(token, "']' expected in postfix-expression");
                     }
                     token = WaitForTokenReady_(caller);
                     break;
@@ -399,7 +443,7 @@ namespace Compiler
 
                         if (token != OP_RPAREN)
                         {
-                            ThrowInvalidTokenError_(token, "')' expected in postfix-expression");
+                            ThrowInvalidTokenError(token, "')' expected in postfix-expression");
                         }
                     }
                     else
@@ -422,7 +466,7 @@ namespace Compiler
                     }
                     else
                     {
-                        ThrowInvalidTokenError_(identifierToken, "identifier expected");
+                        ThrowInvalidTokenError(identifierToken, "identifier expected");
                     }
                     token = WaitForTokenReady_(caller);
                     break;
@@ -557,7 +601,7 @@ namespace Compiler
                 case KW_TYPEDEF:
                     if (declSpec.isTypedef)
                     {
-                        ThrowInvalidTokenError_(token, "more than one `typedef` not allowed");
+                        ThrowInvalidTokenError(token, "more than one `typedef` not allowed");
                     }
                     declSpec.isTypedef = true;
                     break;
@@ -575,7 +619,7 @@ namespace Compiler
                     {
                         if (LookupType_(token.text) != NULL)
                         {
-                            ThrowInvalidTokenError_(token, "only one type per declaration specification is expected");
+                            ThrowInvalidTokenError(token, "only one type per declaration specification is expected");
                         }
                         else
                         {
@@ -595,7 +639,7 @@ namespace Compiler
                     break;
 
                 default:
-                    ThrowInvalidTokenError_(token, "unexpected in declaration");
+                    ThrowInvalidTokenError(token, "unexpected in declaration");
                     break;
             }
             token = WaitForTokenReady_(caller);
@@ -607,14 +651,14 @@ namespace Compiler
             ThrowError_("type not specified in declaration");
         }
 
-        if (declSpec.typeSymbol->GetSymbolType() == ESymbolType::TYPE_TYPEDEF)
+        if (declSpec.typeSymbol->GetType() == ESymbolType::TYPE_TYPEDEF)
         {
             shared_ptr<SymbolTypedef> symTypedef = static_pointer_cast<SymbolTypedef>(declSpec.typeSymbol);
-            declSpec.typeSymbol = symTypedef->GetTypeSymbol();
+            declSpec.typeSymbol = symTypedef->GetRefSymbol();
         }
 
         if (constant
-            && declSpec.typeSymbol->GetSymbolType() != ESymbolType::TYPE_CONST)
+            && declSpec.typeSymbol->GetType() != ESymbolType::TYPE_CONST)
         {
             declSpec.typeSymbol = make_shared<SymbolConst>(declSpec.typeSymbol);
         }
@@ -628,8 +672,8 @@ namespace Compiler
         shared_ptr<SymbolVariable> declarator = ParseDeclarator_(caller, declSpec);
         Token token = WaitForTokenReady_(caller);
 
-        if (declarator->GetSymbolType() == ESymbolType::VARIABLE
-            && declarator ->GetTypeSymbol()->GetSymbolType() == ESymbolType::TYPE_FUNCTION
+        if (declarator->GetType() == ESymbolType::VARIABLE
+            && declarator ->GetRefSymbol()->GetType() == ESymbolType::TYPE_FUNCTION
             && !declSpec.isTypedef)
         {
             if (token == OP_LBRACE
@@ -656,8 +700,8 @@ namespace Compiler
             else if (token == OP_COMMA)
             {
                 declarator = ParseDeclarator_(caller, declSpec);
-                if (declarator->GetSymbolType() == ESymbolType::VARIABLE
-                    && declarator->GetTypeSymbol()->GetSymbolType() == ESymbolType::TYPE_FUNCTION
+                if (declarator->GetType() == ESymbolType::VARIABLE
+                    && declarator->GetRefSymbol()->GetType() == ESymbolType::TYPE_FUNCTION
                     && symTables_.size() == 2
                     && !declSpec.isTypedef)
                 {
@@ -666,7 +710,7 @@ namespace Compiler
             }
             else if (token != OP_SEMICOLON)
             {
-                ThrowInvalidTokenError_(token, "`,` or `;` expected in init-declarator-list");
+                ThrowInvalidTokenError(token, "`,` or `;` expected in init-declarator-list");
             }
             token = WaitForTokenReady_(caller);
         }
@@ -698,7 +742,7 @@ namespace Compiler
             {
                 if (abstract)
                 {
-                    ThrowInvalidTokenError_(token, "unexpected identifier in abstract-declarator");
+                    ThrowInvalidTokenError(token, "unexpected identifier in abstract-declarator");
                 }
                 declaratorVariable = make_shared<SymbolVariable>(token.text);
                 centralType = declaratorVariable;
@@ -709,7 +753,7 @@ namespace Compiler
                 token = WaitForTokenReady_(caller);
                 if (token != OP_RPAREN)
                 {
-                    ThrowInvalidTokenError_(token, "`)` expected to close in declarator");
+                    ThrowInvalidTokenError(token, "`)` expected to close in declarator");
                 }
             }
             else
@@ -727,7 +771,7 @@ namespace Compiler
                 }
                 else
                 {
-                    ThrowInvalidTokenError_(token, "identifier or `(` expected");
+                    ThrowInvalidTokenError(token, "identifier or `(` expected");
                 }
             }
 
@@ -754,7 +798,7 @@ namespace Compiler
 
                     if (token != OP_RPAREN)
                     {
-                        ThrowInvalidTokenError_(token, "closing `)` expected for parameter-list in declarator");
+                        ThrowInvalidTokenError(token, "closing `)` expected for parameter-list in declarator");
                     }
                 }
                 else if (token == OP_LSQUARE)
@@ -770,12 +814,13 @@ namespace Compiler
                         token = WaitForTokenReady_(caller);
                         if (token != OP_RSQUARE)
                         {
-                            ThrowInvalidTokenError_(token, "closing `)` expected for parameter-list in declarator");
+                            ThrowInvalidTokenError(token, "closing `)` expected for parameter-list in declarator");
                         }
                     }
                 }
 
-                rightmostType->SetTypeSymbol(temp);
+                assert(IfSymbolIsRef(rightmostType));
+                static_pointer_cast<SymbolTypeRef>(rightmostType)->SetRefSymbol(temp);
                 rightmostType = temp;
 
                 token = WaitForTokenReady_(caller);
@@ -784,7 +829,8 @@ namespace Compiler
 
             if (rightmostPointer != NULL)
             {
-                rightmostType->SetTypeSymbol(rightmostPointer);
+                assert(IfSymbolIsRef(rightmostType));
+                static_pointer_cast<SymbolTypeRef>(rightmostType)->SetRefSymbol(rightmostPointer);
                 return leftmostPointer;
             }
             else
@@ -794,17 +840,17 @@ namespace Compiler
 
         };
 
-        f()->SetTypeSymbol(declSpec.typeSymbol);
+        static_pointer_cast<SymbolTypeRef>(f())->SetRefSymbol(declSpec.typeSymbol);
 
         if (declSpec.isTypedef)
         {
             shared_ptr<SymbolTypedef> symTypedef = make_shared<SymbolTypedef>(declaratorVariable->name);
-            symTypedef->SetTypeSymbol(declaratorVariable->GetTypeSymbol());
+            symTypedef->SetRefSymbol(declaratorVariable->GetRefSymbol());
             AddType_(symTypedef);
         }
         else
         {
-            if (declaratorVariable->GetTypeSymbol()->GetSymbolType() == ESymbolType::TYPE_FUNCTION)
+            if (declaratorVariable->GetRefSymbol()->GetType() == ESymbolType::TYPE_FUNCTION)
             {
                 // if we found function declaration at global scope
                 // there may be function body
@@ -816,7 +862,7 @@ namespace Compiler
             }
             else
             {
-                if (declaratorVariable->GetTypeSymbol()->GetSymbolType() == ESymbolType::TYPE_VOID)
+                if (declaratorVariable->GetRefSymbol()->GetType() == ESymbolType::TYPE_VOID)
                 {
                     ThrowError_("variable " + declaratorVariable->name
                                 + " declared as void");
@@ -865,7 +911,7 @@ namespace Compiler
             }
             else if (token != OP_RPAREN)
             {
-                ThrowInvalidTokenError_(token, "`,` or `)` expected at the end of parameter declarator");
+                ThrowInvalidTokenError(token, "`,` or `)` expected at the end of parameter declarator");
             }
         }
         tokenStack_.push_back(token);
@@ -901,7 +947,7 @@ namespace Compiler
         }
         else if (token != OP_LBRACE)
         {
-            ThrowInvalidTokenError_(token, "anonymous struct shall be declared with struct-declaration-list");
+            ThrowInvalidTokenError(token, "anonymous struct shall be declared with struct-declaration-list");
         }
 
         // anonymous struct:
@@ -915,7 +961,7 @@ namespace Compiler
         shared_ptr<SymbolStruct> symStruct = NULL;
         if (symStructPresent != NULL)
         {
-            if (symStructPresent->GetSymbolType() == ESymbolType::TYPE_STRUCT)
+            if (symStructPresent->GetType() == ESymbolType::TYPE_STRUCT)
             {
                 // yup, it's actually a struct
                 symStruct = static_pointer_cast<SymbolStruct>(symStructPresent);
@@ -996,7 +1042,7 @@ namespace Compiler
                 // allowing recursive calls
                 AddFunction_(symFun);
                 symFun = LookupFunction_(symFun->name);
-                shared_ptr<SymbolFunctionType> symType = static_pointer_cast<SymbolFunctionType>(symFun->GetTypeSymbol());
+                shared_ptr<SymbolFunctionType> symType = static_pointer_cast<SymbolFunctionType>(symFun->GetRefSymbol());
                 symTables_.push_back(symType->GetSymbolTable());
                 // at this point symbol has ESymbolType::VARIABLE of type ESymbolType::TYPE_FUNCTION
                 // and `{` already eaten
@@ -1005,7 +1051,7 @@ namespace Compiler
                 {
                     // TODO: invalid error message because token here is a return type of function beging redeclared
                     // we need to pass somehow column and line of a function declaration through symbol variable
-                    ThrowInvalidTokenError_(token, "redefinition of " + symFun->GetQualifiedName());
+                    ThrowInvalidTokenError(token, "redefinition of " + symFun->GetQualifiedName());
                 }
                 else
                 {
@@ -1017,7 +1063,7 @@ namespace Compiler
             token = WithdrawTokenIf_(caller, TT_EOF);
         }
         // globals
-        FlushOutput_();
+        Flush();
     }
 
 //------------------------------------------------------------------------------
@@ -1045,7 +1091,7 @@ namespace Compiler
 
             if (token == TT_EOF)
             {
-                ThrowInvalidTokenError_(token, "unexpected end of file");
+                ThrowInvalidTokenError(token, "unexpected end of file");
             }
         }
         symTables_.pop_back();
@@ -1066,7 +1112,7 @@ namespace Compiler
                 token = WaitForTokenReady_(caller);
                 if (token != OP_RPAREN)
                 {
-                    ThrowInvalidTokenError_(token, "`)` expected to close selection-statement condition expression");
+                    ThrowInvalidTokenError(token, "`)` expected to close selection-statement condition expression");
                 }
                 selectionStatement->SetConditionExpression(conditionExpression);
                 shared_ptr<Statement> statementForIf = ParseStatement_(caller);
@@ -1081,7 +1127,7 @@ namespace Compiler
             }
             else
             {
-                ThrowInvalidTokenError_(token, "`(` expected after `if`");
+                ThrowInvalidTokenError(token, "`(` expected after `if`");
             }
         }
         else
@@ -1109,7 +1155,7 @@ namespace Compiler
         }
         else
         {
-            ThrowInvalidTokenError_(token, "unexpected in the iteration statement");
+            ThrowInvalidTokenError(token, "unexpected in the iteration statement");
         }
         return NULL;
     }
@@ -1147,7 +1193,7 @@ namespace Compiler
                     token = WaitForTokenReady_(caller);
                     if (token != OP_SEMICOLON)
                     {
-                        ThrowInvalidTokenError_(token, "`;` expected after clause-1 of `for` iteration-statement");
+                        ThrowInvalidTokenError(token, "`;` expected after clause-1 of `for` iteration-statement");
                     }
                 }
                 forStatement->SetInitializingExpression(initializingExpression);
@@ -1166,7 +1212,7 @@ namespace Compiler
                 token = WaitForTokenReady_(caller);
                 if (token != OP_SEMICOLON)
                 {
-                    ThrowInvalidTokenError_(token, "`;` expected after controlling expression of `for` iteration-statement");
+                    ThrowInvalidTokenError(token, "`;` expected after controlling expression of `for` iteration-statement");
                 }
             }
 
@@ -1185,7 +1231,7 @@ namespace Compiler
                 token = WaitForTokenReady_(caller);
                 if (token != OP_RPAREN)
                 {
-                    ThrowInvalidTokenError_(token, "`)` expected after iteration expression of `for` iteration-statement");
+                    ThrowInvalidTokenError(token, "`)` expected after iteration expression of `for` iteration-statement");
                 }
             }
 
@@ -1200,7 +1246,7 @@ namespace Compiler
         }
         else
         {
-            ThrowInvalidTokenError_(token, "`(` expected after '`for`");
+            ThrowInvalidTokenError(token, "`(` expected after '`for`");
         }
         return NULL;
     }
@@ -1216,13 +1262,13 @@ namespace Compiler
         Token token = WaitForTokenReady_(caller);
         if (token != KW_WHILE)
         {
-            ThrowInvalidTokenError_(token, "`while` expected after loop-statement of `do` iteration-statement");
+            ThrowInvalidTokenError(token, "`while` expected after loop-statement of `do` iteration-statement");
         }
 
         token = WaitForTokenReady_(caller);
         if (token != OP_LPAREN)
         {
-            ThrowInvalidTokenError_(token, "`(` expected before controlling-expression of `do` iteration-statement");
+            ThrowInvalidTokenError(token, "`(` expected before controlling-expression of `do` iteration-statement");
         }
 
         shared_ptr<ASTNode> controllingExpression = ParseExpression_(caller);
@@ -1230,13 +1276,13 @@ namespace Compiler
         token = WaitForTokenReady_(caller);
         if (token != OP_RPAREN)
         {
-            ThrowInvalidTokenError_(token, "`)` expected after controlling-expression of `do` iteration-statement");
+            ThrowInvalidTokenError(token, "`)` expected after controlling-expression of `do` iteration-statement");
         }
 
         token = WaitForTokenReady_(caller);
         if (token != OP_SEMICOLON)
         {
-            ThrowInvalidTokenError_(token, "`;` at the end of `do` iteration-statement");
+            ThrowInvalidTokenError(token, "`;` at the end of `do` iteration-statement");
         }
 
         doStatement->SetControllingExpression(controllingExpression);
@@ -1255,7 +1301,7 @@ namespace Compiler
         Token token = WaitForTokenReady_(caller);
         if (token != OP_LPAREN)
         {
-            ThrowInvalidTokenError_(token, "`(` expected before controlling-expression of `while` iteration-statement");
+            ThrowInvalidTokenError(token, "`(` expected before controlling-expression of `while` iteration-statement");
         }
 
         shared_ptr<ASTNode> controllingExpression = ParseExpression_(caller);
@@ -1263,7 +1309,7 @@ namespace Compiler
         token = WaitForTokenReady_(caller);
         if (token != OP_RPAREN)
         {
-            ThrowInvalidTokenError_(token, "`)` expected after controlling-expression of `while` iteration-statement");
+            ThrowInvalidTokenError(token, "`)` expected after controlling-expression of `while` iteration-statement");
         }
 
         shared_ptr<Statement> loopStatement = ParseStatement_(caller);
@@ -1301,7 +1347,7 @@ namespace Compiler
 
         if (token != OP_SEMICOLON)
         {
-            ThrowInvalidTokenError_(token, "semicolon `;` expected at the end of jump-statement");
+            ThrowInvalidTokenError(token, "semicolon `;` expected at the end of jump-statement");
         }
         return jumpStatement;
     }
@@ -1318,7 +1364,7 @@ namespace Compiler
             token = WithdrawTokenIf_(caller, OP_SEMICOLON);
             if (token != OP_SEMICOLON)
             {
-                ThrowInvalidTokenError_(token, "semicolon expected at the end of expression-statement");
+                ThrowInvalidTokenError(token, "semicolon expected at the end of expression-statement");
             }
         }
         return expressionStatement;
@@ -1352,23 +1398,8 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    void Parser::ThrowInvalidTokenError_(const Token &token, const std::string& descriptionText)
-    {
-        FlushOutput_();
-        std::stringstream ss;
-        ss << "unexpected token " << TokenTypeToString(token.type) << " : \""
-           << token.text << "\" at " << token.line << "-" << token.column;
-        if (!descriptionText.empty())
-        {
-            ss << ", " << descriptionText;
-        }
-        throw std::logic_error(ss.str());
-    }
-
-//------------------------------------------------------------------------------
     void Parser::ThrowError_(const std::string& descriptionText)
     {
-        FlushOutput_();
         throw std::logic_error(descriptionText);
     }
 
@@ -1418,7 +1449,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    void Parser::FlushOutput_()
+    void Parser::Flush() const
     {
         PrintSymbolTable(symTables_[1].get());
     }
@@ -1493,7 +1524,7 @@ namespace Compiler
         assert(symType != NULL);
         shared_ptr<SymbolTable> symbols = symTables_.back();
 
-        switch (symType->GetSymbolType())
+        switch (symType->GetType())
         {
             case ESymbolType::TYPE_STRUCT:
                 if (symbols->GetScopeType() == EScopeType::PARAMETERS)
@@ -1523,9 +1554,9 @@ namespace Compiler
             ThrowError_("redeclaration of " + symVar->GetQualifiedName());
         }
 
-        if (symVar->GetTypeSymbol()->GetSymbolType() == ESymbolType::TYPE_STRUCT)
+        if (symVar->GetRefSymbol()->GetType() == ESymbolType::TYPE_STRUCT)
         {
-            shared_ptr<SymbolStruct> symStruct = static_pointer_cast<SymbolStruct>(symVar->GetTypeSymbol());
+            shared_ptr<SymbolStruct> symStruct = static_pointer_cast<SymbolStruct>(symVar->GetRefSymbol());
             if (!symStruct->complete)
             {
                 ThrowError_("type " + symStruct->GetQualifiedName()
@@ -1548,8 +1579,8 @@ namespace Compiler
             shared_ptr<SymbolVariable> symFunPresent = symbols->LookupFunction(symFun->name);
             if (symFunPresent != NULL)
             {
-                shared_ptr<SymbolFunctionType> symFunTypePresent = static_pointer_cast<SymbolFunctionType>(symFunPresent->GetTypeSymbol());
-                shared_ptr<SymbolFunctionType> symFunTypeAdding = static_pointer_cast<SymbolFunctionType>(symFun->GetTypeSymbol());
+                shared_ptr<SymbolFunctionType> symFunTypePresent = static_pointer_cast<SymbolFunctionType>(symFunPresent->GetRefSymbol());
+                shared_ptr<SymbolFunctionType> symFunTypeAdding = static_pointer_cast<SymbolFunctionType>(symFun->GetRefSymbol());
                 if (!symFunTypePresent->IfTypeFits(symFunTypeAdding))
                 {
                     ThrowError_("declaration of function " + symFun->name + " - incompatible signature");

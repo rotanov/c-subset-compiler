@@ -186,7 +186,7 @@ namespace Compiler
             SymbolType* typeSym = type.second.get();
             print() << typeSym->GetQualifiedName() << std::endl;
 
-            switch (typeSym->GetSymbolType())
+            switch (typeSym->GetType())
             {
                 case ESymbolType::TYPE_STRUCT:
                 {
@@ -277,7 +277,7 @@ namespace Compiler
             std::string functionName = function.first;
             SymbolVariable* functionSym = function.second.get();
             print() << functionSym->GetQualifiedName() << std::endl;
-            SymbolFunctionType* symFunType = static_cast<SymbolFunctionType*>(functionSym->GetTypeSymbol().get());
+            SymbolFunctionType* symFunType = static_cast<SymbolFunctionType*>(functionSym->GetRefSymbol().get());
             if (symFunType->GetSymbolTable() != NULL)
             {
                 PrintSymbolTable(symFunType->GetSymbolTable().get(), indentLevel + 1);

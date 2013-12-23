@@ -5,14 +5,14 @@ int main(int argc)
 {
   for (int i = 0; i < n; i++)
   {
-     1=1;
+     a = 1;
   }
 
   int true = 1;
 
   while (true)
   {
-    2=2;
+    a = 2;
     continue;
   }
 

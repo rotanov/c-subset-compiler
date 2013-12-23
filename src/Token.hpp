@@ -37,4 +37,6 @@ namespace Compiler
         operator const ETokenType& () const;
     };
 
+    void ThrowInvalidTokenError(const Token &token, const std::string& descriptionText = "");
+
 } // namespace Compiler
