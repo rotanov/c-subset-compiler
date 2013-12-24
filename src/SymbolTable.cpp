@@ -223,6 +223,13 @@ namespace Compiler
         assert(parameters_ != NULL);
     }
 
+    SymbolFunctionType::SymbolFunctionType(shared_ptr<SymbolType> returnType, shared_ptr<SymbolTableWithOrder> parametersSymTable)
+        : SymbolTypeRef("function", returnType)
+        , parameters_(parametersSymTable)
+    {
+        assert(parameters_ != NULL);
+    }
+
     ESymbolType SymbolFunctionType::GetType() const
     {
         return ESymbolType::TYPE_FUNCTION;

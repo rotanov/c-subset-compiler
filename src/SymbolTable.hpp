@@ -171,6 +171,7 @@ namespace Compiler
     {
     public:
         SymbolFunctionType(shared_ptr<SymbolTableWithOrder> parametersSymTable);
+        SymbolFunctionType(shared_ptr<SymbolType> returnType, shared_ptr<SymbolTableWithOrder> parametersSymTable);
 
         virtual ESymbolType GetType() const;
         virtual std::string GetQualifiedName() const;

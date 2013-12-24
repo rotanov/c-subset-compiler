@@ -157,22 +157,55 @@ namespace Compiler
             leftTypeSym = make_shared<SymbolConst>(leftTypeSym);
         }
         SetTypeSym(leftTypeSym);
+        // TODO: completness check
     }
 
 ////////////////////////////////////////////////////////////////////////////////
-    ASTNodeFunctionCall::ASTNodeFunctionCall(const Token& token, shared_ptr<ASTNode> caller)
+    ASTNodeFunctionCall::ASTNodeFunctionCall(const Token& token, shared_ptr<ASTNode> caller, vector<shared_ptr<ASTNode> >& parameters)
         : ASTNode(token)
     {
         assert(caller != NULL);
         children_.push_back(caller);
-    }
 
-//------------------------------------------------------------------------------
-    void ASTNodeFunctionCall::AddArgumentExpressionNode(shared_ptr<ASTNode> node)
-    {
-        assert(children_.size() > 0);
-        assert(node != NULL);
-        children_.push_back(node);
+        shared_ptr<SymbolType> symType = caller->GetTypeSym();
+
+        if (symType->GetType() == ESymbolType::TYPE_POINTER)
+        {
+            symType = GetRefSymbol(symType);
+        }
+
+        if (symType->GetType() != ESymbolType::TYPE_FUNCTION)
+        {
+            ThrowInvalidTokenError(caller->token, "left of `(...)` operator must have designate a function or have a function pointer type");
+        }
+
+        shared_ptr<SymbolFunctionType> symFun = static_pointer_cast<SymbolFunctionType>(symType);
+        shared_ptr<SymbolTableWithOrder> argsSymbols = symFun->GetSymbolTable();
+
+        typeSym_ = symFun->GetRefSymbol();
+
+        bool internal = caller->token.text == "print";
+
+        if (argsSymbols->orderedVariables.size() != parameters.size()
+            && !internal)
+        {
+            ThrowInvalidTokenError(caller->token, "invalid parameter count");
+        }
+
+        for (size_t i = 0; i < parameters.size(); i++)
+        {
+            if (!internal
+                && !argsSymbols->orderedVariables[i]->IfTypeFits(parameters[i]->GetTypeSym()))
+            {
+                ThrowInvalidTokenError(caller->token, "actual parameter "
+                  + std::to_string(i)
+                  + ": " + parameters[i]->GetTypeSym()->GetQualifiedName()
+                  + "doesn't fit formal parameter: "
+                  + argsSymbols->orderedVariables[i]->GetQualifiedName());
+            }
+            children_.push_back(parameters[i]);
+        }
+
     }
 
 ////////////////////////////////////////////////////////////////////////////////

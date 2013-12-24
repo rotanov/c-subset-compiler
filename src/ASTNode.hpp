@@ -79,9 +79,7 @@ namespace Compiler
     class ASTNodeFunctionCall : public ASTNode
     {
     public:
-        ASTNodeFunctionCall(const Token& token, shared_ptr<ASTNode> caller);
-
-        void AddArgumentExpressionNode(shared_ptr<ASTNode> node);
+        ASTNodeFunctionCall(const Token& token, shared_ptr<ASTNode> caller, vector<shared_ptr<ASTNode>>& parameters);
 
     };
 

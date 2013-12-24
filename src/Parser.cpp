@@ -21,6 +21,8 @@ namespace Compiler
         theParser = this;
         // environment
         shared_ptr<SymbolTable> internalSymbols = make_shared<SymbolTable>(EScopeType::INTERNAL);
+        symTables_.push_back(internalSymbols);
+
         internalSymbols->AddType(make_shared<SymbolChar>());
         internalSymbols->AddType(make_shared<SymbolInt>());
         internalSymbols->AddType(make_shared<SymbolFloat>());
@@ -29,8 +31,9 @@ namespace Compiler
         internalSymbols->AddVariable(
             make_shared<SymbolVariable>("print",
                 make_shared<SymbolFunctionType>(
+                    LookupType("void"),
                     make_shared<SymbolTableWithOrder>(EScopeType::PARAMETERS))));
-        symTables_.push_back(internalSymbols);
+
 
         shared_ptr<SymbolTable> globalSymbols = make_shared<SymbolTable>(EScopeType::GLOBAL);
         symTables_.push_back(globalSymbols);
@@ -430,16 +433,15 @@ namespace Compiler
                     Token prevToken = token;
                     token = WaitForTokenReady_(caller);
 
+                    vector<shared_ptr<ASTNode>> parameters;
+
                     if (token != OP_RPAREN)
                     {
                         tokenStack_.push_back(token);
-                        shared_ptr<ASTNodeFunctionCall> fcallNode = make_shared<ASTNodeFunctionCall>(prevToken, node);
-                        node = fcallNode;
 
                         do
                         {
-                            shared_ptr<ASTNode> nodeAssExpr = ParseAssignmentExpression_(caller);
-                            fcallNode->AddArgumentExpressionNode(nodeAssExpr);
+                            parameters.push_back(ParseAssignmentExpression_(caller));
                             token = WaitForTokenReady_(caller);
 
                         } while (token == OP_COMMA);
@@ -449,10 +451,9 @@ namespace Compiler
                             ThrowInvalidTokenError(token, "')' expected in postfix-expression");
                         }
                     }
-                    else
-                    {
-                        node = make_shared<ASTNodeFunctionCall>(token, node);
-                    }
+
+                    node = make_shared<ASTNodeFunctionCall>(token, node, parameters);
+
                     token = WaitForTokenReady_(caller);
                     break;
                 }
