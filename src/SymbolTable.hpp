@@ -306,6 +306,7 @@ namespace Compiler
 
 //------------------------------------------------------------------------------
     bool IfSymbolIsRef(shared_ptr<Symbol> symbol);
+    bool IfInteger(shared_ptr<SymbolType> symbol);
     bool IfArithmetic(shared_ptr<SymbolType> symbol);
     bool IfScalar(shared_ptr<SymbolType> symbol);
     shared_ptr<SymbolType> GetRefSymbol(shared_ptr<Symbol> symbol);

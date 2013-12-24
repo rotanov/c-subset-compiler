@@ -572,13 +572,30 @@ namespace Compiler
     bool IfScalar(shared_ptr<SymbolType> symbol)
     {
         return symbol->GetType() == ESymbolType::TYPE_POINTER
-                || IfArithmetic(symbol);
+               || IfArithmetic(symbol);
     }
 
     shared_ptr<SymbolType> GetRefSymbol(shared_ptr<Symbol> symbol)
     {
         assert(IfSymbolIsRef(symbol));
         return static_pointer_cast<SymbolTypeRef>(symbol)->GetRefSymbol();
+    }
+
+    bool IfInteger(shared_ptr<SymbolType> symbol)
+    {
+        switch (symbol->GetType())
+        {
+            case ESymbolType::TYPE_CHAR:
+            case ESymbolType::TYPE_INT:
+                return true;
+
+            case ESymbolType::TYPE_TYPEDEF:
+            case ESymbolType::TYPE_CONST:
+                return IfInteger(static_pointer_cast<SymbolTypeRef>(symbol)->GetRefSymbol());
+
+            default:
+                return false;
+        }
     }
 
 

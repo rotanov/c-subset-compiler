@@ -71,7 +71,7 @@ namespace Compiler
     ASTNodeAssignment::ASTNodeAssignment(const Token& token, shared_ptr<ASTNode> left, shared_ptr<ASTNode> right)
         : ASTNodeBinaryOperator(token, left, right)
     {
-        if (!IsLValue(left))
+        if (!IfModifiableLValue(left))
         {
             ThrowInvalidTokenError(token, "left operand of assignment must be modifiable lvalue");
         }
@@ -90,6 +90,7 @@ namespace Compiler
     {
         assert(node != NULL);
         children_.push_back(node);
+        CheckTypes_();
     }
 
 //------------------------------------------------------------------------------
@@ -98,6 +99,7 @@ namespace Compiler
         assert(children_.size() == 0);
         assert(node != NULL);
         children_.push_back(node);
+        CheckTypes_();
     }
 
 //------------------------------------------------------------------------------
@@ -105,6 +107,79 @@ namespace Compiler
     {
         assert(children_.size() == 1);
         return children_[0];
+    }
+
+//------------------------------------------------------------------------------
+    void ASTNodeUnaryOperator::CheckTypes_()
+    {
+        assert(children_.size() == 1);
+
+        shared_ptr<ASTNode> node = children_[0];
+        shared_ptr<SymbolType> sym = node->GetTypeSym();
+
+        switch (token.type)
+        {
+            case OP_DEC:
+            case OP_INC:
+                if (!(IfModifiableLValue(node)
+                      && IfScalar(sym)))
+                {
+                    ThrowInvalidTokenError(token, "operand must be scalar modifiable lvalue");
+                }
+                SetTypeSym(sym);
+                break;
+
+            case OP_STAR:
+                if (!(sym->GetType() == ESymbolType::TYPE_POINTER
+                      && sym->GetType() == ESymbolType::TYPE_ARRAY))
+                {
+                    ThrowInvalidTokenError(token, "operand must have pointer or array type");
+                }
+                SetTypeSym(GetRefSymbol(sym));
+                break;
+
+            case OP_AMP:
+                if (!(IfLValue(node)))
+                {
+                    ThrowInvalidTokenError(token, "operand must be lvalue");
+                }
+                SetTypeSym(make_shared<SymbolPointer>(sym));
+                break;
+
+            case OP_PLUS:
+            case OP_MINUS:
+                if (!IfArithmetic(sym))
+                {
+                    ThrowInvalidTokenError(token, "operand must have arithmetic type");
+                }
+                // TODO: look more into type here
+                SetTypeSym(sym);
+                break;
+
+            case OP_COMPL:
+                if (!IfInteger(sym))
+                {
+                    ThrowInvalidTokenError(token, "operand must have integer type");
+                }
+                SetTypeSym(sym);
+                break;
+
+            case OP_LNOT:
+                if (!IfScalar(sym))
+                {
+                    ThrowInvalidTokenError(token, "operand must have scalar type");
+                }
+                SetTypeSym(sym);
+                break;
+
+            case KW_SIZEOF:
+                // TODO: complete checks
+                SetTypeSym(theParser->LookupType("int"));
+                break;
+
+            default:
+                assert(false);
+        }
     }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -290,7 +365,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    bool IsLValue(shared_ptr<ASTNode> node)
+    bool IfModifiableLValue(shared_ptr<ASTNode> node)
     {
         assert(node != NULL);
         Token token = node->token;
@@ -328,7 +403,53 @@ namespace Compiler
                 return true;
 
             case OP_STAR:
-                return  node->GetChildCount() == 1;
+                return node->GetChildCount() == 1;
+
+            default:
+                return false;
+        }
+    }
+
+    bool IfLValue(shared_ptr<ASTNode> node)
+    {
+        assert(node != NULL);
+        Token token = node->token;
+
+        shared_ptr<SymbolType> sym = node->GetTypeSym();
+
+        if (sym->GetType() == ESymbolType::TYPE_CONST)
+        {
+            sym = GetRefSymbol(sym);
+            assert(sym->GetType() != ESymbolType::TYPE_CONST);
+        }
+
+        switch (token)
+        {
+            case OP_LSQUARE:
+                //--
+            case TT_IDENTIFIER:
+                //--
+            case OP_ASS:
+            case OP_STARASS:
+            case OP_DIVASS:
+            case OP_MODASS:
+            case OP_PLUSASS:
+            case OP_MINUSASS:
+            case OP_LSHIFTASS:
+            case OP_RSHIFTASS:
+            case OP_BANDASS:
+            case OP_XORASS:
+            case OP_BORASS:
+                //--
+            case OP_INC:
+            case OP_DEC:
+                //--
+            case OP_DOT:
+            case OP_ARROW:
+                return true;
+
+            case OP_STAR:
+                return node->GetChildCount() == 1;
 
             default:
                 return false;

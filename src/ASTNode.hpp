@@ -56,6 +56,9 @@ namespace Compiler
         void SetOperand(shared_ptr<ASTNode> node);
         shared_ptr<ASTNode> GetOperand();
 
+    private:
+        void CheckTypes_();
+
     };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -108,7 +111,7 @@ namespace Compiler
         ASTNodeCast(shared_ptr<ASTNodeTypeName> left, shared_ptr<ASTNode> right);
     };
 
-    // implying modifiable lvalue
-    bool IsLValue(shared_ptr<ASTNode> node);
+    bool IfLValue(shared_ptr<ASTNode> node);
+    bool IfModifiableLValue(shared_ptr<ASTNode> node);
 
 } // namespace Compiler
