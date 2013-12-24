@@ -14,8 +14,11 @@
 namespace Compiler
 {
 //------------------------------------------------------------------------------
+    Parser* theParser = NULL;
+
     Parser::Parser()
     {
+        theParser = this;
         // environment
         shared_ptr<SymbolTable> internalSymbols = make_shared<SymbolTable>(EScopeType::INTERNAL);
         internalSymbols->AddType(make_shared<SymbolChar>());
@@ -59,34 +62,34 @@ namespace Compiler
                 switch (token.type)
                 {
                     case TT_IDENTIFIER:
-                        if (!(LookupFunction_(text)
-                              || LookupVariable_(text)))
+                        if (!(LookupFunction(text)
+                              || LookupVariable(text)))
                         {
                             ThrowInvalidTokenError(token, "undeclared identifier");
                         }
 
-                        if (LookupVariable_(text) != NULL)
+                        if (LookupVariable(text) != NULL)
                         {
-                            type = LookupVariable_(text)->GetRefSymbol();
+                            type = LookupVariable(text)->GetRefSymbol();
                         }
 
                         if (type == NULL)
                         {
-                            type = LookupFunction_(text)->GetRefSymbol();
+                            type = LookupFunction(text)->GetRefSymbol();
                         }
 
                         break;
 
                     case TT_LITERAL_INT:
-                        type = LookupType_("int");
+                        type = LookupType("int");
                         break;
 
                     case TT_LITERAL_FLOAT:
-                        type = LookupType_("float");
+                        type = LookupType("float");
                         break;
 
                     case TT_LITERAL_CHAR:
-                        type = LookupType_("char");
+                        type = LookupType("char");
                         break;
 
                     case TT_LITERAL_CHAR_ARRAY:
@@ -99,7 +102,7 @@ namespace Compiler
                 }
 
                 shared_ptr<ASTNode> node = make_shared<ASTNode>(token);
-                node->SetType(type);
+                node->SetTypeSym(type);
                 return node;
                 break;
             }
@@ -617,7 +620,7 @@ namespace Compiler
                 case TT_IDENTIFIER:
                     if (declSpec.typeSymbol != NULL)
                     {
-                        if (LookupType_(token.text) != NULL)
+                        if (LookupType(token.text) != NULL)
                         {
                             ThrowInvalidTokenError(token, "only one type per declaration specification is expected");
                         }
@@ -629,7 +632,7 @@ namespace Compiler
                     }
                     else
                     {
-                        declSpec.typeSymbol = LookupType_(token.text);
+                        declSpec.typeSymbol = LookupType(token.text);
                         if (declSpec.typeSymbol == NULL)
                         {
                             identifierFound = true;
@@ -956,7 +959,7 @@ namespace Compiler
             tagToken = Token(TT_IDENTIFIER, GenerateStuctName_());
         }
 
-        shared_ptr<SymbolType> symStructPresent = LookupType_(tagToken.text);
+        shared_ptr<SymbolType> symStructPresent = LookupType(tagToken.text);
 
         shared_ptr<SymbolStruct> symStruct = NULL;
         if (symStructPresent != NULL)
@@ -1041,7 +1044,7 @@ namespace Compiler
                 shared_ptr<SymbolVariable> symFun = static_pointer_cast<SymbolVariable>(symbol);
                 // allowing recursive calls
                 AddFunction_(symFun);
-                symFun = LookupFunction_(symFun->name);
+                symFun = LookupFunction(symFun->name);
                 shared_ptr<SymbolFunctionType> symType = static_pointer_cast<SymbolFunctionType>(symFun->GetRefSymbol());
                 symTables_.push_back(symType->GetSymbolTable());
                 // at this point symbol has ESymbolType::VARIABLE of type ESymbolType::TYPE_FUNCTION
@@ -1459,7 +1462,7 @@ namespace Compiler
     {
         if (token == TT_IDENTIFIER)
         {
-            return LookupType_(token.text) != NULL;
+            return LookupType(token.text) != NULL;
         }
         else
         {
@@ -1494,19 +1497,19 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    shared_ptr<SymbolType> Parser::LookupType_(const std::string& name) const
+    shared_ptr<SymbolType> Parser::LookupType(const std::string& name) const
     {
         return LookupSymbolHelper_(name, &SymbolTable::LookupType);
     }
 
 //------------------------------------------------------------------------------
-    shared_ptr<SymbolVariable> Parser::LookupVariable_(const std::string& name) const
+    shared_ptr<SymbolVariable> Parser::LookupVariable(const std::string& name) const
     {
         return LookupSymbolHelper_(name, &SymbolTable::LookupVariable);
     }
 
 //------------------------------------------------------------------------------
-    shared_ptr<SymbolVariable> Parser::LookupFunction_(const std::string& name) const
+    shared_ptr<SymbolVariable> Parser::LookupFunction(const std::string& name) const
     {
         return LookupSymbolHelper_(name, &SymbolTable::LookupFunction);
     }

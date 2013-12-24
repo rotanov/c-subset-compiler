@@ -49,6 +49,9 @@ namespace Compiler
         typedef boost::coroutines::coroutine<void(const Token&)> Coroutine;
         typedef Coroutine::caller_type CallerType;
 
+        // ??
+        // friend class ASTNode;
+
     private:
         std::vector<Token> tokenStack_;
         std::vector<shared_ptr<ASTNode>> nodeStack_;
@@ -112,10 +115,6 @@ namespace Compiler
 
         std::string GenerateStuctName_();
         std::string GenerateParameterName_();
-
-        shared_ptr<SymbolType> LookupType_(const std::string& name) const;
-        shared_ptr<SymbolVariable> LookupVariable_(const std::string& name) const;
-        shared_ptr<SymbolVariable> LookupFunction_(const std::string& name) const;
 
         void AddType_(shared_ptr<SymbolType> symType);
         void AddType_(shared_ptr<SymbolType> symType, const std::string& name);
@@ -183,6 +182,11 @@ namespace Compiler
             const int column);
 
         virtual void EmitEof(const int line, const int column);
+
+//------------------------------------------------------------------------------
+        shared_ptr<SymbolType> LookupType(const std::string& name) const;
+        shared_ptr<SymbolVariable> LookupVariable(const std::string& name) const;
+        shared_ptr<SymbolVariable> LookupFunction(const std::string& name) const;
 
     };
 

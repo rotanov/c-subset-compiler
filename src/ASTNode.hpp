@@ -17,16 +17,17 @@ namespace Compiler
         Token token;
 
         ASTNode(const Token& token);
+        ASTNode(const Token& token, shared_ptr<SymbolType> type);
         virtual ~ASTNode();
 
         int GetChildCount() const;
         shared_ptr<ASTNode> GetChild(const int index);
-        void SetType(shared_ptr<SymbolType> type);
-        shared_ptr<SymbolType> GetType() const;
+        void SetTypeSym(shared_ptr<SymbolType> type);
+        shared_ptr<SymbolType> GetTypeSym() const;
 
     protected:
         std::vector<shared_ptr<ASTNode>> children_;
-        shared_ptr<SymbolType> type_{NULL};
+        shared_ptr<SymbolType> typeSym_{NULL};
     };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -109,7 +110,7 @@ namespace Compiler
         ASTNodeCast(shared_ptr<ASTNodeTypeName> left, shared_ptr<ASTNode> right);
     };
 
-
+    // implying modifiable lvalue
     bool IsLValue(shared_ptr<ASTNode> node);
 
 } // namespace Compiler

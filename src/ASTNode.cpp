@@ -3,9 +3,12 @@
 #include <iostream>
 
 #include "SymbolTable.hpp"
+#include "Parser.hpp"
 
 namespace Compiler
 {
+    // not sure if really need it
+    extern Parser* theParser;
 ////////////////////////////////////////////////////////////////////////////////
     ASTNode::~ASTNode()
     {
@@ -25,25 +28,33 @@ namespace Compiler
         return children_[index];
     }
 
-    //------------------------------------------------------------------------------
-    void ASTNode::SetType(shared_ptr<SymbolType> type)
+//------------------------------------------------------------------------------
+    void ASTNode::SetTypeSym(shared_ptr<SymbolType> type)
     {
         assert(type != NULL);
-        type_ = type;
+        typeSym_ = type;
     }
 
-    //------------------------------------------------------------------------------
-    shared_ptr<SymbolType> ASTNode::GetType() const
+//------------------------------------------------------------------------------
+    shared_ptr<SymbolType> ASTNode::GetTypeSym() const
     {
-        assert(type_ != NULL);
-        return type_;
+        assert(typeSym_ != NULL);
+        return typeSym_;
     }
 
-    //------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
     ASTNode::ASTNode(const Token &token)
         : token(token)
     {
 
+    }
+
+//------------------------------------------------------------------------------
+    ASTNode::ASTNode(const Token& token, shared_ptr<SymbolType> type)
+        : token(token)
+        , typeSym_(type)
+    {
+        assert(type != NULL);
     }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -116,7 +127,36 @@ namespace Compiler
         : ASTNodeBinaryOperator(token, left, right)
     {
         assert(token == OP_LSQUARE);
-
+        if (!(IfArithmetic(left->GetTypeSym())
+              || IfArithmetic(right->GetTypeSym())))
+        {
+            ThrowInvalidTokenError(token, "one of `[]` operands must be of arithmetic type");
+        }
+        if (!IfArithmetic(right->GetTypeSym()))
+        {
+            left = children_[1];
+            right = children_[0];
+            children_[0] = left;
+            children_[1] = right;
+        }
+        bool constant = false;
+        shared_ptr<SymbolType> leftTypeSym = left->GetTypeSym();
+        if (leftTypeSym->GetType() == ESymbolType::TYPE_CONST)
+        {
+            constant = true;
+            leftTypeSym = static_pointer_cast<SymbolConst>(leftTypeSym)->GetRefSymbol();
+        }
+        if (leftTypeSym->GetType() != ESymbolType::TYPE_ARRAY
+            && leftTypeSym->GetType() != ESymbolType::TYPE_POINTER)
+        {
+            ThrowInvalidTokenError(token, "on of `[]` operands must be of either pointer or array type");
+        }
+        leftTypeSym = GetRefSymbol(leftTypeSym);
+        if (constant)
+        {
+            leftTypeSym = make_shared<SymbolConst>(leftTypeSym);
+        }
+        SetTypeSym(leftTypeSym);
     }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -143,6 +183,46 @@ namespace Compiler
         assert(rhs != NULL);
         children_.push_back(lhs);
         children_.push_back(rhs);
+
+        assert(lhs->GetTypeSym() != NULL);
+        shared_ptr<SymbolStruct> symStruct = NULL;
+        // rhs is always identifier due to parser check above
+        switch (token.type)
+        {
+            case OP_DOT:
+                if (lhs->GetTypeSym()->GetType() != ESymbolType::TYPE_STRUCT)
+                {
+                    ThrowInvalidTokenError(lhs->token, "left operand of `.` operator should have structure type");
+                }
+                symStruct = static_pointer_cast<SymbolStruct>(lhs->GetTypeSym());
+                break;
+
+            case OP_ARROW:
+                if (lhs->GetTypeSym()->GetType() != ESymbolType::TYPE_POINTER)
+                {
+                    ThrowInvalidTokenError(lhs->token, "left operand of `->` operator should have pointer to structure type");
+                }
+                else
+                {
+                    shared_ptr<SymbolType> typeRef = static_pointer_cast<SymbolTypeRef>(lhs->GetTypeSym())->GetRefSymbol();
+                    if (typeRef->GetType() != ESymbolType::TYPE_STRUCT)
+                    {
+                        ThrowInvalidTokenError(lhs->token, "left operand of `->` operator should have pointer to structure type");
+                    }
+                    symStruct = static_pointer_cast<SymbolStruct>(typeRef);
+                }
+                break;
+
+            default:
+                assert(false);
+                break;
+        }
+        shared_ptr<SymbolVariable> field = symStruct->GetSymbolTable()->LookupVariable(rhs->token.text);
+        if (field == NULL)
+        {
+            ThrowInvalidTokenError(rhs->token, "field doesn't exist");
+        }
+        typeSym_ = field->GetRefSymbol();
     }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -165,13 +245,41 @@ namespace Compiler
     {
         assert(node != NULL);
         Token token = node->token;
+
+        if (node->GetTypeSym()->GetType() == ESymbolType::TYPE_CONST)
+        {
+            return false;
+        }
+
         switch (token)
         {
             case TT_IDENTIFIER:
-                return true;
+                return node->GetTypeSym()->GetType() != ESymbolType::TYPE_FUNCTION;
 
             case OP_LSQUARE:
-                return IsLValue(node->GetChild(0));
+                return node->GetTypeSym()->GetType() != ESymbolType::TYPE_ARRAY;
+
+            case OP_ASS:
+            case OP_STARASS:
+            case OP_DIVASS:
+            case OP_MODASS:
+            case OP_PLUSASS:
+            case OP_MINUSASS:
+            case OP_LSHIFTASS:
+            case OP_RSHIFTASS:
+            case OP_BANDASS:
+            case OP_XORASS:
+            case OP_BORASS:
+                //--
+            case OP_INC:
+            case OP_DEC:
+                //--
+            case OP_DOT:
+            case OP_ARROW:
+                return true;
+
+            case OP_STAR:
+                return  node->GetChildCount() == 1;
 
             default:
                 return false;

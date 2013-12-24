@@ -1,8 +1,17 @@
+types:
+------------------------------------------------
+struct foo
+  variables:
+  ----------------------------------------------
+  variable c of type int
+
 functions:
 ------------------------------------------------
 variable main of type function() returning int
   variables:
   ----------------------------------------------
+  variable baf of type pointer to struct foo
+  variable bar of type struct foo
   variable b of type array 2 of array 8 of int
   variable a of type int
 >----------------------------------------------;
@@ -29,3 +38,20 @@ variable main of type function() returning int
   b  0
 
 <----------------------------------------------;
+>----------------------------------------------;
+  .-----
+  |    |
+  bar  c
+
+<----------------------------------------------;
+>----------------------------------------------;
+  ->----
+  |    |
+  baf  c
+
+<----------------------------------------------;
+variable f of type function() returning int
+>-----------------------------------------return
+  2
+
+<-----------------------------------------return
