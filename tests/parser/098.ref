@@ -1,12 +1,4 @@
 functions:
 ------------------------------------------------
 variable main of type function() returning int
-  variables:
-  ----------------------------------------------
-  variable a of type pointer to int
->----------------------------------------------;
-  ->--
-  |  |
-  a  v
-
-<----------------------------------------------;
+ERROR: unexpected token TT_IDENTIFIER : "a" at 4-3, left operand of `->` operator should have pointer to structure type

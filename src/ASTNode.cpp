@@ -187,24 +187,34 @@ namespace Compiler
         assert(lhs->GetTypeSym() != NULL);
         shared_ptr<SymbolStruct> symStruct = NULL;
         // rhs is always identifier due to parser check above
+        shared_ptr<SymbolType> typeSym = lhs->GetTypeSym();
+        bool constant = false;
+
+        if (typeSym->GetType() == ESymbolType::TYPE_CONST)
+        {
+            constant = true;
+            typeSym = GetRefSymbol(typeSym);
+        }
+
         switch (token.type)
         {
             case OP_DOT:
-                if (lhs->GetTypeSym()->GetType() != ESymbolType::TYPE_STRUCT)
+                if (typeSym->GetType() != ESymbolType::TYPE_STRUCT)
                 {
                     ThrowInvalidTokenError(lhs->token, "left operand of `.` operator should have structure type");
                 }
-                symStruct = static_pointer_cast<SymbolStruct>(lhs->GetTypeSym());
+                symStruct = static_pointer_cast<SymbolStruct>(typeSym);
                 break;
 
             case OP_ARROW:
-                if (lhs->GetTypeSym()->GetType() != ESymbolType::TYPE_POINTER)
+                if (typeSym->GetType() != ESymbolType::TYPE_POINTER)
                 {
                     ThrowInvalidTokenError(lhs->token, "left operand of `->` operator should have pointer to structure type");
                 }
                 else
                 {
-                    shared_ptr<SymbolType> typeRef = static_pointer_cast<SymbolTypeRef>(lhs->GetTypeSym())->GetRefSymbol();
+                    shared_ptr<SymbolType> typeRef = GetRefSymbol(typeSym);
+                    // TODO: could it be const again?
                     if (typeRef->GetType() != ESymbolType::TYPE_STRUCT)
                     {
                         ThrowInvalidTokenError(lhs->token, "left operand of `->` operator should have pointer to structure type");
@@ -222,7 +232,13 @@ namespace Compiler
         {
             ThrowInvalidTokenError(rhs->token, "field doesn't exist");
         }
+
         typeSym_ = field->GetRefSymbol();
+        if (constant
+            && typeSym_->GetType() != ESymbolType::TYPE_CONST)
+        {
+            typeSym_ = make_shared<SymbolConst>(typeSym);
+        }
     }
 
 ////////////////////////////////////////////////////////////////////////////////
