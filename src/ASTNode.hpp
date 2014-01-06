@@ -39,7 +39,7 @@ namespace Compiler
     };
 
 ////////////////////////////////////////////////////////////////////////////////
-    class ASTNodeAssignment : public ASTNodeBinaryOperator
+    class ASTNodeAssignment : public ASTNode
     {
     public:
         ASTNodeAssignment(const Token& token, shared_ptr<ASTNode> left, shared_ptr<ASTNode> right);
@@ -71,7 +71,7 @@ namespace Compiler
     };
 
 ////////////////////////////////////////////////////////////////////////////////
-    class ASTNodeArraySubscript : public ASTNodeBinaryOperator
+    class ASTNodeArraySubscript : public ASTNode
     {
     public:
         ASTNodeArraySubscript(const Token& token, shared_ptr<ASTNode> left, shared_ptr<ASTNode> right);
@@ -105,12 +105,14 @@ namespace Compiler
     };
 
 ////////////////////////////////////////////////////////////////////////////////
-    class ASTNodeCast : public ASTNodeBinaryOperator
+    class ASTNodeCast : public ASTNode
     {
     public:
         ASTNodeCast(shared_ptr<ASTNodeTypeName> left, shared_ptr<ASTNode> right);
     };
 
+    // NOTE: in C assignment as well as inc/dec does not yields an lvalue
+    // see 6.5.16/3 and
     bool IfLValue(shared_ptr<ASTNode> node);
     bool IfModifiableLValue(shared_ptr<ASTNode> node);
 

@@ -534,6 +534,8 @@ namespace Compiler
         return type_;
     }
 
+//------------------------------------------------------------------------------
+
     bool IfSymbolIsRef(shared_ptr<Symbol> symbol)
     {
         switch (symbol->GetType())
@@ -562,7 +564,8 @@ namespace Compiler
 
             case ESymbolType::TYPE_TYPEDEF:
             case ESymbolType::TYPE_CONST:
-                return IfArithmetic(static_pointer_cast<SymbolTypeRef>(symbol)->GetRefSymbol());
+            case ESymbolType::VARIABLE:
+                return IfArithmetic(GetRefSymbol(symbol));
 
             default:
                 return false;
@@ -571,7 +574,7 @@ namespace Compiler
 
     bool IfScalar(shared_ptr<SymbolType> symbol)
     {
-        return symbol->GetType() == ESymbolType::TYPE_POINTER
+        return IfOfType(symbol, ESymbolType::TYPE_POINTER)
                || IfArithmetic(symbol);
     }
 
@@ -591,10 +594,47 @@ namespace Compiler
 
             case ESymbolType::TYPE_TYPEDEF:
             case ESymbolType::TYPE_CONST:
+            case ESymbolType::VARIABLE:
                 return IfInteger(static_pointer_cast<SymbolTypeRef>(symbol)->GetRefSymbol());
 
             default:
                 return false;
+        }
+    }
+
+    shared_ptr<SymbolType> CalcCommonArithmeticType(shared_ptr<SymbolType> left, shared_ptr<SymbolType> right)
+    {
+        assert(IfArithmetic(left) && IfArithmetic(right));
+
+        if (IfOfType(left, ESymbolType::TYPE_FLOAT)
+            || IfOfType(right, ESymbolType::TYPE_FLOAT))
+        {
+            return make_shared<SymbolFloat>();
+        }
+        else if (IfOfType(left, ESymbolType::TYPE_INT)
+                 || IfOfType(right, ESymbolType::TYPE_INT))
+        {
+            return make_shared<SymbolInt>();
+        }
+        else
+        {
+            return make_shared<SymbolChar>();
+        }
+    }
+
+    bool IfOfType(shared_ptr<SymbolType> symbol, ESymbolType type)
+    {
+        auto symType = symbol->GetType();
+
+        switch (symType)
+        {
+            case ESymbolType::TYPE_TYPEDEF:
+            case ESymbolType::TYPE_CONST:
+            case ESymbolType::VARIABLE:
+                return IfOfType(GetRefSymbol(symbol), type);
+
+            default:
+                return symType == type;
         }
     }
 

@@ -1,0 +1,4 @@
+functions:
+------------------------------------------------
+variable main of type function() returning int
+ERROR: unexpected token OP_INC : "++" at 4-3, operand must be scalar modifiable lvalue

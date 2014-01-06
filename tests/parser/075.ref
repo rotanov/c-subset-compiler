@@ -5,7 +5,7 @@ variable g of type function(variable r of type int) returning void
   ----------------------------------------------
   variable r of type int
 >----------------------------------------------;
-  (-------------
+  )-------------
   |      |     |
   print  "%d"  r
 

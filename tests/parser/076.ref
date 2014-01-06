@@ -2,7 +2,7 @@ functions:
 ------------------------------------------------
 variable main of type function() returning int
 >-----------------------------------------return
-  (---
+  )---
   |  |
   f  5
 

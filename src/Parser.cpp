@@ -271,28 +271,9 @@ namespace Compiler
     shared_ptr<ASTNode> Parser::ParseUnaryExpression_(CallerType& caller)
     {
         Token token;
-        shared_ptr<ASTNode> head = NULL;
-        shared_ptr<ASTNode> next = NULL;
-
-        auto SetNext = [&](shared_ptr<ASTNode> value)
-        {
-              next = value;
-              if (head == nullptr)
-              {
-                  head = value;
-              }
-        };
-
-        auto SetOp = [&](shared_ptr<ASTNode> value)
-        {
-            if (next != nullptr)
-            {
-                static_pointer_cast<ASTNodeUnaryOperator>(next)->SetOperand(value);
-            }
-            SetNext(value);
-        };
-
+        std::vector<shared_ptr<ASTNode>> nodes;
         bool parsing = true;
+
         while (parsing)
         {
             token = WaitForTokenReady_(caller);
@@ -301,8 +282,7 @@ namespace Compiler
                 || token == OP_DEC
                 || token == KW_SIZEOF)
             {
-                shared_ptr<ASTNode> temp = make_shared<ASTNodeUnaryOperator>(token);
-                SetOp(temp);
+                nodes.push_back(make_shared<ASTNodeUnaryOperator>(token));
             }
             else
             {
@@ -310,17 +290,17 @@ namespace Compiler
 
                 shared_ptr<ASTNode> temp;
 
-                if (next == nullptr
-                    || next->token == OP_INC
-                    || next->token == OP_DEC)
+                if (nodes.size() == 0
+                    || nodes.back()->token == OP_INC
+                    || nodes.back()->token == OP_DEC)
                 {
                     temp = ParsePostfixExpression_(caller);
                 }
-                else if (IsUnaryOperator(next->token))
+                else if (IsUnaryOperator(nodes.back()->token))
                 {
                     temp = ParseCastExpression_(caller);
                 }
-                else if (next->token == KW_SIZEOF)
+                else if (nodes.back()->token == KW_SIZEOF)
                 {
                     token = WaitForTokenReady_(caller);
 
@@ -367,12 +347,17 @@ namespace Compiler
                     assert(false);
                 }
 
-                SetOp(temp);
+                nodes.push_back(temp);
                 parsing = false;
             }
         }
-        return head;
 
+        for (int i = nodes.size() - 2; i >= 0; i--)
+        {
+            static_pointer_cast<ASTNodeUnaryOperator>(nodes[i])->SetOperand(nodes[i + 1]);
+        }
+
+        return nodes[0];
     }
 
 //------------------------------------------------------------------------------

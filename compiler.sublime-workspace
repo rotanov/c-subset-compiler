@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"f",
+				"fvalue	int"
+			],
+			[
+				"ETE_S",
+				"ETE_SIX	ETestEnum"
+			],
+			[
 				"design",
 				"designator-list"
 			],
@@ -60,28 +68,137 @@
 	"buffers":
 	[
 		{
-			"file": "/D/dev/ncc/src/parser.cpp",
-			"settings":
-			{
-				"buffer_size": 43024,
-				"line_ending": "Windows"
-			}
-		},
-		{
 			"file": "/D/dev/ncc/include/expressions.h",
 			"settings":
 			{
 				"buffer_size": 7996,
 				"line_ending": "Windows"
 			}
+		},
+		{
+			"contents": "Type-correctness-stuff.txt\n\nSee 6.3.2.1\n\nl-values and r-values\n\nThe following object types are lvalues, but not modifiable lvalues:\n\n    An array type\n    An incomplete type\n    A const-qualified type\n    A structure or union type with one of its members qualified as a const type\n\nRvalues always have complete types or the void type.\n\nC defines a function designator as an expression that has function type. A function designator is distinct from an object type or an lvalue. It can be the name of a function or the result of dereferencing a function pointer. The C language also differentiates between its treatment of a function pointer and an object pointer.\n\nCertain operators require lvalues for some of their operands. The table below lists these operators and additional constraints on their usage.\nOperator    Requirement\n& (unary)   Operand must be an lvalue.\n++ --   Operand must be an lvalue. This applies to both prefix and postfix forms.\n= += -= *= %= <<= >>= &= ‸= |=  Left operand must be an lvalue.\n\n\n*(int*)1",
+			"settings":
+			{
+				"buffer_size": 1026,
+				"line_ending": "Windows",
+				"name": "Type-correctness-stuff.txt"
+			}
+		},
+		{
+			"file": "/D/dev/ncc/src/expressions.cpp",
+			"settings":
+			{
+				"buffer_size": 27436,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "test-asm/src.asm",
+			"settings":
+			{
+				"buffer_size": 2586,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "test-asm/vs-toasm/test.cpp",
+			"settings":
+			{
+				"buffer_size": 90,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "test-asm/vs-toasm/test.asm",
+			"settings":
+			{
+				"buffer_size": 1058,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/C/portableApplications/miranda-ng-v0.93.5_x64/Profiles/Satana/Logs/Jabber.ru/g+ch@vox.hangar.tk.log",
+			"settings":
+			{
+				"buffer_size": 250543,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/C/Program Files (x86)/Microsoft Visual Studio 12.0/VC/include/listing.inc",
+			"settings":
+			{
+				"buffer_size": 2330,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "test-asm/do.bat",
+			"settings":
+			{
+				"buffer_size": 135,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "doc/unrelated-docs-and-lectures/codegen1.txt",
+			"settings":
+			{
+				"buffer_size": 3085,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "doc/unrelated-docs-and-lectures/codegen2.txt",
+			"settings":
+			{
+				"buffer_size": 1372,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "doc/grammar.txt",
+			"settings":
+			{
+				"buffer_size": 8759,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"settings":
+			{
+				"buffer_size": 0,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "tests/parser/099.t",
+			"settings":
+			{
+				"buffer_size": 224,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "compile cpp with cl.exe:\n\ncl test.cpp /FA /GS-",
+			"settings":
+			{
+				"buffer_size": 46,
+				"line_ending": "Windows",
+				"name": "compile cpp with cl.exe:"
+			}
 		}
 	],
 	"build_system": "",
 	"command_palette":
 	{
-		"height": 86.0,
+		"height": 286.0,
 		"selected_items":
 		[
+			[
+				"hex",
+				"Hex Viewer: Toggle Hex View"
+			],
 			[
 				"list pac",
 				"Package Control: List Packages"
@@ -149,10 +266,6 @@
 			[
 				"instpa",
 				"Package Control: Install Package"
-			],
-			[
-				"hex",
-				"Hex Viewer: Toggle Hex View"
 			],
 			[
 				"set synt HT",
@@ -520,11 +633,20 @@
 	},
 	"file_history":
 	[
+		"/C/Users/mapho_000/Downloads/Mathematica",
+		"/C/Users/mapho_000/Downloads/Mathematica 9/9/mathpass",
+		"/C/Users/mapho_000/Downloads/Wolfram Mathematica 9.0.1 (32-Bit & 64-Bit)/ReadMe.txt",
+		"/C/portableApplications/miranda-ng-v0.93.5_x64/Profiles/Satana/Logs/Jabber.ru/zadrawch@conference.jabber.ru.log",
+		"/D/dev/ncc/src/parser.cpp",
+		"/D/dev/compiler/test-asm/test.cod",
+		"/D/dev/compiler/test-asm/test.cpp",
+		"/C/Program Files (x86)/Microsoft Visual Studio 12.0/VC/bin/vcvars32.bat",
+		"/C/Program Files (x86)/Microsoft Visual Studio 12.0/VC/bin/link.exe.config",
+		"/D/dev/compiler/test-asm/src.asm",
 		"/D/dev/whiterra/repo/bin/editor-warnings.txt",
 		"/D/dev/compiler/doc/grammar.txt",
 		"/D/dev/whiterra/repo/game/game.pro",
 		"/D/dev/compiler/tests/parser/099.t",
-		"/D/dev/ncc/src/parser.cpp",
 		"/D/dev/compiler/test-driver/Makefile.Release",
 		"/D/dev/compiler/test-driver/object_script.test-driver-release.Release",
 		"/D/dev/compiler/bin/flag.txt",
@@ -547,7 +669,6 @@
 		"/D/dev/ncc/tests/parser-declarations/03-multiple-global-vars-of-internal-types.c",
 		"/D/dev/ncc/tests/parser-declarations/02-single-global-var-of-internal-type.c",
 		"/D/dev/ncc/tests/parser-declarations/01-empty.c",
-		"/C/portableApplications/miranda-ng-v0.93.5_x64/Profiles/Satana/Logs/Jabber.ru/zadrawch@conference.jabber.ru.log",
 		"/C/portableApplications/Sublime/Data/Packages/User/Preferences.sublime-settings",
 		"/D/dev/ncc/include/parser.h",
 		"/D/dev/ncc/src/symbols.cpp",
@@ -639,15 +760,7 @@
 		"/C/Users/mapho_000/Downloads/qq31-parenthesis/qq31-parenthesis/textedit.h",
 		"/C/portableApplications/miranda-ng-v0.93.5_x64/Profiles/Satana/Logs/Jabber.ru/redrawch@conference.jabber.ru.log",
 		"/D/dev/whiterra/repo/rtr-ng.sublime-project",
-		"/D/dev/whiterra/repo/rtr-ng.sublime-workspace",
-		"/H/dev/#Finished/Calculator/src/MathParser.pas",
-		"//Emily/dev/compiler/src/ITokenStream.hpp",
-		"//Emily/dev/compiler/src/Constants.hpp",
-		"//Emily/dev/compiler/src/pretokenizer.hpp",
-		"//Emily/dev/compiler/doc/tasks.todo",
-		"//Emily/dev/compiler/doc/lexical-grammar.txt",
-		"/C/portableApplications/miranda-ng-v0.93.5_x64/Profiles/Satana/Logs/Freenode/#qt - FreeNode.log",
-		"/C/Users/mapho_000/Desktop/し.txt"
+		"/D/dev/whiterra/repo/rtr-ng.sublime-workspace"
 	],
 	"find":
 	{
@@ -716,6 +829,39 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"IsLValue",
+			"IsLva",
+			"ставлю",
+			"студий",
+			"SG39519",
+			"test",
+			"test.cpp",
+			"___security_cookie",
+			"main",
+			"IsLvalue",
+			"tokenType == (.*)",
+			";",
+			"\\|\\| ",
+			"return",
+			"tokenType == (.*)",
+			"\\|\\|",
+			"||",
+			"GNU",
+			"NIGNU",
+			"Size",
+			"lvalue",
+			"LValue",
+			"printf",
+			"prtinf",
+			"bb",
+			"foo",
+			"SG3746",
+			"$SG3746",
+			"FLAT",
+			"gc@@3PADA",
+			"SG3762",
+			"$SG3762",
+			"printf",
 			"CStatement",
 			"CFunction",
 			"PrimaryExpression",
@@ -810,40 +956,7 @@
 			"TryParseDeclarator",
 			"IdentFound",
 			"ParseDeclarationSpec",
-			"GetConst",
-			"SetConst",
-			"ConstClone",
-			"const",
-			"DeclSpec",
-			"ParseInitDeclaratorList",
-			"ParseDeclarationSpecifiers",
-			"ParseTypedefSpecifier",
-			"typedef-name",
-			"type-specifier",
-			"ParseDeclara",
-			"CDeclarationSpecifier",
-			"typedef-name",
-			"type-specifier",
-			"declaration-specifiers",
-			"type-specifier",
-			"storage-clas",
-			"storage",
-			"Pointer",
-			"type-name",
-			"enum",
-			"ParsePointer",
-			"CPointerSymbol",
-			"GetQu",
-			"CTypeSymbol",
-			"FilterDuplicates",
-			"ParsePointer",
-			"Pointer",
-			"CDecl",
-			"InitOffset",
-			"type-qualifier",
-			"const`",
-			"const",
-			"pointer"
+			"GetConst"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -851,6 +964,10 @@
 		"regex": true,
 		"replace_history":
 		[
+			"case \\1:",
+			"",
+			"case \\1:",
+			"",
 			"`",
 			"\\1,",
 			"\\1",
@@ -931,85 +1048,11 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 14,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "/D/dev/ncc/src/parser.cpp",
-					"settings":
-					{
-						"buffer_size": 43024,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								11062,
-								11071
-							]
-						],
-						"settings":
-						{
-							"BracketHighlighterBusy": false,
-							"bh_regions":
-							[
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close"
-							],
-							"encoding_helper_confidence": 1.0,
-							"encoding_helper_encoding": "UTF-8",
-							"encoding_helper_encoding_sublime": "UTF-8",
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 7103.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 1,
 					"file": "/D/dev/ncc/include/expressions.h",
 					"settings":
 					{
@@ -1020,8 +1063,8 @@
 						"selection":
 						[
 							[
-								1551,
-								1551
+								1596,
+								1601
 							]
 						],
 						"settings":
@@ -1077,7 +1120,1029 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 155.0,
+						"translation.y": 695.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"settings":
+					{
+						"buffer_size": 1026,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								869,
+								869
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"auto_name": "Type-correctness-stuff.txt",
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/D/dev/ncc/src/expressions.cpp",
+					"settings":
+					{
+						"buffer_size": 27436,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								27159,
+								27167
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 19073.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "test-asm/src.asm",
+					"settings":
+					{
+						"buffer_size": 2586,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2497,
+								2497
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/FASM x86/Syntaxes/Assembly x86 Intel.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 216.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "test-asm/vs-toasm/test.cpp",
+					"settings":
+					{
+						"buffer_size": 90,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								90,
+								90
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "test-asm/vs-toasm/test.asm",
+					"settings":
+					{
+						"buffer_size": 1058,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								479,
+								479
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/FASM x86/Syntaxes/Assembly x86 Intel.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "/C/portableApplications/miranda-ng-v0.93.5_x64/Profiles/Satana/Logs/Jabber.ru/g+ch@vox.hangar.tk.log",
+					"settings":
+					{
+						"buffer_size": 250543,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								219994,
+								219994
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-16LE",
+							"encoding_helper_encoding_sublime": "UTF-16 LE with BOM",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 61877.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "/C/Program Files (x86)/Microsoft Visual Studio 12.0/VC/include/listing.inc",
+					"settings":
+					{
+						"buffer_size": 2330,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								396,
+								396
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/FASM x86/Syntaxes/Assembly x86 Intel.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "test-asm/do.bat",
+					"settings":
+					{
+						"buffer_size": 135,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								135,
+								135
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 0.0,
+							"encoding_helper_encoding": "Unknown",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/Batch File/Batch File.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "doc/unrelated-docs-and-lectures/codegen1.txt",
+					"settings":
+					{
+						"buffer_size": 3085,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								620,
+								685
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 0.99,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"file": "doc/unrelated-docs-and-lectures/codegen2.txt",
+					"settings":
+					{
+						"buffer_size": 1372,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								308,
+								308
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 0.99,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 162.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 11,
+					"file": "doc/grammar.txt",
+					"settings":
+					{
+						"buffer_size": 8759,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1109,
+								1109
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 0.938125,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 162.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 12,
+					"settings":
+					{
+						"buffer_size": 0,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 13,
+					"file": "tests/parser/099.t",
+					"settings":
+					{
+						"buffer_size": 224,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								184,
+								184
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/Perl/Perl.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 14,
+					"settings":
+					{
+						"buffer_size": 46,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								46,
+								46
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"auto_name": "compile cpp with cl.exe:",
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"

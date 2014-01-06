@@ -1,6 +1,7 @@
 #include "ASTNode.hpp"
 
 #include <iostream>
+#include <tuple>
 
 #include "SymbolTable.hpp"
 #include "Parser.hpp"
@@ -62,15 +63,164 @@ namespace Compiler
         : ASTNode(token)
     {
         assert(left != NULL && right != NULL);
-//        assert(IsBinaryOperator(token));
+        assert(IsBinaryOperator(token));
         children_.push_back(left);
         children_.push_back(right);
+
+        shared_ptr<SymbolType> symLeft = left->GetTypeSym();
+        shared_ptr<SymbolType> symRight = right->GetTypeSym();
+
+        switch (token.type)
+        {
+            case OP_STAR:
+            case OP_DIV:
+                if (!(IfArithmetic(symLeft)
+                      && IfArithmetic(symRight)))
+                {
+                    ThrowInvalidTokenError(token, "both operands must be of an arithmetic type");
+                }
+                SetTypeSym(CalcCommonArithmeticType(symLeft, symRight));
+                break;
+
+            case OP_MOD:
+                if (!(IfInteger(symLeft)
+                      && IfInteger(symRight)))
+                {
+                    ThrowInvalidTokenError(token, "both operands must be of an integer type");
+                }
+                SetTypeSym(CalcCommonArithmeticType(symLeft, symRight));
+                break;
+
+            // rather complicated checks. see 6.5.6 of n1570
+            case OP_PLUS:
+            case OP_MINUS:
+            {
+                // correct if both operands are arithmetic or one is pointer to a
+                // complete type and other is integer
+
+                shared_ptr<SymbolType> symPtr = NULL;
+                shared_ptr<SymbolType> symInt = NULL;
+
+                std::tie(symInt, symPtr) = IfOfType(symLeft, ESymbolType::TYPE_POINTER) ? std::make_tuple(symRight, symLeft) :
+                                           IfOfType(symRight, ESymbolType::TYPE_POINTER) ? std::make_tuple(symLeft, symRight) :
+                                           std::make_tuple(nullptr, nullptr);
+
+                bool wrongTypes = false;
+
+                if (symInt == nullptr)
+                {
+                    if (IfArithmetic(symLeft)
+                        && IfArithmetic(symRight))
+                    {
+                        SetTypeSym(CalcCommonArithmeticType(symLeft, symRight));
+                    }
+                    else
+                    {
+                        if (token == OP_MINUS)
+                        {
+                            if (IfOfType(symLeft, ESymbolType::TYPE_POINTER)
+                                && IfOfType(symRight, ESymbolType::TYPE_POINTER)
+                                && symLeft->IfTypeFits(symRight))
+                            // TODO: look into case when one pointer is const and other is not
+                            // TODO: completness
+                            {
+                                SetTypeSym(make_shared<SymbolInt>());
+                            }
+                            else
+                            {
+                                ThrowInvalidTokenError(token, "left and right operands of `-` should be both arithmetic, or both pointers to compatible complete types or left is pointer to complete type and right is of integer type");
+                            }
+                        }
+                        else
+                        {
+                            wrongTypes = true;
+                        }
+                    }
+                }
+                else if (!IfOfType(symPtr, ESymbolType::TYPE_POINTER))
+                // TODO: check completness
+                {
+                    wrongTypes = true;
+                }
+                else
+                {
+                    if (token == OP_MINUS
+                        && symInt != symRight)
+                    {
+                        ThrowInvalidTokenError(token, "left operand of `-` should be of pointer type and right one should be of integer type");
+                    }
+                    SetTypeSym(symPtr);
+                }
+
+                if (wrongTypes)
+                {
+                    ThrowInvalidTokenError(token, "both operands of `+` should be arithmetic or one sholud be pointer to complete object type and other should be integer");
+                }
+
+                break;
+            }
+
+            case OP_LSHIFT:
+            case OP_RSHIFT:
+            {
+                if (!(IfInteger(symLeft)
+                      && IfInteger(symRight)))
+                {
+                    ThrowInvalidTokenError(token, "both operands of either `>>` or `<<` should be of integer type");
+                }
+                SetTypeSym(CalcCommonArithmeticType(symLeft, symRight));
+                // note:  If the value of the right operand is negative or is
+                // greater than or equal to the width of the promoted left operand, the behavior is undefined.
+                break;
+            }
+
+            case OP_GE:
+            case OP_LE:
+            case OP_GT:
+            case OP_LT:
+                break;
+
+            case OP_EQ:
+            case OP_NE:
+                break;
+
+            case OP_AMP:
+            case OP_XOR:
+            case OP_BOR:
+            {
+                if (!(IfInteger(symLeft)
+                      && IfInteger(symRight)))
+                {
+                    ThrowInvalidTokenError(token, "both operand should be of integer type");
+                }
+                SetTypeSym(make_shared<SymbolInt>());
+                break;
+            }
+
+            case OP_LAND:
+            case OP_LOR:
+            {
+                if (!(IfScalar(symLeft)
+                      && IfScalar(symRight)))
+                {
+                    ThrowInvalidTokenError(token, "both operands should be of scalar type");
+                }
+                SetTypeSym(make_shared<SymbolInt>());
+                break;
+            }
+
+            default:
+                assert(false);
+        }
     }
 
 ////////////////////////////////////////////////////////////////////////////////
     ASTNodeAssignment::ASTNodeAssignment(const Token& token, shared_ptr<ASTNode> left, shared_ptr<ASTNode> right)
-        : ASTNodeBinaryOperator(token, left, right)
+        : ASTNode(token)
     {
+        assert(left != NULL && right != NULL);
+        children_.push_back(left);
+        children_.push_back(right);
         if (!IfModifiableLValue(left))
         {
             ThrowInvalidTokenError(token, "left operand of assignment must be modifiable lvalue");
@@ -199,9 +349,14 @@ namespace Compiler
 
 ////////////////////////////////////////////////////////////////////////////////
     ASTNodeArraySubscript::ASTNodeArraySubscript(const Token& token, shared_ptr<ASTNode> left, shared_ptr<ASTNode> right)
-        : ASTNodeBinaryOperator(token, left, right)
+        : ASTNode(token)
     {
+        assert(left != NULL && right != NULL);
         assert(token == OP_LSQUARE);
+
+        children_.push_back(left);
+        children_.push_back(right);
+
         if (!(IfArithmetic(left->GetTypeSym())
               || IfArithmetic(right->GetTypeSym())))
         {
@@ -270,7 +425,7 @@ namespace Compiler
         for (size_t i = 0; i < parameters.size(); i++)
         {
             if (!internal
-                && !argsSymbols->orderedVariables[i]->IfTypeFits(parameters[i]->GetTypeSym()))
+                && !GetRefSymbol(argsSymbols->orderedVariables[i])->IfTypeFits(parameters[i]->GetTypeSym()))
             {
                 ThrowInvalidTokenError(caller->token, "actual parameter "
                   + std::to_string(i)
@@ -359,9 +514,11 @@ namespace Compiler
 
 ////////////////////////////////////////////////////////////////////////////////
     ASTNodeCast::ASTNodeCast(shared_ptr<ASTNodeTypeName> left, shared_ptr<ASTNode> right)
-        : ASTNodeBinaryOperator(Token(TT_CAST, "cast"), left, right)
+        : ASTNode(Token(TT_CAST, "cast"))
     {
-
+        assert(left != NULL && right != NULL);
+        children_.push_back(left);
+        children_.push_back(right);
     }
 
 //------------------------------------------------------------------------------
@@ -383,21 +540,6 @@ namespace Compiler
             case OP_LSQUARE:
                 return node->GetTypeSym()->GetType() != ESymbolType::TYPE_ARRAY;
 
-            case OP_ASS:
-            case OP_STARASS:
-            case OP_DIVASS:
-            case OP_MODASS:
-            case OP_PLUSASS:
-            case OP_MINUSASS:
-            case OP_LSHIFTASS:
-            case OP_RSHIFTASS:
-            case OP_BANDASS:
-            case OP_XORASS:
-            case OP_BORASS:
-                //--
-            case OP_INC:
-            case OP_DEC:
-                //--
             case OP_DOT:
             case OP_ARROW:
                 return true;
@@ -428,21 +570,6 @@ namespace Compiler
             case OP_LSQUARE:
                 //--
             case TT_IDENTIFIER:
-                //--
-            case OP_ASS:
-            case OP_STARASS:
-            case OP_DIVASS:
-            case OP_MODASS:
-            case OP_PLUSASS:
-            case OP_MINUSASS:
-            case OP_LSHIFTASS:
-            case OP_RSHIFTASS:
-            case OP_BANDASS:
-            case OP_XORASS:
-            case OP_BORASS:
-                //--
-            case OP_INC:
-            case OP_DEC:
                 //--
             case OP_DOT:
             case OP_ARROW:

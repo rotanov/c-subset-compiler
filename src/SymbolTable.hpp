@@ -309,6 +309,8 @@ namespace Compiler
     bool IfInteger(shared_ptr<SymbolType> symbol);
     bool IfArithmetic(shared_ptr<SymbolType> symbol);
     bool IfScalar(shared_ptr<SymbolType> symbol);
+    bool IfOfType(shared_ptr<SymbolType> symbol, ESymbolType type);
     shared_ptr<SymbolType> GetRefSymbol(shared_ptr<Symbol> symbol);
+    shared_ptr<SymbolType> CalcCommonArithmeticType(shared_ptr<SymbolType> left, shared_ptr<SymbolType> right);
 
 } // namespace Compiler
