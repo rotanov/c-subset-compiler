@@ -1,0 +1,8 @@
+functions:
+------------------------------------------------
+variable f of type function(variable a of type int, variable b of type int) returning int
+  variables:
+  ----------------------------------------------
+  variable a of type int
+  variable b of type int
+ERROR: declaration of function f - incompatible signature

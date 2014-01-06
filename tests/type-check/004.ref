@@ -1,0 +1,24 @@
+types:
+------------------------------------------------
+struct s
+  variables:
+  ----------------------------------------------
+  variable mem of type int
+
+variables:
+------------------------------------------------
+variable pi of type pointer to int
+variable ncs of type struct s
+functions:
+------------------------------------------------
+variable main of type function() returning int
+>----------------------------------------------;
+  =----
+  |   |
+  pi  &
+      |     
+      .-----
+      |    |  
+      ncs  mem
+
+<----------------------------------------------;

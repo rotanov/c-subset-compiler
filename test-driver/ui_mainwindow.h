@@ -47,6 +47,8 @@ public:
     QAction *actionReference;
     QAction *actionLog;
     QAction *actionAll_equal;
+    QAction *actionType_Check;
+    QAction *actionCode_Generation;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout;
     QSplitter *splitter;
@@ -104,6 +106,10 @@ public:
         actionLog->setObjectName(QStringLiteral("actionLog"));
         actionAll_equal = new QAction(MainWindow);
         actionAll_equal->setObjectName(QStringLiteral("actionAll_equal"));
+        actionType_Check = new QAction(MainWindow);
+        actionType_Check->setObjectName(QStringLiteral("actionType_Check"));
+        actionCode_Generation = new QAction(MainWindow);
+        actionCode_Generation->setObjectName(QStringLiteral("actionCode_Generation"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         verticalLayout = new QVBoxLayout(centralWidget);
@@ -174,6 +180,8 @@ public:
         menu_Select_Mode->addAction(actionSimple_Expressions);
         menu_Select_Mode->addAction(action_Expressions);
         menu_Select_Mode->addAction(action_Parser);
+        menu_Select_Mode->addAction(actionType_Check);
+        menu_Select_Mode->addAction(actionCode_Generation);
         menu_View->addAction(action_Prev);
         menu_View->addAction(action_Next);
         menu_View->addAction(action_Log);
@@ -228,6 +236,8 @@ public:
         actionLog->setShortcut(QApplication::translate("MainWindow", "Ctrl+Alt+4", 0));
         actionAll_equal->setText(QApplication::translate("MainWindow", "All equal", 0));
         actionAll_equal->setShortcut(QApplication::translate("MainWindow", "Ctrl+Alt+5", 0));
+        actionType_Check->setText(QApplication::translate("MainWindow", "Type Check", 0));
+        actionCode_Generation->setText(QApplication::translate("MainWindow", "Code Generation", 0));
         qpteOutput->setDocumentTitle(QApplication::translate("MainWindow", "Output", 0));
         menu_File->setTitle(QApplication::translate("MainWindow", "&File", 0));
         menu_Edit->setTitle(QApplication::translate("MainWindow", "&Edit", 0));

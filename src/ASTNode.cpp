@@ -280,8 +280,8 @@ namespace Compiler
                 break;
 
             case OP_STAR:
-                if (!(sym->GetType() == ESymbolType::TYPE_POINTER
-                      && sym->GetType() == ESymbolType::TYPE_ARRAY))
+                if (!(IfOfType(sym, ESymbolType::TYPE_POINTER)
+                      || IfOfType(sym, ESymbolType::TYPE_ARRAY)))
                 {
                     ThrowInvalidTokenError(token, "operand must have pointer or array type");
                 }
@@ -376,8 +376,8 @@ namespace Compiler
             constant = true;
             leftTypeSym = static_pointer_cast<SymbolConst>(leftTypeSym)->GetRefSymbol();
         }
-        if (leftTypeSym->GetType() != ESymbolType::TYPE_ARRAY
-            && leftTypeSym->GetType() != ESymbolType::TYPE_POINTER)
+        if (IfOfType(leftTypeSym, ESymbolType::TYPE_ARRAY)
+            || IfOfType(leftTypeSym, ESymbolType::TYPE_POINTER))
         {
             ThrowInvalidTokenError(token, "on of `[]` operands must be of either pointer or array type");
         }

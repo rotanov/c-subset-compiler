@@ -1,0 +1,7 @@
+variables:
+------------------------------------------------
+variable a of type int
+functions:
+------------------------------------------------
+variable main of type function() returning int
+ERROR: unexpected token TT_IDENTIFIER : "a" at 5-3, left of `(...)` operator must have designate a function or have a function pointer type

@@ -1,0 +1,15 @@
+types:
+------------------------------------------------
+struct s
+  variables:
+  ----------------------------------------------
+  variable mem of type int
+
+variables:
+------------------------------------------------
+variable ncs of type struct s
+variable cs of type const struct s
+functions:
+------------------------------------------------
+variable main of type function() returning int
+ERROR: unexpected token OP_ASS : "=" at 9-6, left operand of assignment must be modifiable lvalue

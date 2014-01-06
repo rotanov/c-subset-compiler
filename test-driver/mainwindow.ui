@@ -90,6 +90,8 @@
      <addaction name="actionSimple_Expressions"/>
      <addaction name="action_Expressions"/>
      <addaction name="action_Parser"/>
+     <addaction name="actionType_Check"/>
+     <addaction name="actionCode_Generation"/>
     </widget>
     <addaction name="action_Copy_Output_to_Reference"/>
     <addaction name="menu_Select_Mode"/>
@@ -272,6 +274,16 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Alt+5</string>
+   </property>
+  </action>
+  <action name="actionType_Check">
+   <property name="text">
+    <string>Type Check</string>
+   </property>
+  </action>
+  <action name="actionCode_Generation">
+   <property name="text">
+    <string>Code Generation</string>
    </property>
   </action>
  </widget>

@@ -1,0 +1,7 @@
+functions:
+------------------------------------------------
+variable f of type function(variable a of type int) returning void
+  variables:
+  ----------------------------------------------
+  variable a of type int
+ERROR: unexpected token TT_IDENTIFIER : "f" at 4-3, invalid parameter count

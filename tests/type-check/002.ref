@@ -1,0 +1,20 @@
+types:
+------------------------------------------------
+struct s
+  variables:
+  ----------------------------------------------
+  variable mem of type int
+
+variables:
+------------------------------------------------
+variable ncs of type struct s
+variable cs of type const struct s
+functions:
+------------------------------------------------
+variable main of type function() returning int
+>----------------------------------------------;
+  =-----
+  |    | 
+  ncs  cs
+
+<----------------------------------------------;

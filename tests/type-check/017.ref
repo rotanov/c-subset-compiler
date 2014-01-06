@@ -1,0 +1,4 @@
+variables:
+------------------------------------------------
+variable a of type int
+ERROR: redeclaration of variable a of type int

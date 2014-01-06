@@ -18,6 +18,8 @@ enum class CompilerMode
     SIMPLE_EXPRESSION,
     EXPRESSION_PARSER,
     PARSER,
+    TYPE_CHECK,
+    GENERATOR,
     COUNT,
 };
 
@@ -57,6 +59,10 @@ private slots:
     void on_actionReference_triggered();
     void on_actionLog_triggered();
     void on_actionAll_equal_triggered();
+
+    void on_actionType_Check_triggered();
+
+    void on_actionCode_Generation_triggered();
 
 public:
     explicit MainWindow(QWidget *parent = 0);

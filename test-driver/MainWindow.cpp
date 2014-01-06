@@ -66,6 +66,8 @@ std::map<CompilerMode, std::string> CompilerModeToString =
     {CompilerMode::SIMPLE_EXPRESSION, "Simple Expressions"},
     {CompilerMode::EXPRESSION_PARSER, "Expressions"},
     {CompilerMode::PARSER, "Parser"},
+    {CompilerMode::TYPE_CHECK, "Type Check"},
+    {CompilerMode::GENERATOR, "Generator"},
 };
 
 std::map<CompilerMode, std::string> CompilerModeToTestDir =
@@ -74,6 +76,8 @@ std::map<CompilerMode, std::string> CompilerModeToTestDir =
     {CompilerMode::SIMPLE_EXPRESSION, "../tests/simple-expression-parser/"},
     {CompilerMode::EXPRESSION_PARSER, "../tests/expression-parser/"},
     {CompilerMode::PARSER, "../tests/parser/"},
+    {CompilerMode::TYPE_CHECK, "../tests/type-check/"},
+    {CompilerMode::GENERATOR, "../tests/codegen/"},
 };
 
 MainWindow::MainWindow(QWidget *parent)
@@ -139,18 +143,18 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->qpteReference, &QPlainTextEdit::textChanged,
             this, &MainWindow::OnReferenceTextChanged);
 
-    connect(ui->qpteInput, &QPlainTextEdit::cursorPositionChanged,
-            this, &MainWindow::OnQpteInputCursorPositionChanged);
+//    connect(ui->qpteInput, &QPlainTextEdit::cursorPositionChanged,
+//            this, &MainWindow::OnQpteInputCursorPositionChanged);
 
-    QTimer* timer = new QTimer(this);
-    connect(timer, &QTimer::timeout,
-            this, &MainWindow::onSyncScrollbars);
-    timer->setInterval(200);
-    timer->start();
+//    QTimer* timer = new QTimer(this);
+//    connect(timer, &QTimer::timeout,
+//            this, &MainWindow::onSyncScrollbars);
+//    timer->setInterval(200);
+//    timer->start();
 
-    ui->qpteInput->verticalScrollBar()->setTracking(true);
-    connect(ui->qpteInput->verticalScrollBar(), &QScrollBar::valueChanged,
-            ui->qpteReference->verticalScrollBar(), &QScrollBar::setValue);
+//    ui->qpteInput->verticalScrollBar()->setTracking(true);
+//    connect(ui->qpteInput->verticalScrollBar(), &QScrollBar::valueChanged,
+//            ui->qpteReference->verticalScrollBar(), &QScrollBar::setValue);
 
     ui->qpteOutput->setLineWrapMode(QPlainTextEdit::WidgetWidth);
     ui->qpteReference->setLineWrapMode(QPlainTextEdit::WidgetWidth);
@@ -161,7 +165,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->qpteLog->hide();
 
-    on_action_Parser_triggered();
+    //on_action_Parser_triggered();
+    on_actionType_Check_triggered();
     on_action_Prev_triggered();
 }
 
@@ -258,6 +263,18 @@ void MainWindow::RunCompiler_(std::vector<char> &input)
             case CompilerMode::PARSER:
             {
                 output = new Parser;
+                break;
+            }
+
+            case CompilerMode::TYPE_CHECK:
+            {
+                output = new Parser;
+                break;
+            }
+
+            case CompilerMode::GENERATOR:
+            {
+                assert(false);
                 break;
             }
 
@@ -510,4 +527,16 @@ void MainWindow::on_actionAll_equal_triggered()
 {
     QList<int> list = {9999, 9999, 9999, 9999};
     ui->splitter->setSizes(list);
+}
+
+void MainWindow::on_actionType_Check_triggered()
+{
+    SetMode_(CompilerMode::TYPE_CHECK);
+    UpdateTest_();
+}
+
+void MainWindow::on_actionCode_Generation_triggered()
+{
+    SetMode_(CompilerMode::GENERATOR);
+    UpdateTest_();
 }

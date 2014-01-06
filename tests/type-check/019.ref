@@ -1,0 +1,7 @@
+functions:
+------------------------------------------------
+variable f of type function(variable <arg-n-1> of type int, variable <arg-n-2> of type float) returning int
+  variables:
+  ----------------------------------------------
+  variable <arg-n-1> of type int
+  variable <arg-n-2> of type float

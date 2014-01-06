@@ -1,0 +1,24 @@
+types:
+------------------------------------------------
+struct s
+  variables:
+  ----------------------------------------------
+  variable mem of type int
+
+variables:
+------------------------------------------------
+variable pci of type pointer to const int
+variable cs of type const struct s
+functions:
+------------------------------------------------
+variable main of type function() returning int
+>----------------------------------------------;
+  =-----
+  |    |
+  pci  &
+       |    
+       .----
+       |   |  
+       cs  mem
+
+<----------------------------------------------;
