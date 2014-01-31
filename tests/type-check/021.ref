@@ -1,0 +1,4 @@
+functions:
+------------------------------------------------
+variable main of type function() returning int
+ERROR: unexpected token OP_ASS : "=" at 5-5, left operand of assignment must be modifiable lvalue
