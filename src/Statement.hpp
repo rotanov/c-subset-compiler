@@ -35,8 +35,12 @@ namespace Compiler
 //------------------------------------------------------------------------------
     class SymbolTable;
 
-    class CompoundStatement : public Statement
+    class CompoundStatement
+            : public Statement
+            , public IVisitableBase
     {
+        COMPILER_DECLARE_VISITABLE()
+
     public:
         CompoundStatement(shared_ptr<SymbolTable> symbols);
 
@@ -50,8 +54,12 @@ namespace Compiler
     };
 
 //------------------------------------------------------------------------------
-    class ExpressionStatement : public Statement
+    class ExpressionStatement
+            : public Statement
+            , public IVisitableBase
     {
+        COMPILER_DECLARE_VISITABLE()
+
     public:
         ExpressionStatement();
 
@@ -64,8 +72,12 @@ namespace Compiler
     };
 
 //------------------------------------------------------------------------------
-    class SelectionStatement : public Statement
+    class SelectionStatement
+            : public Statement
+            , public IVisitableBase
     {
+        COMPILER_DECLARE_VISITABLE()
+
     public:
         SelectionStatement();
 
@@ -81,6 +93,7 @@ namespace Compiler
 //------------------------------------------------------------------------------
     class IterationStatement : public Statement
     {
+
     public:
         virtual void SetControllingExpression(shared_ptr<ASTNode> controllingExpression) = 0;
         virtual void SetLoopStatement(shared_ptr<Statement> loopStatement) = 0;
@@ -91,8 +104,12 @@ namespace Compiler
     };
 
 //------------------------------------------------------------------------------
-    class ForStatement : public IterationStatement
+    class ForStatement
+            : public IterationStatement
+            , public IVisitableBase
     {
+        COMPILER_DECLARE_VISITABLE()
+
     public:
         ForStatement();
         virtual EStatementType GetStatementType() const { return EStatementType::ITERATION_FOR; }
@@ -109,8 +126,12 @@ namespace Compiler
     };
 
 //------------------------------------------------------------------------------
-    class DoStatement : public IterationStatement
+    class DoStatement
+            : public IterationStatement
+            , public IVisitableBase
     {
+        COMPILER_DECLARE_VISITABLE()
+
     public:
         DoStatement();
         virtual EStatementType GetStatementType() const { return EStatementType::ITERATION_DO; }
@@ -120,8 +141,12 @@ namespace Compiler
     };
 
 //------------------------------------------------------------------------------
-    class WhileStatement : public IterationStatement
+    class WhileStatement
+            : public IterationStatement
+            , public IVisitableBase
     {
+        COMPILER_DECLARE_VISITABLE()
+
     public:
         WhileStatement();
         virtual EStatementType GetStatementType() const { return EStatementType::ITERATION_WHILE; }
@@ -131,8 +156,12 @@ namespace Compiler
     };
 
 //------------------------------------------------------------------------------
-    class JumpStatement : public Statement
+    class JumpStatement
+            : public Statement
+            , public IVisitableBase
     {
+        COMPILER_DECLARE_VISITABLE()
+
     public:
         JumpStatement(const Token& token);
         void SetReturnExpression(shared_ptr<ASTNode> expression);

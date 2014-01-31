@@ -6,6 +6,7 @@
 #include <cassert>
 
 #include "utils.hpp"
+#include "Visitor.hpp"
 
 namespace Compiler
 {
@@ -31,24 +32,36 @@ namespace Compiler
     };
 
 ////////////////////////////////////////////////////////////////////////////////
-    class ASTNodeBinaryOperator : public ASTNode
+    class ASTNodeBinaryOperator
+            : public ASTNode
+            , public IVisitableBase
     {
+        COMPILER_DECLARE_VISITABLE()
+
     public:
         ASTNodeBinaryOperator(const Token& token, shared_ptr<ASTNode> left, shared_ptr<ASTNode> right);
 
     };
 
 ////////////////////////////////////////////////////////////////////////////////
-    class ASTNodeAssignment : public ASTNode
+    class ASTNodeAssignment
+            : public ASTNode
+            , public IVisitableBase
     {
+        COMPILER_DECLARE_VISITABLE()
+
     public:
         ASTNodeAssignment(const Token& token, shared_ptr<ASTNode> left, shared_ptr<ASTNode> right);
 
     };
 
 ////////////////////////////////////////////////////////////////////////////////
-    class ASTNodeUnaryOperator : public ASTNode
+    class ASTNodeUnaryOperator
+            : public ASTNode
+            , public IVisitableBase
     {
+        COMPILER_DECLARE_VISITABLE()
+
     public:
         ASTNodeUnaryOperator(const Token& token);
         ASTNodeUnaryOperator(const Token& token, shared_ptr<ASTNode> node);
@@ -62,8 +75,12 @@ namespace Compiler
     };
 
 ////////////////////////////////////////////////////////////////////////////////
-    class ASTNodeConditionalOperator : public ASTNode
+    class ASTNodeConditionalOperator
+            : public ASTNode
+            , public IVisitableBase
     {
+        COMPILER_DECLARE_VISITABLE()
+
     public:
         ASTNodeConditionalOperator(const Token& token, shared_ptr<ASTNode> condition,
                                    shared_ptr<ASTNode> thenExpression, shared_ptr<ASTNode> elseExpression);
@@ -71,32 +88,48 @@ namespace Compiler
     };
 
 ////////////////////////////////////////////////////////////////////////////////
-    class ASTNodeArraySubscript : public ASTNode
+    class ASTNodeArraySubscript
+            : public ASTNode
+            , public IVisitableBase
     {
+        COMPILER_DECLARE_VISITABLE()
+
     public:
         ASTNodeArraySubscript(const Token& token, shared_ptr<ASTNode> left, shared_ptr<ASTNode> right);
 
     };
 
 ////////////////////////////////////////////////////////////////////////////////
-    class ASTNodeFunctionCall : public ASTNode
+    class ASTNodeFunctionCall
+            : public ASTNode
+            , public IVisitableBase
     {
+        COMPILER_DECLARE_VISITABLE()
+
     public:
         ASTNodeFunctionCall(const Token& token, shared_ptr<ASTNode> caller, vector<shared_ptr<ASTNode>>& parameters);
 
     };
 
 ////////////////////////////////////////////////////////////////////////////////
-    class ASTNodeStructureAccess : public ASTNode
+    class ASTNodeStructureAccess
+            : public ASTNode
+            , public IVisitableBase
     {
+        COMPILER_DECLARE_VISITABLE()
+
     public:
         ASTNodeStructureAccess(const Token& token, shared_ptr<ASTNode> lhs, shared_ptr<ASTNode> rhs);
 
     };
 
 ////////////////////////////////////////////////////////////////////////////////
-    class ASTNodeTypeName : public ASTNode
+    class ASTNodeTypeName
+            : public ASTNode
+            , public IVisitableBase
     {
+        COMPILER_DECLARE_VISITABLE()
+
     public:
         ASTNodeTypeName(shared_ptr<SymbolType> typeNameSymbol);
 
@@ -105,14 +138,18 @@ namespace Compiler
     };
 
 ////////////////////////////////////////////////////////////////////////////////
-    class ASTNodeCast : public ASTNode
+    class ASTNodeCast
+            : public ASTNode
+            , public IVisitableBase
     {
+        COMPILER_DECLARE_VISITABLE()
+
     public:
         ASTNodeCast(shared_ptr<ASTNodeTypeName> left, shared_ptr<ASTNode> right);
     };
 
     // NOTE: in C assignment as well as inc/dec does not yields an lvalue
-    // see 6.5.16/3 and
+    // see 6.5.16/3
     bool IfLValue(shared_ptr<ASTNode> node);
     bool IfModifiableLValue(shared_ptr<ASTNode> node);
 

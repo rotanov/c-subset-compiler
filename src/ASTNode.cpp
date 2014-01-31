@@ -219,11 +219,23 @@ namespace Compiler
         : ASTNode(token)
     {
         assert(left != NULL && right != NULL);
+
         children_.push_back(left);
         children_.push_back(right);
+
         if (!IfModifiableLValue(left))
         {
             ThrowInvalidTokenError(token, "left operand of assignment must be modifiable lvalue");
+        }
+
+        switch (token.type)
+        {
+            case OP_ASS:
+            {
+                // simple assignment
+
+                break;
+            }
         }
     }
 

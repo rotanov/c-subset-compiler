@@ -71,7 +71,8 @@ SOURCES += main.cpp\
     ../src/ASTNode.cpp \
     ../src/SymbolTable.cpp \
     ../src/prettyPrinting.cpp \
-    ../src/Statement.cpp
+    ../src/Statement.cpp \
+    ../src/codegen.cpp
 
 HEADERS  += MainWindow.hpp \
     ../src/utils.hpp \
@@ -93,6 +94,8 @@ HEADERS  += MainWindow.hpp \
     ../src/ASTNode.hpp \
     ../src/SymbolTable.hpp \
     ../src/prettyPrinting.hpp \
-    ../src/Statement.hpp
+    ../src/Statement.hpp \
+    ../src/Visitor.hpp \
+    ../src/codegen.hpp
 
 FORMS    += mainwindow.ui
