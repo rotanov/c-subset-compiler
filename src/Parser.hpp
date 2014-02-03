@@ -86,7 +86,7 @@ namespace Compiler
         shared_ptr<SymbolVariable> ParseDeclarator_(CallerType& caller, DeclarationSpecifiers& declSpec, bool abstract = false);
         void ParseParameterList(CallerType& caller, SymbolFunctionType& symFuncType);
 
-        shared_ptr<Symbol> ParseInitializer_(CallerType& caller);
+        shared_ptr<ASTNode> ParseInitializer_(CallerType& caller);
 
         // declaration
         shared_ptr<SymbolStruct> ParseStructSpecifier_(CallerType& caller);

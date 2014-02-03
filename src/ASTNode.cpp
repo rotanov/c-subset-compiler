@@ -388,10 +388,10 @@ namespace Compiler
             constant = true;
             leftTypeSym = static_pointer_cast<SymbolConst>(leftTypeSym)->GetRefSymbol();
         }
-        if (IfOfType(leftTypeSym, ESymbolType::TYPE_ARRAY)
-            || IfOfType(leftTypeSym, ESymbolType::TYPE_POINTER))
+        if (!IfOfType(leftTypeSym, ESymbolType::TYPE_ARRAY)
+            && !IfOfType(leftTypeSym, ESymbolType::TYPE_POINTER))
         {
-            ThrowInvalidTokenError(token, "on of `[]` operands must be of either pointer or array type");
+            ThrowInvalidTokenError(token, "one of `[]` operands must be of either pointer or array type");
         }
         leftTypeSym = GetRefSymbol(leftTypeSym);
         if (constant)

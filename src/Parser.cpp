@@ -697,8 +697,7 @@ namespace Compiler
             {
                 // Parse initializer
                 // TODO: complex initializer
-                ParseInitializer_(caller);
-//                declarator->SetInitializer(ParseInitializer_(caller));
+                declarator->SetInitializer(ParseInitializer_(caller));
             }
             else if (token == OP_COMMA)
             {
@@ -921,7 +920,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    shared_ptr<Symbol> Parser::ParseInitializer_(Parser::CallerType& caller)
+    shared_ptr<ASTNode> Parser::ParseInitializer_(Parser::CallerType& caller)
     {
         Token token = WithdrawTokenIf_(caller, OP_LBRACE);
 
@@ -932,6 +931,7 @@ namespace Compiler
         else
         {
             shared_ptr<ASTNode> initializerExpression = ParseAssignmentExpression_(caller);
+            return initializerExpression;
         }
         // TODO: this is stub implementation, only eating up simple initializer
         return NULL;

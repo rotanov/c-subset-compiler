@@ -47,11 +47,29 @@
 // int arrayOfArray[2][3];
 // struct Foo arrayOfStruct[2][3];
 // float initFloat = 0.001f;
-char* string = "pe";
-char* anoos = "a";
-int singleElementArray[1];
 
-int main()
-{
-    char* temp = "abcde";
-}
+//////////////////////////////////////////////////
+
+// int foo()
+// {
+//     return 2;
+// }
+
+// char* string = "pe";
+// char* anoos = "a";
+// int fooInit;
+// int singleElementArray[1];
+
+// int main()
+// {
+//     int bar = foo();
+//     char* temp = "abcde";
+//     fooInit = foo();
+// }
+
+//////////////////////////////////////////////////
+
+const int a = 2;
+const int c = 3;
+int b[sizeof(a)];
+int e[sizeof(b)];

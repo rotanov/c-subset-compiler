@@ -8,36 +8,14 @@
 
 INCLUDELIB LIBCMT
 
-PUBLIC	_string
-PUBLIC	_anoos
+PUBLIC	_a
+PUBLIC	_c
 _DATA	SEGMENT
-COMM	_singleElementArray:DWORD
+COMM	_b:DWORD:04H
+COMM	_e:DWORD:010H
 _DATA	ENDS
-_DATA	SEGMENT
-_string	DD	FLAT:$SG1273
-$SG1273	DB	'pe', 00H
-	ORG $+1
-_anoos	DD	FLAT:$SG1275
-$SG1275	DB	'a', 00H
-	ORG $+2
-$SG1280	DB	'abcde', 00H
-_DATA	ENDS
-PUBLIC	_main
-; Function compile flags: /Odsp
-_TEXT	SEGMENT
-_temp$ = -4						; size = 4
-_main	PROC
-; File d:\dev\compiler\sandbox\vs-toasm\test.cpp
-; Line 55
-	push	ebp
-	mov	ebp, esp
-	push	ecx
-; Line 56
-	mov	DWORD PTR _temp$[ebp], OFFSET $SG1280
-; Line 57
-	xor	eax, eax
-	leave
-	ret	0
-_main	ENDP
-_TEXT	ENDS
+CONST	SEGMENT
+_a	DD	02H
+_c	DD	03H
+CONST	ENDS
 END
