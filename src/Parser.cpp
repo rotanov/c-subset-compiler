@@ -48,6 +48,20 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
+    shared_ptr<SymbolTable> Parser::GetInternalSymbolTable() const
+    {
+//        assert(symTables_.size() == 2);
+        return symTables_[0];
+    }
+
+//------------------------------------------------------------------------------
+    shared_ptr<SymbolTable> Parser::GetGlobalSymbolTable() const
+    {
+//        assert(symTables_.size() == 2);
+        return symTables_[1];
+    }
+
+//------------------------------------------------------------------------------
     shared_ptr<ASTNode> Parser::ParsePrimaryExpression_(CallerType& caller)
     {
         Token token = WaitForTokenReady_(caller);

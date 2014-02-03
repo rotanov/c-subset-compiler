@@ -165,6 +165,11 @@ namespace Compiler
         return symbol->GetType() == ESymbolType::TYPE_CHAR;
     }
 
+    int SymbolChar::GetSize() const
+    {
+        return 1;
+    }
+
     SymbolInt::SymbolInt()
         : SymbolType("int")
     {
@@ -179,7 +184,12 @@ namespace Compiler
     bool SymbolInt::IfTypeFits(shared_ptr<Symbol> symbol) const
     {
         return symbol->GetType() == ESymbolType::TYPE_INT;
-                // || symbol->GetSymbolType() == ESymbolType::TYPE_CHAR;
+        // || symbol->GetSymbolType() == ESymbolType::TYPE_CHAR;
+    }
+
+    int SymbolInt::GetSize() const
+    {
+        return 4;
     }
 
     SymbolFloat::SymbolFloat()
@@ -197,7 +207,12 @@ namespace Compiler
     {
         return symbol->GetType() == ESymbolType::TYPE_FLOAT;
                //|| symbol->GetSymbolType() == ESymbolType::TYPE_INT
-               //|| symbol->GetSymbolType() == ESymbolType::TYPE_CHAR;
+        //|| symbol->GetSymbolType() == ESymbolType::TYPE_CHAR;
+    }
+
+    int SymbolFloat::GetSize() const
+    {
+        return 4;
     }
 
     SymbolVoid::SymbolVoid()
@@ -214,6 +229,12 @@ namespace Compiler
     bool SymbolVoid::IfTypeFits(shared_ptr<Symbol> symbol) const
     {
         return symbol->GetType() == ESymbolType::TYPE_VOID;
+    }
+
+    int SymbolVoid::GetSize() const
+    {
+        assert(false);
+        return 0;
     }
 
     SymbolFunctionType::SymbolFunctionType(shared_ptr<SymbolTableWithOrder> parametersSymTable)
@@ -298,6 +319,7 @@ namespace Compiler
 
     SymbolStruct::SymbolStruct(const std::string name)
         : SymbolType(name)
+        , size_(-1)
     {
     }
 
@@ -346,6 +368,24 @@ namespace Compiler
         return false;
     }
 
+    int SymbolStruct::GetSize() const
+    {
+        if (size_ != -1)
+        {
+            return size_;
+        }
+        else
+        {
+            int& size = const_cast<SymbolStruct*>(this)->size_;
+            size = 0;
+            for (auto& v : const_cast<SymbolStruct*>(this)->fields_->orderedVariables)
+            {
+                size += GetActualType(v)->GetSize();
+            }
+            return size;
+        }
+    }
+
     SymbolPointer::SymbolPointer()
         : SymbolTypeRef("pointer")
     {
@@ -388,6 +428,16 @@ namespace Compiler
     {
         assert(initializerExpression != NULL);
         sizeInitializer_ = initializerExpression;
+    }
+
+    int SymbolArray::GetSize() const
+    {
+        assert(sizeInitializer_ != NULL);
+        if (sizeInitializer_->token == TT_LITERAL_INT)
+        {
+            return sizeInitializer_->token.intValue * GetActualType(this->GetRefSymbol())->GetSize();
+        }
+        return 0;
     }
 
     std::string SymbolArray::GetQualifiedName() const
@@ -528,10 +578,17 @@ namespace Compiler
         type_ = type;
     }
 
+//------------------------------------------------------------------------------
     shared_ptr<SymbolType> SymbolTypeRef::GetRefSymbol() const
     {
         assert(type_ != NULL);
         return type_;
+    }
+
+//------------------------------------------------------------------------------
+    int SymbolTypeRef::GetSize() const
+    {
+        return GetActualType(const_cast<SymbolTypeRef*>(this)->shared_from_this())->GetSize();
     }
 
 //------------------------------------------------------------------------------
@@ -635,6 +692,37 @@ namespace Compiler
 
             default:
                 return symType == type;
+        }
+    }
+
+    shared_ptr<SymbolType> GetActualType(shared_ptr<SymbolType> symbol)
+    {
+        auto symType = symbol->GetType();
+
+        switch (symType)
+        {
+            case ESymbolType::TYPE_TYPEDEF:
+            case ESymbolType::TYPE_CONST:
+            case ESymbolType::VARIABLE:
+                return GetActualType(GetRefSymbol(symbol));
+
+            default:
+                return symbol;
+        }
+    }
+
+    shared_ptr<SymbolType> GetArrayType(shared_ptr<SymbolType> symbol)
+    {
+        assert(symbol->GetType() == ESymbolType::TYPE_ARRAY);
+        shared_ptr<SymbolArray> arraySymbol = static_pointer_cast<SymbolArray>(symbol);
+        shared_ptr<SymbolType> refTypeSymbol = GetActualType(arraySymbol->GetRefSymbol());
+        if (refTypeSymbol->GetType() != ESymbolType::TYPE_ARRAY)
+        {
+            return refTypeSymbol;
+        }
+        else
+        {
+            return GetArrayType(refTypeSymbol);
         }
     }
 

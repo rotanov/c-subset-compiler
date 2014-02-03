@@ -1,1 +1,1 @@
-cl test.cpp /FA /GS-
+cl /Tc test.cpp /FA /GS- /Ods /Za

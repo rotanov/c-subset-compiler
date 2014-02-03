@@ -29,6 +29,7 @@
 #include "SimpleExpressionParser.hpp"
 #include "ExpressionParser.hpp"
 #include "Parser.hpp"
+#include "codegen.hpp"
 
 #include "CxxHighlighter.hpp"
 #include "DebugStream.hpp"
@@ -274,7 +275,7 @@ void MainWindow::RunCompiler_(std::vector<char> &input)
 
             case CompilerMode::GENERATOR:
             {
-                assert(false);
+                output = new CodeGenerator;
                 break;
             }
 

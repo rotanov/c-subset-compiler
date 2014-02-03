@@ -132,10 +132,12 @@ namespace Compiler
         SymbolType(const std::string& name);
 
         virtual std::string GetQualifiedName() const;
-
+        int virtual GetSize() const = 0;
     };
 //------------------------------------------------------------------------------
-    class SymbolTypeRef : public SymbolType
+    class SymbolTypeRef
+            : public SymbolType
+            , public std::enable_shared_from_this<SymbolTypeRef>
     {
     public:
         SymbolTypeRef(const std::string& name);
@@ -143,6 +145,7 @@ namespace Compiler
 
         void SetRefSymbol(shared_ptr<SymbolType> type);
         shared_ptr<SymbolType> GetRefSymbol() const;
+        int virtual GetSize() const;
 
     protected:
         shared_ptr<SymbolType> type_{NULL};
@@ -198,11 +201,12 @@ namespace Compiler
         shared_ptr<SymbolTableWithOrder> GetSymbolTable() const;
         void SetFieldsSymTable(shared_ptr<SymbolTableWithOrder> fieldsSymTable);
         virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
-
+        int virtual GetSize() const;
         bool complete{false};
 
     private:
         shared_ptr<SymbolTableWithOrder> fields_{NULL};
+        int size_;
     };
 
 //------------------------------------------------------------------------------
@@ -213,6 +217,7 @@ namespace Compiler
 
         virtual ESymbolType GetType() const;
         virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
+        virtual int GetSize() const;
     };
 
 //------------------------------------------------------------------------------
@@ -223,6 +228,7 @@ namespace Compiler
 
         virtual ESymbolType GetType() const;
         virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
+        virtual int GetSize() const;
     };
 
 //------------------------------------------------------------------------------
@@ -233,6 +239,7 @@ namespace Compiler
 
         virtual ESymbolType GetType() const;
         virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
+        virtual int GetSize() const;
     };
 
 //------------------------------------------------------------------------------
@@ -243,6 +250,7 @@ namespace Compiler
 
         virtual ESymbolType GetType() const;
         virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
+        virtual int GetSize() const;
     };
 
 //------------------------------------------------------------------------------
@@ -270,6 +278,7 @@ namespace Compiler
         virtual std::string GetQualifiedName() const;
         virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
         void SetSizeInitializer(shared_ptr<ASTNode> initializerExpression);
+        virtual int GetSize() const;
 
     private:
         shared_ptr<ASTNode> sizeInitializer_{NULL};
@@ -312,5 +321,7 @@ namespace Compiler
     bool IfOfType(shared_ptr<SymbolType> symbol, ESymbolType type);
     shared_ptr<SymbolType> GetRefSymbol(shared_ptr<Symbol> symbol);
     shared_ptr<SymbolType> CalcCommonArithmeticType(shared_ptr<SymbolType> left, shared_ptr<SymbolType> right);
+    shared_ptr<SymbolType> GetActualType(shared_ptr<SymbolType> symbol);
+    shared_ptr<SymbolType> GetArrayType(shared_ptr<SymbolType> symbol);
 
 } // namespace Compiler

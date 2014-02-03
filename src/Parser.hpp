@@ -49,8 +49,9 @@ namespace Compiler
         typedef boost::coroutines::coroutine<void(const Token&)> Coroutine;
         typedef Coroutine::caller_type CallerType;
 
-        // ??
-        // friend class ASTNode;
+    protected:
+        shared_ptr<SymbolTable> GetInternalSymbolTable() const;
+        shared_ptr<SymbolTable> GetGlobalSymbolTable() const;
 
     private:
         std::vector<Token> tokenStack_;

@@ -3,6 +3,7 @@
 #include "Visitor.hpp"
 #include "ASTNode.hpp"
 #include "Statement.hpp"
+#include "Parser.hpp"
 
 namespace Compiler
 {
@@ -10,17 +11,51 @@ namespace Compiler
     .686P
     .XMM
     include listing.inc
-    .model	flat
+    .model flat
 
 INCLUDELIB LIBCMT
 INCLUDELIB OLDNAMES
+
 )";
 
+    static const char* asmFooter = R"(
+END
 
-    class AsmCommand
+)";
+
+    enum class EAsmMnemonic
+    {
+        MOV,
+        PUSH,
+        POP,
+        RET,
+        CALL,
+        NOP,
+    };
+
+    enum class EAsmRegister
+    {
+        EAX,
+        EBX,
+        ECX,
+        EDX,
+        ESI,
+        EDI,
+        ESP,
+        EBP,
+    };
+
+    class AsmArgument
     {
     public:
-        AsmCommand()
+    private:
+
+    };
+
+    class AsmInstruction
+    {
+    public:
+        AsmInstruction()
         {
 
         }
@@ -45,6 +80,13 @@ INCLUDELIB OLDNAMES
         }
     };
 
-    CodeGenVisitor codegenInstance;
+    class CodeGenerator : public Parser
+    {
+    public:
+        CodeGenerator();
+        ~CodeGenerator();
+
+        virtual void Flush() const;
+    };
 
 } // namespace Compiler
