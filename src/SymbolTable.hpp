@@ -202,6 +202,7 @@ namespace Compiler
         void SetFieldsSymTable(shared_ptr<SymbolTableWithOrder> fieldsSymTable);
         virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
         int virtual GetSize() const;
+
         bool complete{false};
 
     private:
@@ -319,6 +320,7 @@ namespace Compiler
     bool IfArithmetic(shared_ptr<SymbolType> symbol);
     bool IfScalar(shared_ptr<SymbolType> symbol);
     bool IfOfType(shared_ptr<SymbolType> symbol, ESymbolType type);
+    bool IfConst(shared_ptr<SymbolType> symbol);
     shared_ptr<SymbolType> GetRefSymbol(shared_ptr<Symbol> symbol);
     shared_ptr<SymbolType> CalcCommonArithmeticType(shared_ptr<SymbolType> left, shared_ptr<SymbolType> right);
     shared_ptr<SymbolType> GetActualType(shared_ptr<SymbolType> symbol);

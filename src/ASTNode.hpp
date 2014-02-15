@@ -25,6 +25,8 @@ namespace Compiler
         shared_ptr<ASTNode> GetChild(const int index);
         void SetTypeSym(shared_ptr<SymbolType> type);
         shared_ptr<SymbolType> GetTypeSym() const;
+        virtual bool IsConstExpr() const;
+        virtual int EvalToInt() const;
 
     protected:
         std::vector<shared_ptr<ASTNode>> children_;
@@ -40,7 +42,8 @@ namespace Compiler
 
     public:
         ASTNodeBinaryOperator(const Token& token, shared_ptr<ASTNode> left, shared_ptr<ASTNode> right);
-
+        virtual bool IsConstExpr() const;
+        int EvalToInt() const;
     };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -52,7 +55,7 @@ namespace Compiler
 
     public:
         ASTNodeAssignment(const Token& token, shared_ptr<ASTNode> left, shared_ptr<ASTNode> right);
-
+        virtual bool IsConstExpr() const;
     };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -68,6 +71,8 @@ namespace Compiler
 
         void SetOperand(shared_ptr<ASTNode> node);
         shared_ptr<ASTNode> GetOperand();
+        virtual bool IsConstExpr() const;
+        virtual int EvalToInt() const;
 
     private:
         void CheckTypes_();
@@ -82,9 +87,13 @@ namespace Compiler
         COMPILER_DECLARE_VISITABLE()
 
     public:
-        ASTNodeConditionalOperator(const Token& token, shared_ptr<ASTNode> condition,
-                                   shared_ptr<ASTNode> thenExpression, shared_ptr<ASTNode> elseExpression);
+        ASTNodeConditionalOperator(const Token& token
+                                   , shared_ptr<ASTNode> condition
+                                   , shared_ptr<ASTNode> thenExpression
+                                   , shared_ptr<ASTNode> elseExpression);
 
+        virtual bool IsConstExpr() const;
+        virtual int EvalToInt() const;
     };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -96,7 +105,7 @@ namespace Compiler
 
     public:
         ASTNodeArraySubscript(const Token& token, shared_ptr<ASTNode> left, shared_ptr<ASTNode> right);
-
+        virtual bool IsConstExpr() const;
     };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -108,7 +117,7 @@ namespace Compiler
 
     public:
         ASTNodeFunctionCall(const Token& token, shared_ptr<ASTNode> caller, vector<shared_ptr<ASTNode>>& parameters);
-
+        virtual bool IsConstExpr() const;
     };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -120,7 +129,7 @@ namespace Compiler
 
     public:
         ASTNodeStructureAccess(const Token& token, shared_ptr<ASTNode> lhs, shared_ptr<ASTNode> rhs);
-
+        virtual bool IsConstExpr() const;
     };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -132,6 +141,7 @@ namespace Compiler
 
     public:
         ASTNodeTypeName(shared_ptr<SymbolType> typeNameSymbol);
+        virtual bool IsConstExpr() const;
 
     private:
         shared_ptr<SymbolType> typeSymbol_{NULL};
@@ -146,6 +156,21 @@ namespace Compiler
 
     public:
         ASTNodeCast(shared_ptr<ASTNodeTypeName> left, shared_ptr<ASTNode> right);
+        virtual bool IsConstExpr() const;
+    };
+
+////////////////////////////////////////////////////////////////////////////////
+    class ASTNodeCommaOperator
+            : public ASTNode
+            , public IVisitableBase
+    {
+        COMPILER_DECLARE_VISITABLE()
+
+    public:
+        ASTNodeCommaOperator(const Token& token);
+        virtual bool IsConstExpr() const;
+        virtual int EvalToInt() const;
+        void PushOperand(const shared_ptr<ASTNode> node);
     };
 
     // NOTE: in C assignment as well as inc/dec does not yields an lvalue

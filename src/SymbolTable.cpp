@@ -427,16 +427,17 @@ namespace Compiler
     void SymbolArray::SetSizeInitializer(shared_ptr<ASTNode> initializerExpression)
     {
         assert(initializerExpression != NULL);
+        if (!initializerExpression->IsConstExpr())
+        {
+            ThrowInvalidTokenError(initializerExpression->token, "size initializer have to be constant expression");
+        }
         sizeInitializer_ = initializerExpression;
     }
 
     int SymbolArray::GetSize() const
     {
         assert(sizeInitializer_ != NULL);
-        if (sizeInitializer_->token == TT_LITERAL_INT)
-        {
-            return sizeInitializer_->token.intValue * GetActualType(this->GetRefSymbol())->GetSize();
-        }
+        return sizeInitializer_->EvalToInt() * GetActualType(this->GetRefSymbol())->GetSize();
         return 0;
     }
 
@@ -444,10 +445,9 @@ namespace Compiler
     {
         assert(type_ != NULL);
         std::string size;
-        if (sizeInitializer_ != NULL
-            && sizeInitializer_->token == TT_LITERAL_INT)
+        if (sizeInitializer_ != NULL)
         {
-            size = " " + sizeInitializer_->token.text;
+            size = " " + std::to_string(sizeInitializer_->EvalToInt());
         }
         return name + size + " of " + type_->GetQualifiedName();
     }
@@ -723,6 +723,41 @@ namespace Compiler
         else
         {
             return GetArrayType(refTypeSymbol);
+        }
+    }
+
+    bool IfConst(shared_ptr<SymbolType> symbol)
+    {
+        assert(symbol != NULL);
+
+        switch (symbol->GetType())
+        {
+            case ESymbolType::TYPE_CONST:
+                return true;
+
+            case ESymbolType::TYPE_ARRAY:
+            case ESymbolType::TYPE_FUNCTION:
+            case ESymbolType::TYPE_POINTER:
+            case ESymbolType::TYPE_TYPEDEF:
+            case ESymbolType::VARIABLE:
+                return IfConst(GetRefSymbol(symbol));
+
+            case ESymbolType::TYPE_STRUCT:
+            {
+                auto symStruct = static_pointer_cast<SymbolStruct>(symbol);
+
+                for (auto f : symStruct->GetSymbolTable()->orderedVariables)
+                {
+                    if (IfConst(f))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            default:
+                return false;
         }
     }
 

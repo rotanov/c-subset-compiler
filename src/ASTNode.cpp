@@ -44,6 +44,33 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
+    bool ASTNode::IsConstExpr() const
+    {
+        return token == TT_LITERAL_CHAR
+               || token == TT_LITERAL_INT
+               || token == TT_LITERAL_FLOAT;
+    }
+
+//------------------------------------------------------------------------------
+    int ASTNode::EvalToInt() const
+    {
+        switch (token.type)
+        {
+            case TT_LITERAL_CHAR:
+            case TT_LITERAL_INT:
+                return token.intValue;
+
+            case TT_LITERAL_FLOAT:
+                return token.floatValue;
+
+            default:
+                ThrowInvalidTokenError(token, "can't be evaluated as integer constant expression");
+        }
+
+        return 0;
+    }
+
+//------------------------------------------------------------------------------
     ASTNode::ASTNode(const Token &token)
         : token(token)
     {
@@ -215,6 +242,63 @@ namespace Compiler
     }
 
 ////////////////////////////////////////////////////////////////////////////////
+    bool ASTNodeBinaryOperator::IsConstExpr() const
+    {
+        return token != OP_COMMA
+               && children_[0]->IsConstExpr()
+                && children_[1]->IsConstExpr();
+    }
+
+//------------------------------------------------------------------------------
+    int ASTNodeBinaryOperator::EvalToInt() const
+    {
+        int lhs  = children_[0]->EvalToInt();
+        int rhs = children_[1]->EvalToInt();
+
+        switch (token.type)
+        {
+            case OP_PLUS:
+                return lhs + rhs;
+            case OP_MINUS:
+                return lhs - rhs;
+            case OP_STAR:
+                return lhs * rhs;
+            case OP_DIV:
+                return lhs / rhs;
+            case OP_MOD:
+                return lhs % rhs;
+            case OP_LSHIFT:
+                return lhs << rhs;
+            case OP_RSHIFT:
+                return lhs >> rhs;
+            case OP_LT:
+                return lhs < rhs;
+            case OP_GT:
+                return lhs > rhs;
+            case OP_LE:
+                return lhs <= rhs;
+            case OP_GE:
+                return lhs >= rhs;
+            case OP_EQ:
+                return lhs == rhs;
+            case OP_NE:
+                return lhs != rhs;
+            case OP_AMP:
+                return lhs & rhs;
+            case OP_XOR:
+                return lhs ^ rhs;
+            case OP_BOR:
+                return lhs | rhs;
+            case OP_LAND:
+                return lhs && rhs;
+            case OP_LOR:
+                return lhs || rhs;
+            default:
+                return ASTNode::EvalToInt();
+        }
+    }
+
+////////////////////////////////////////////////////////////////////////////////
     ASTNodeAssignment::ASTNodeAssignment(const Token& token, shared_ptr<ASTNode> left, shared_ptr<ASTNode> right)
         : ASTNode(token)
     {
@@ -237,6 +321,14 @@ namespace Compiler
                 break;
             }
         }
+
+        SetTypeSym(left->GetTypeSym());
+    }
+
+//------------------------------------------------------------------------------
+    bool ASTNodeAssignment::IsConstExpr() const
+    {
+        return false;
     }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -269,6 +361,29 @@ namespace Compiler
     {
         assert(children_.size() == 1);
         return children_[0];
+    }
+
+//------------------------------------------------------------------------------
+    bool ASTNodeUnaryOperator::IsConstExpr() const
+    {
+        return token != OP_INC
+            && token != OP_DEC
+            && children_[0]->IsConstExpr();
+    }
+
+//------------------------------------------------------------------------------
+    int ASTNodeUnaryOperator::EvalToInt() const
+    {
+        int rhs = children_[0]->EvalToInt();
+        switch (token.type)
+        {
+            case OP_MINUS:
+                return -rhs;
+            case OP_PLUS:
+                return rhs;
+            default:
+                return ASTNode::EvalToInt();
+        }
     }
 
 //------------------------------------------------------------------------------
@@ -357,6 +472,33 @@ namespace Compiler
         children_.push_back(condition);
         children_.push_back(thenExpression);
         children_.push_back(elseExpression);
+
+        // TODO: check for constraints, apply type, see 6.5.15
+    }
+
+//------------------------------------------------------------------------------
+    bool ASTNodeConditionalOperator::IsConstExpr() const
+    {
+        if (!children_[0]->IsConstExpr())
+        {
+            return false;
+        }
+        int condition = children_[0]->EvalToInt();
+        if (condition == 1)
+        {
+            return children_[1]->IsConstExpr();
+        }
+        else
+        {
+            return children_[2]->IsConstExpr();
+        }
+    }
+
+//------------------------------------------------------------------------------
+    int ASTNodeConditionalOperator::EvalToInt() const
+    {
+        int condition = children_[0]->EvalToInt();
+        return condition ? children_[1]->EvalToInt() : children_[2]->EvalToInt();
     }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -400,6 +542,12 @@ namespace Compiler
         }
         SetTypeSym(leftTypeSym);
         // TODO: completness check
+    }
+
+//------------------------------------------------------------------------------
+    bool ASTNodeArraySubscript::IsConstExpr() const
+    {
+        return false;
     }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -450,6 +598,12 @@ namespace Compiler
 
     }
 
+    //------------------------------------------------------------------------------
+    bool ASTNodeFunctionCall::IsConstExpr() const
+    {
+        return false;
+    }
+
 ////////////////////////////////////////////////////////////////////////////////
     ASTNodeStructureAccess::ASTNodeStructureAccess(const Token& token, shared_ptr<ASTNode> lhs, shared_ptr<ASTNode> rhs)
         : ASTNode(token)
@@ -489,7 +643,11 @@ namespace Compiler
                 else
                 {
                     shared_ptr<SymbolType> typeRef = GetRefSymbol(typeSym);
-                    // TODO: could it be const again?
+                    if (typeRef->GetType() == ESymbolType::TYPE_CONST)
+                    {
+                        constant = true;
+                        typeRef = GetRefSymbol(typeRef);
+                    }
                     if (typeRef->GetType() != ESymbolType::TYPE_STRUCT)
                     {
                         ThrowInvalidTokenError(lhs->token, "left operand of `->` operator should have pointer to structure type");
@@ -516,12 +674,24 @@ namespace Compiler
         }
     }
 
+//------------------------------------------------------------------------------
+    bool ASTNodeStructureAccess::IsConstExpr() const
+    {
+        return false;
+    }
+
 ////////////////////////////////////////////////////////////////////////////////
     ASTNodeTypeName::ASTNodeTypeName(shared_ptr<SymbolType> typeNameSymbol)
         : ASTNode(Token(TT_TYPE_NAME, typeNameSymbol->GetQualifiedName()))
         , typeSymbol_(typeNameSymbol)
     {
 
+    }
+
+//------------------------------------------------------------------------------
+    bool ASTNodeTypeName::IsConstExpr() const
+    {
+        return false;
     }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -531,15 +701,55 @@ namespace Compiler
         assert(left != NULL && right != NULL);
         children_.push_back(left);
         children_.push_back(right);
+        SetTypeSym(left->GetTypeSym());
     }
 
 //------------------------------------------------------------------------------
+    bool ASTNodeCast::IsConstExpr() const
+    {
+        return children_[1]->IsConstExpr()
+               && IfArithmetic(children_[0]->GetTypeSym());
+    }
+
+////////////////////////////////////////////////////////////////////////////////
+    ASTNodeCommaOperator::ASTNodeCommaOperator(const Token& token)
+        : ASTNode(token)
+    {
+        assert(token == OP_COMMA);
+    }
+
+//------------------------------------------------------------------------------
+    bool ASTNodeCommaOperator::IsConstExpr() const
+    {
+        assert(children_.size() > 0);
+        return children_.back()->IsConstExpr();
+    }
+
+//------------------------------------------------------------------------------
+    int ASTNodeCommaOperator::EvalToInt() const
+    {
+        assert(children_.size() > 0);
+        return children_.back()->EvalToInt();
+    }
+
+//------------------------------------------------------------------------------
+    void ASTNodeCommaOperator::PushOperand(const shared_ptr<ASTNode> node)
+    {
+        assert(node != NULL);
+        children_.push_back(node);
+        SetTypeSym(node->GetTypeSym());
+    }
+
+//------------------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////////////////
     bool IfModifiableLValue(shared_ptr<ASTNode> node)
     {
         assert(node != NULL);
         Token token = node->token;
 
-        if (node->GetTypeSym()->GetType() == ESymbolType::TYPE_CONST)
+        auto type = node->GetTypeSym()->GetType();
+
+        if (IfConst(node->GetTypeSym()))
         {
             return false;
         }
@@ -547,17 +757,15 @@ namespace Compiler
         switch (token)
         {
             case TT_IDENTIFIER:
-                return node->GetTypeSym()->GetType() != ESymbolType::TYPE_FUNCTION;
-
             case OP_LSQUARE:
-                return node->GetTypeSym()->GetType() != ESymbolType::TYPE_ARRAY;
-
             case OP_DOT:
             case OP_ARROW:
-                return true;
+                return type != ESymbolType::TYPE_FUNCTION
+                    && type != ESymbolType::TYPE_ARRAY;
 
             case OP_STAR:
-                return node->GetChildCount() == 1;
+                return node->GetChildCount() == 1
+                    && type != ESymbolType::TYPE_ARRAY;
 
             default:
                 return false;
@@ -577,12 +785,12 @@ namespace Compiler
             assert(sym->GetType() != ESymbolType::TYPE_CONST);
         }
 
+        auto type = sym->GetType();
+
         switch (token)
         {
             case OP_LSQUARE:
-                //--
             case TT_IDENTIFIER:
-                //--
             case OP_DOT:
             case OP_ARROW:
                 return true;
@@ -594,6 +802,5 @@ namespace Compiler
                 return false;
         }
     }
-
 
 } // namespace

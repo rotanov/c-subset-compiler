@@ -85,6 +85,14 @@
 			}
 		},
 		{
+			"file": "/D/dev/ncc/include/codegen.h",
+			"settings":
+			{
+				"buffer_size": 7860,
+				"line_ending": "Windows"
+			}
+		},
+		{
 			"file": "/D/dev/ncc/src/expressions.cpp",
 			"settings":
 			{
@@ -93,10 +101,26 @@
 			}
 		},
 		{
-			"file": "/D/dev/ncc/include/codegen.h",
+			"file": "sandbox/vs-toasm/test.cpp",
 			"settings":
 			{
-				"buffer_size": 7860,
+				"buffer_size": 998,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "sandbox/vs-toasm/test.asm",
+			"settings":
+			{
+				"buffer_size": 328,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "sandbox/do.bat",
+			"settings":
+			{
+				"buffer_size": 135,
 				"line_ending": "Windows"
 			}
 		},
@@ -114,6 +138,15 @@
 			{
 				"buffer_size": 2330,
 				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "8[23:10:56] K-1: http://www.youtube.com/watch?v=28EHxPeNDag http://www.youtube.com/watch?v=9Zn0nF4UizI - из гильти крауна\n---------------------------------------------------------------------------------------\n8[23:16:39] K-1: любимое из йормунганда - http://www.youtube.com/watch?v=tAG-cAhvUV8 http://www.youtube.com/watch?v=gFZbhZ2QhR8\n8[23:21:21] K-1: осты из гурлага выкладывать не буду по очевидной причине, осты из ГАЧЧИ (самый смак, хотя оно по этичности местами хлеще гурлага) - http://www.youtube.com/watch?v=6lbOi9XJcOg http://www.youtube.com/watch?v=uYhRg9Bq4Zs http://www.youtube.com/watch?v=pPtb7bV7jl4 http://www.youtube.com/watch?v=6kOmnN3OLPc",
+			"settings":
+			{
+				"buffer_size": 658,
+				"line_ending": "Windows",
+				"name": "8[23:10:56] K-1: http://www.youtube.com/watch?v=28"
 			}
 		},
 		{
@@ -137,6 +170,14 @@
 			"settings":
 			{
 				"buffer_size": 8759,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "sandbox/vs-toasm/do.bat",
+			"settings":
+			{
+				"buffer_size": 33,
 				"line_ending": "Windows"
 			}
 		}
@@ -585,6 +626,9 @@
 	},
 	"file_history":
 	[
+		"/D/dev/compiler/sandbox/vs-toasm/do.bat",
+		"/C/portableApplications/miranda-ng-v0.94.8_x64/Profiles/Satana/Logs/Jabber.ru/shinkai_project@conference.jabber.ru.log",
+		"/C/portableApplications/miranda-ng-v0.94.8_x64/Profiles/Satana/Logs/Jabber.ru/zadrawch@conference.jabber.ru.log",
 		"/D/dev/compiler/test-asm/vs-toasm/test.cpp",
 		"/D/dev/compiler/test-asm/src.asm",
 		"/D/dev/compiler/test-asm/do.bat",
@@ -709,10 +753,7 @@
 		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/700-hard-string-concat.t",
 		"/D/dev/cppgm/dev/cppgm-starter-kits/pa1/tests/200-charname-allowed.t",
 		"/D/dev/cppgm/dev/cppgm-starter-kits/pa1/tests/200-charname-allowed.ref",
-		"/D/dev/cppgm/dev/cppgm-starter-kits/pa1/tests/100-utf8.ref",
-		"/D/dev/cppgm/dev/cppgm-starter-kits/pa1/tests/100-utf8.t",
-		"/D/dev/cppgm/dev/cppgm-starter-kits/pa1/tests/100-raw-string-literal.t",
-		"/D/dev/compiler/doc/tasks.todo"
+		"/D/dev/cppgm/dev/cppgm-starter-kits/pa1/tests/100-utf8.ref"
 	],
 	"find":
 	{
@@ -720,7 +761,7 @@
 	},
 	"find_in_files":
 	{
-		"height": 92.0,
+		"height": 0.0,
 		"where_history":
 		[
 			"D:\\cppgm\\dev\\cppgm-dev\\common",
@@ -781,6 +822,10 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"_a",
+			"_notMain",
+			"Maji.*htt",
+			"m9th",
 			"IsLValue",
 			"IsLva",
 			"ставлю",
@@ -904,11 +949,7 @@
 			"direct-abstract-declarator",
 			"init-declarat",
 			"declarator",
-			"declaration-specifiers",
-			"TryParseDeclarator",
-			"IdentFound",
-			"ParseDeclarationSpec",
-			"GetConst"
+			"declaration-specifiers"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1150,6 +1191,80 @@
 				},
 				{
 					"buffer": 2,
+					"file": "/D/dev/ncc/include/codegen.h",
+					"settings":
+					{
+						"buffer_size": 7860,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								7347,
+								7347
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 6642.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
 					"file": "/D/dev/ncc/src/expressions.cpp",
 					"settings":
 					{
@@ -1223,19 +1338,19 @@
 					"type": "text"
 				},
 				{
-					"buffer": 3,
-					"file": "/D/dev/ncc/include/codegen.h",
+					"buffer": 4,
+					"file": "sandbox/vs-toasm/test.cpp",
 					"settings":
 					{
-						"buffer_size": 7860,
+						"buffer_size": 998,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								998,
+								998
 							]
 						],
 						"settings":
@@ -1287,7 +1402,80 @@
 							"encoding_helper_confidence": 1.0,
 							"encoding_helper_encoding": "UTF-8",
 							"encoding_helper_encoding_sublime": "UTF-8",
-							"syntax": "Packages/C++/C++.tmLanguage",
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 349.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "sandbox/vs-toasm/test.asm",
+					"settings":
+					{
+						"buffer_size": 328,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								312,
+								312
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/FASM x86/Syntaxes/Assembly x86 Intel.tmLanguage",
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
@@ -1297,7 +1485,80 @@
 					"type": "text"
 				},
 				{
-					"buffer": 4,
+					"buffer": 6,
+					"file": "sandbox/do.bat",
+					"settings":
+					{
+						"buffer_size": 135,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								50,
+								135
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/Batch File/Batch File.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 7,
 					"file": "/D/dev/ncc/src/codegen.cpp",
 					"settings":
 					{
@@ -1371,7 +1632,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 5,
+					"buffer": 8,
 					"file": "/C/Program Files (x86)/Microsoft Visual Studio 12.0/VC/include/listing.inc",
 					"settings":
 					{
@@ -1382,8 +1643,8 @@
 						"selection":
 						[
 							[
-								465,
-								465
+								544,
+								544
 							]
 						],
 						"settings":
@@ -1446,7 +1707,78 @@
 					"type": "text"
 				},
 				{
-					"buffer": 6,
+					"buffer": 9,
+					"settings":
+					{
+						"buffer_size": 658,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								634,
+								634
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"auto_name": "8[23:10:56] K-1: http://www.youtube.com/watch?v=28",
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 10,
 					"file": "doc/unrelated-docs-and-lectures/codegen1.txt",
 					"settings":
 					{
@@ -1519,7 +1851,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 7,
+					"buffer": 11,
 					"file": "doc/unrelated-docs-and-lectures/codegen2.txt",
 					"settings":
 					{
@@ -1592,7 +1924,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 8,
+					"buffer": 12,
 					"file": "doc/grammar.txt",
 					"settings":
 					{
@@ -1603,8 +1935,8 @@
 						"selection":
 						[
 							[
-								492,
-								492
+								2828,
+								2828
 							]
 						],
 						"settings":
@@ -1661,7 +1993,80 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 18.0,
+						"translation.y": 1253.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 13,
+					"file": "sandbox/vs-toasm/do.bat",
+					"settings":
+					{
+						"buffer_size": 33,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								29,
+								29
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 1.0,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/Batch File/Batch File.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -1722,6 +2127,10 @@
 		"height": 0.0,
 		"selected_items":
 		[
+			[
+				"do.bat",
+				"sandbox/vs-toasm/do.bat"
+			],
 			[
 				"99.t",
 				"tests/parser/099.t"

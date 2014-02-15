@@ -182,12 +182,17 @@ namespace Compiler
     {
         shared_ptr<ASTNode> node = ParseAssignmentExpression_(caller);
         Token token = WaitForTokenReady_(caller);
-        while (token == OP_COMMA)
+        if (token == OP_COMMA)
         {
-            node = make_shared<ASTNodeBinaryOperator>(token, node, ParseAssignmentExpression_(caller));
-            token = WaitForTokenReady_(caller);
+            shared_ptr<ASTNodeCommaOperator> nodeCommaOp = make_shared<ASTNodeCommaOperator>(token);
+            nodeCommaOp->PushOperand(node);
+            while (token == OP_COMMA)
+            {
+                nodeCommaOp->PushOperand(ParseAssignmentExpression_(caller));
+                token = WaitForTokenReady_(caller);
+            }
+            node = nodeCommaOp;
         }
-
         tokenStack_.push_back(token);
         return node;
     }
@@ -816,7 +821,7 @@ namespace Compiler
                         token = WaitForTokenReady_(caller);
                         if (token != OP_RSQUARE)
                         {
-                            ThrowInvalidTokenError(token, "closing `)` expected for parameter-list in declarator");
+                            ThrowInvalidTokenError(token, "closing `]` expected for array declarator");
                         }
                     }
                 }

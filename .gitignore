@@ -26,3 +26,6 @@
 /bin/test-driver-release.exe
 /compiler.pro.user.15
 /compiler.pro.user.3.0-pre1
+
+/sandbox/src.lst
+/sandbox/vs-toasm/test.lst
