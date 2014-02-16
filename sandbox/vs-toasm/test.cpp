@@ -220,22 +220,22 @@
 /////////////
 
 // lol bug
-struct pes
-{
-const int a[10];
-char c;
-};
+// struct pes
+// {
+// const int a[10];
+// char c;
+// };
 
-struct yes
-{
-    struct pes a;
-    int b;
-}a, b;
+// struct yes
+// {
+//     struct pes a;
+//     int b;
+// }a, b;
 
-int main()
-{
-    a = b;
-}
+// int main()
+// {
+//     a = b;
+// }
 
 ////////////////////////////////
 
@@ -249,4 +249,99 @@ int main()
 //     *&foo = &foo;
 // }
 
+////////////////////////// WOW padding got zeroed if I {{1}}
+// struct Foo
+// {
+//     char c;
+//     int i;
+//     int j;
+// };
 
+// int main()
+// {
+//     struct Foo foo = {{1};
+// }
+
+// int main()
+// {
+//     int a = 2;
+//     int b = a + 1;
+//     int c[2] = { 2, 1};
+// }
+
+// struct Bar
+// {
+//     char a4;
+//     char a3[2];
+//     int a;
+// } baz[2] = {2, 3, 4, 5, 6, 7};
+
+// int barsize = sizeof(struct Bar);
+// int bazsize = sizeof (baz);
+
+// char a3[3];
+
+// char p;
+// int aaa;
+// char p2;
+
+// void bar(char* arg)
+// {
+
+// }
+
+// char eeff[5] = {'e', 'e', 'f', 'g', 'g'};
+
+// char* a = "a\0 foo";
+
+// int main()
+// {
+//     char* b = "b foo";
+//     bar("c foo");
+// }
+
+// int sizeofa = sizeof(a);
+
+//////////////////////////////////////////////////////////////
+
+// struct Foo
+// {
+//     int a;
+//     char c;    
+// };
+
+// int size = sizeof(struct Foo);
+
+
+////////////////////////////////////
+// char c = 1;
+// char b = 2;
+
+/////////////////////////////////////////////////////////////////
+
+// char a3[3];
+
+// char p;
+// int aaa;
+// char p2;
+
+// void bar(char* arg)
+// {
+
+// }
+
+// char eeff[5] = {'e', 'e', 'f', 'g', 'g'};
+
+// char* a = "a\0 foo";
+
+// int main()
+// {
+//     char* b = "b foo";
+//     bar("c foo");
+// }
+
+// int sizeofa = sizeof(a);
+
+int aaaa;
+char* a = "abaaa";
+char* b = "ab";

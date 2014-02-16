@@ -64,7 +64,7 @@ namespace Compiler
 //------------------------------------------------------------------------------
     shared_ptr<ASTNode> Parser::ParsePrimaryExpression_(CallerType& caller)
     {
-        Token token = WaitForTokenReady_(caller);
+        Token token = TakeToken_(caller);
         switch(token.type)
         {
             case TT_IDENTIFIER:
@@ -120,6 +120,10 @@ namespace Compiler
 
                 shared_ptr<ASTNode> node = make_shared<ASTNode>(token);
                 node->SetTypeSym(type);
+                if (token == TT_LITERAL_CHAR_ARRAY)
+                {
+                    stringTable_.push_back(node);
+                }
                 return node;
                 break;
             }
@@ -128,7 +132,7 @@ namespace Compiler
             {
                 shared_ptr<ASTNode> r = ParseExpression_(caller);
 
-                token = WaitForTokenReady_(caller);
+                token = TakeToken_(caller);
                 if (token != OP_RPAREN)
                 {
                     ThrowInvalidTokenError(token, "')' expected");
@@ -162,14 +166,14 @@ namespace Compiler
             nodeStack_.pop_back();
         }
 
-        Token token = WaitForTokenReady_(caller);
+        Token token = TakeToken_(caller);
 
         auto it = binaryOperatorTypeToPrecedence.find(token.type);
         while (it != binaryOperatorTypeToPrecedence.end()
                && it->second >= priority)
         {
             left = make_shared<ASTNodeBinaryOperator>(token, left, ParseBinaryOperator_(caller, it->second + 1));
-            token = WaitForTokenReady_(caller);
+            token = TakeToken_(caller);
             it = binaryOperatorTypeToPrecedence.find(token.type);
         }
 
@@ -181,7 +185,7 @@ namespace Compiler
     shared_ptr<ASTNode> Parser::ParseExpression_(CallerType& caller)
     {
         shared_ptr<ASTNode> node = ParseAssignmentExpression_(caller);
-        Token token = WaitForTokenReady_(caller);
+        Token token = TakeToken_(caller);
         if (token == OP_COMMA)
         {
             shared_ptr<ASTNodeCommaOperator> nodeCommaOp = make_shared<ASTNodeCommaOperator>(token);
@@ -189,7 +193,7 @@ namespace Compiler
             while (token == OP_COMMA)
             {
                 nodeCommaOp->PushOperand(ParseAssignmentExpression_(caller));
-                token = WaitForTokenReady_(caller);
+                token = TakeToken_(caller);
             }
             node = nodeCommaOp;
         }
@@ -200,10 +204,10 @@ namespace Compiler
 //------------------------------------------------------------------------------
     shared_ptr<ASTNode> Parser::ParseAssignmentExpression_(CallerType& caller)
     {
-        Token tokenParen = WaitForTokenReady_(caller);
+        Token tokenParen = TakeToken_(caller);
         if (tokenParen == OP_LPAREN)
         {
-            Token tokenSpecQualifier = WaitForTokenReady_(caller);
+            Token tokenSpecQualifier = TakeToken_(caller);
 
             tokenStack_.push_back(tokenSpecQualifier);
             tokenStack_.push_back(tokenParen);
@@ -221,7 +225,7 @@ namespace Compiler
 
         {
             shared_ptr<ASTNode> node = ParseUnaryExpression_(caller);
-            Token token = WaitForTokenReady_(caller);
+            Token token = TakeToken_(caller);
             if (IsAssignmentOperator(token.type))
             {
                 return make_shared<ASTNodeAssignment>(token, node, ParseAssignmentExpression_(caller));
@@ -240,16 +244,16 @@ namespace Compiler
 //------------------------------------------------------------------------------
     shared_ptr<ASTNode> Parser::ParseCastExpression_(Parser::CallerType& caller)
     {
-        Token token = WithdrawTokenIf_(caller, OP_LPAREN);
+        Token token = TakeTokenIf_(caller, OP_LPAREN);
         if (token == OP_LPAREN)
         {
-             token = WaitForTokenReady_(caller);
+             token = TakeToken_(caller);
             if (IsSpecifierQualifier_(token))
             {
                 tokenStack_.push_back(token);
                 DeclarationSpecifiers declSpec = ParseDeclarationSpecifiers_(caller);
 
-                token = WaitForTokenReady_(caller);
+                token = TakeToken_(caller);
                 if (token != OP_RPAREN)
                 {
                     tokenStack_.push_back(token);
@@ -260,7 +264,7 @@ namespace Compiler
                                                      variable->GetRefSymbol()),
                                                    ParseCastExpression_(caller));
 
-                    token = WaitForTokenReady_(caller);
+                    token = TakeToken_(caller);
                     if (token != OP_RPAREN)
                     {
                         ThrowInvalidTokenError(token, "right parentesis expected");
@@ -295,7 +299,7 @@ namespace Compiler
 
         while (parsing)
         {
-            token = WaitForTokenReady_(caller);
+            token = TakeToken_(caller);
             if (IsUnaryOperator(token)
                 || token == OP_INC
                 || token == OP_DEC
@@ -321,23 +325,23 @@ namespace Compiler
                 }
                 else if (nodes.back()->token == KW_SIZEOF)
                 {
-                    token = WaitForTokenReady_(caller);
+                    token = TakeToken_(caller);
 
                     if (token == OP_LPAREN)
                     {
-                        token = WaitForTokenReady_(caller);
+                        token = TakeToken_(caller);
                         if (IsSpecifierQualifier_(token))
                         {
                             tokenStack_.push_back(token);
                             DeclarationSpecifiers declSpec = ParseDeclarationSpecifiers_(caller);
-                            token = WaitForTokenReady_(caller);
+                            token = TakeToken_(caller);
                             if (token != OP_RPAREN)
                             {
                                 tokenStack_.push_back(token);
                                 shared_ptr<SymbolVariable> variable = ParseDeclarator_(caller, declSpec, true);
                                 temp = make_shared<ASTNodeTypeName>(variable->GetRefSymbol());
 
-                                token = WaitForTokenReady_(caller);
+                                token = TakeToken_(caller);
                                 if (token != OP_RPAREN)
                                 {
                                     ThrowInvalidTokenError(token, "right parentesis expected");
@@ -383,12 +387,12 @@ namespace Compiler
     shared_ptr<ASTNode> Parser::ParseConditionalExpression_(CallerType& caller)
     {
         shared_ptr<ASTNode> conditionNode = ParseBinaryOperator_(caller, 0);
-        Token token = WaitForTokenReady_(caller);
+        Token token = TakeToken_(caller);
 
         if (token == OP_QMARK)
         {
             shared_ptr<ASTNode> thenExpressionNode = ParseExpression_(caller);
-            Token colonToken = WaitForTokenReady_(caller);
+            Token colonToken = TakeToken_(caller);
 
             if (colonToken == OP_COLON)
             {
@@ -412,7 +416,7 @@ namespace Compiler
     shared_ptr<ASTNode> Parser::ParsePostfixExpression_(CallerType& caller)
     {
         shared_ptr<ASTNode> node = ParsePrimaryExpression_(caller);
-        Token token = WaitForTokenReady_(caller);
+        Token token = TakeToken_(caller);
 
         while (true)
         {
@@ -422,12 +426,12 @@ namespace Compiler
                 {
                     // postfix-expression '[' expression ']'
                     node = make_shared<ASTNodeArraySubscript>(token, node, ParseExpression_(caller));
-                    token = WaitForTokenReady_(caller);
+                    token = TakeToken_(caller);
                     if (token != OP_RSQUARE)
                     {
                         ThrowInvalidTokenError(token, "']' expected in postfix-expression");
                     }
-                    token = WaitForTokenReady_(caller);
+                    token = TakeToken_(caller);
                     break;
                 }
 
@@ -435,7 +439,7 @@ namespace Compiler
                 {
                     // postfix-expression '(' {expression} ')' // argument-expression-list
                     Token prevToken = token;
-                    token = WaitForTokenReady_(caller);
+                    token = TakeToken_(caller);
 
                     vector<shared_ptr<ASTNode>> parameters;
 
@@ -446,7 +450,7 @@ namespace Compiler
                         do
                         {
                             parameters.push_back(ParseAssignmentExpression_(caller));
-                            token = WaitForTokenReady_(caller);
+                            token = TakeToken_(caller);
 
                         } while (token == OP_COMMA);
 
@@ -458,7 +462,7 @@ namespace Compiler
 
                     node = make_shared<ASTNodeFunctionCall>(token, node, parameters);
 
-                    token = WaitForTokenReady_(caller);
+                    token = TakeToken_(caller);
                     break;
                 }
 
@@ -467,7 +471,7 @@ namespace Compiler
                 {
                     // postfix-expression '.' identifier
                     // postfix-expression '->' identifier
-                    Token identifierToken = WaitForTokenReady_(caller);
+                    Token identifierToken = TakeToken_(caller);
                     if (identifierToken == TT_IDENTIFIER)
                     {
                         node = make_shared<ASTNodeStructureAccess>(token, node, make_shared<ASTNode>(identifierToken));
@@ -476,7 +480,7 @@ namespace Compiler
                     {
                         ThrowInvalidTokenError(identifierToken, "identifier expected");
                     }
-                    token = WaitForTokenReady_(caller);
+                    token = TakeToken_(caller);
                     break;
                 }
 
@@ -489,7 +493,7 @@ namespace Compiler
                            || token == OP_DEC)
                     {
                         node = make_shared<ASTNodeUnaryOperator>(token, node);
-                        token = WaitForTokenReady_(caller);
+                        token = TakeToken_(caller);
                     }
                     break;
                 }
@@ -515,7 +519,7 @@ namespace Compiler
 
         while (token == OP_STAR)
         {
-            token = WaitForTokenReady_(caller);
+            token = TakeToken_(caller);
 
             bool constant = false;
             while (token == KW_CONST)
@@ -525,7 +529,7 @@ namespace Compiler
                     constant = true;
                     tail = make_shared<SymbolConst>(tail);
                 }
-                token = WaitForTokenReady_(caller);
+                token = TakeToken_(caller);
             }
 
             if (token == OP_STAR)
@@ -543,7 +547,7 @@ namespace Compiler
     shared_ptr<Symbol> Parser::ParseDeclaration_(Parser::CallerType& caller)
     {
         DeclarationSpecifiers declSpec = ParseDeclarationSpecifiers_(caller);
-        Token token = WithdrawTokenIf_(caller, OP_SEMICOLON);
+        Token token = TakeTokenIf_(caller, OP_SEMICOLON);
 
         if (token == OP_SEMICOLON)
         {
@@ -588,7 +592,7 @@ namespace Compiler
 
 
         DeclarationSpecifiers declSpec;
-        Token token = WaitForTokenReady_(caller);
+        Token token = TakeToken_(caller);
         bool constant = false;
 
         bool identifierFound = false;
@@ -650,7 +654,7 @@ namespace Compiler
                     ThrowInvalidTokenError(token, "unexpected in declaration");
                     break;
             }
-            token = WaitForTokenReady_(caller);
+            token = TakeToken_(caller);
         }
         tokenStack_.push_back(token);
 
@@ -678,7 +682,7 @@ namespace Compiler
     shared_ptr<Symbol> Parser::ParseInitDeclaratorList_(Parser::CallerType& caller, DeclarationSpecifiers& declSpec)
     {
         shared_ptr<SymbolVariable> declarator = ParseDeclarator_(caller, declSpec);
-        Token token = WaitForTokenReady_(caller);
+        Token token = TakeToken_(caller);
 
         if (declarator->GetType() == ESymbolType::VARIABLE
             && declarator ->GetRefSymbol()->GetType() == ESymbolType::TYPE_FUNCTION
@@ -719,7 +723,7 @@ namespace Compiler
             {
                 ThrowInvalidTokenError(token, "`,` or `;` expected in init-declarator-list");
             }
-            token = WaitForTokenReady_(caller);
+            token = TakeToken_(caller);
         }
 
         return NULL;
@@ -735,13 +739,13 @@ namespace Compiler
             shared_ptr<SymbolType> leftmostPointer = NULL;
             shared_ptr<SymbolType> rightmostPointer = NULL;
             shared_ptr<Symbol> centralType = NULL;
-            Token token = WaitForTokenReady_(caller);            
+            Token token = TakeToken_(caller);
 
             // pointer part
             if (token == OP_STAR)
             {
                 std::tie(leftmostPointer, rightmostPointer) = ParsePointer_(caller);
-                token = WaitForTokenReady_(caller);
+                token = TakeToken_(caller);
             }
 
             // direct declarator
@@ -757,7 +761,7 @@ namespace Compiler
             else if (token == OP_LPAREN)
             {
                 centralType = f();
-                token = WaitForTokenReady_(caller);
+                token = TakeToken_(caller);
                 if (token != OP_RPAREN)
                 {
                     ThrowInvalidTokenError(token, "`)` expected to close in declarator");
@@ -782,7 +786,7 @@ namespace Compiler
                 }
             }
 
-            token = WaitForTokenReady_(caller);
+            token = TakeToken_(caller);
 
             shared_ptr<Symbol> rightmostType = centralType;
             shared_ptr<SymbolType> temp = NULL;
@@ -801,7 +805,7 @@ namespace Compiler
 
                     symTables_.pop_back();
 
-                    token = WaitForTokenReady_(caller);
+                    token = TakeToken_(caller);
 
                     if (token != OP_RPAREN)
                     {
@@ -812,13 +816,13 @@ namespace Compiler
                 {
                     shared_ptr<SymbolArray> type = make_shared<SymbolArray>();
                     temp = type;
-                    token = WithdrawTokenIf_(caller, OP_RSQUARE);
+                    token = TakeTokenIf_(caller, OP_RSQUARE);
 
                     if (token != OP_RSQUARE)
                     {
                         shared_ptr<ASTNode> sizeInitializer = ParseAssignmentExpression_(caller);
                         type->SetSizeInitializer(sizeInitializer);
-                        token = WaitForTokenReady_(caller);
+                        token = TakeToken_(caller);
                         if (token != OP_RSQUARE)
                         {
                             ThrowInvalidTokenError(token, "closing `]` expected for array declarator");
@@ -830,7 +834,7 @@ namespace Compiler
                 static_pointer_cast<SymbolTypeRef>(rightmostType)->SetRefSymbol(temp);
                 rightmostType = temp;
 
-                token = WaitForTokenReady_(caller);
+                token = TakeToken_(caller);
             }
             tokenStack_.push_back(token);
 
@@ -895,7 +899,7 @@ namespace Compiler
 
         // TODO: check size and types with symFuncType
 
-        Token token = WaitForTokenReady_(caller);
+        Token token = TakeToken_(caller);
 
         while (token != OP_RPAREN)
         {
@@ -910,11 +914,11 @@ namespace Compiler
 
             ParseDeclarator_(caller, declSpec);
 
-            token = WaitForTokenReady_(caller);
+            token = TakeToken_(caller);
 
             if (token == OP_COMMA)
             {
-                token = WaitForTokenReady_(caller);
+                token = TakeToken_(caller);
             }
             else if (token != OP_RPAREN)
             {
@@ -927,11 +931,11 @@ namespace Compiler
 //------------------------------------------------------------------------------
     shared_ptr<ASTNode> Parser::ParseInitializer_(Parser::CallerType& caller)
     {
-        Token token = WithdrawTokenIf_(caller, OP_LBRACE);
+        Token token = TakeTokenIf_(caller, OP_LBRACE);
 
         if (token == OP_LBRACE)
         {
-            token = WaitForTokenReady_(caller);
+            token = TakeToken_(caller);
         }
         else
         {
@@ -946,7 +950,7 @@ namespace Compiler
     shared_ptr<SymbolStruct> Parser::ParseStructSpecifier_(Parser::CallerType& caller)
     {
         // `struct` already parsed
-        Token token = WithdrawTokenIf_(caller, TT_IDENTIFIER);
+        Token token = TakeTokenIf_(caller, TT_IDENTIFIER);
         Token tagToken;
 
         if (token == TT_IDENTIFIER)
@@ -991,7 +995,7 @@ namespace Compiler
             AddType_(symStruct);
         }
 
-        token = WithdrawTokenIf_(caller, OP_LBRACE);
+        token = TakeTokenIf_(caller, OP_LBRACE);
 
         if (token == OP_LBRACE)
         {
@@ -1012,20 +1016,25 @@ namespace Compiler
                 {
                     ThrowError_("struct declaration can not contain typedef");
                 }
-                token = WithdrawTokenIf_(caller, OP_SEMICOLON);
+                token = TakeTokenIf_(caller, OP_SEMICOLON);
+
+                if (token == OP_SEMICOLON)
+                {
+                    ThrowInvalidTokenError(token, "a member must be defined by type");
+                }
 
                 while (token != OP_SEMICOLON)
                 {
                     ParseDeclarator_(caller, declSpec);
-                    token = WaitForTokenReady_(caller);
+                    token = TakeToken_(caller);
                     if (token != OP_COMMA
                         && token != OP_SEMICOLON)
                     {
-                        token = WaitForTokenReady_(caller);
+                        ThrowInvalidTokenError(token, "`,` or `;` expected");
                     }
                 }
 
-                token = WithdrawTokenIf_(caller, OP_RBRACE);
+                token = TakeTokenIf_(caller, OP_RBRACE);
             }
 
             symTables_.pop_back();
@@ -1039,7 +1048,7 @@ namespace Compiler
     void Parser::ParseTranslationUnit_(CallerType& caller)
     {
         shared_ptr<Symbol> symbol = NULL;
-        Token token = WithdrawTokenIf_(caller, TT_EOF);
+        Token token = TakeTokenIf_(caller, TT_EOF);
 
         while (token != TT_EOF)
         {
@@ -1068,7 +1077,7 @@ namespace Compiler
                 symTables_.pop_back();                
             }
 
-            token = WithdrawTokenIf_(caller, TT_EOF);
+            token = TakeTokenIf_(caller, TT_EOF);
         }
         // globals
         Flush();
@@ -1081,7 +1090,7 @@ namespace Compiler
         symTables_.push_back(symTable);
         shared_ptr<CompoundStatement> compoundStatement = make_shared<CompoundStatement>(symTable);
 
-        Token token = WithdrawTokenIf_(caller, OP_RBRACE);
+        Token token = TakeTokenIf_(caller, OP_RBRACE);
 
         while (token != OP_RBRACE)
         {
@@ -1095,7 +1104,7 @@ namespace Compiler
                 compoundStatement->AddStatement(ParseStatement_(caller));
             }
 
-            token = WithdrawTokenIf_(caller, OP_RBRACE);
+            token = TakeTokenIf_(caller, OP_RBRACE);
 
             if (token == TT_EOF)
             {
@@ -1109,15 +1118,15 @@ namespace Compiler
 //------------------------------------------------------------------------------
     shared_ptr<SelectionStatement> Parser::ParseSelectionStatement_(CallerType& caller)
     {
-        Token token = WithdrawTokenIf_(caller, KW_IF);
+        Token token = TakeTokenIf_(caller, KW_IF);
         if (token == KW_IF)
         {
             shared_ptr<SelectionStatement> selectionStatement = make_shared<SelectionStatement>();
-            token = WithdrawTokenIf_(caller, OP_LPAREN);
+            token = TakeTokenIf_(caller, OP_LPAREN);
             if (token == OP_LPAREN)
             {
                 shared_ptr<ASTNode> conditionExpression = ParseExpression_(caller);
-                token = WaitForTokenReady_(caller);
+                token = TakeToken_(caller);
                 if (token != OP_RPAREN)
                 {
                     ThrowInvalidTokenError(token, "`)` expected to close selection-statement condition expression");
@@ -1125,7 +1134,7 @@ namespace Compiler
                 selectionStatement->SetConditionExpression(conditionExpression);
                 shared_ptr<Statement> statementForIf = ParseStatement_(caller);
                 selectionStatement->SetStatementForIf(statementForIf);
-                token = WithdrawTokenIf_(caller, KW_ELSE);
+                token = TakeTokenIf_(caller, KW_ELSE);
                 if (token == KW_ELSE)
                 {
                     shared_ptr<Statement> statementForElse = ParseStatement_(caller);
@@ -1148,7 +1157,7 @@ namespace Compiler
 //------------------------------------------------------------------------------
     shared_ptr<IterationStatement> Parser::ParseIterationStatement_(CallerType& caller)
     {
-        Token token = WaitForTokenReady_(caller);
+        Token token = TakeToken_(caller);
         if (token == KW_FOR)
         {
             return ParseForStatement_(caller);
@@ -1172,7 +1181,7 @@ namespace Compiler
     shared_ptr<ForStatement> Parser::ParseForStatement_(Parser::CallerType& caller)
     {
         // `for` alread eaten
-        Token token = WaitForTokenReady_(caller);
+        Token token = TakeToken_(caller);
         if (token == OP_LPAREN)
         {
             shared_ptr<ForStatement> forStatement = make_shared<ForStatement>();
@@ -1181,7 +1190,7 @@ namespace Compiler
             symTables_.push_back(symbols);
             forStatement->SetSymbolTable(symbols);
 
-            token = WaitForTokenReady_(caller);
+            token = TakeToken_(caller);
             if (IsDeclarationSpecifier_(token))
             {
                 tokenStack_.push_back(token);
@@ -1198,7 +1207,7 @@ namespace Compiler
                 {
                     tokenStack_.push_back(token);
                     initializingExpression = ParseExpression_(caller);
-                    token = WaitForTokenReady_(caller);
+                    token = TakeToken_(caller);
                     if (token != OP_SEMICOLON)
                     {
                         ThrowInvalidTokenError(token, "`;` expected after clause-1 of `for` iteration-statement");
@@ -1207,7 +1216,7 @@ namespace Compiler
                 forStatement->SetInitializingExpression(initializingExpression);
             }
 
-            token = WaitForTokenReady_(caller);
+            token = TakeToken_(caller);
             shared_ptr<ASTNode> controllingExpression = NULL;
             if (token == OP_SEMICOLON)
             {
@@ -1217,7 +1226,7 @@ namespace Compiler
             {
                 tokenStack_.push_back(token);
                 controllingExpression = ParseExpression_(caller);\
-                token = WaitForTokenReady_(caller);
+                token = TakeToken_(caller);
                 if (token != OP_SEMICOLON)
                 {
                     ThrowInvalidTokenError(token, "`;` expected after controlling expression of `for` iteration-statement");
@@ -1226,7 +1235,7 @@ namespace Compiler
 
             forStatement->SetControllingExpression(controllingExpression);
 
-            token = WaitForTokenReady_(caller);
+            token = TakeToken_(caller);
             shared_ptr<ASTNode> iterationExpression = NULL;
             if (token == OP_RPAREN)
             {
@@ -1236,7 +1245,7 @@ namespace Compiler
             {
                 tokenStack_.push_back(token);
                 iterationExpression = ParseExpression_(caller);
-                token = WaitForTokenReady_(caller);
+                token = TakeToken_(caller);
                 if (token != OP_RPAREN)
                 {
                     ThrowInvalidTokenError(token, "`)` expected after iteration expression of `for` iteration-statement");
@@ -1267,13 +1276,13 @@ namespace Compiler
         iterationStatementStack_.push_back(doStatement);
         shared_ptr<Statement> loopStatement = ParseStatement_(caller);
 
-        Token token = WaitForTokenReady_(caller);
+        Token token = TakeToken_(caller);
         if (token != KW_WHILE)
         {
             ThrowInvalidTokenError(token, "`while` expected after loop-statement of `do` iteration-statement");
         }
 
-        token = WaitForTokenReady_(caller);
+        token = TakeToken_(caller);
         if (token != OP_LPAREN)
         {
             ThrowInvalidTokenError(token, "`(` expected before controlling-expression of `do` iteration-statement");
@@ -1281,13 +1290,13 @@ namespace Compiler
 
         shared_ptr<ASTNode> controllingExpression = ParseExpression_(caller);
 
-        token = WaitForTokenReady_(caller);
+        token = TakeToken_(caller);
         if (token != OP_RPAREN)
         {
             ThrowInvalidTokenError(token, "`)` expected after controlling-expression of `do` iteration-statement");
         }
 
-        token = WaitForTokenReady_(caller);
+        token = TakeToken_(caller);
         if (token != OP_SEMICOLON)
         {
             ThrowInvalidTokenError(token, "`;` at the end of `do` iteration-statement");
@@ -1306,7 +1315,7 @@ namespace Compiler
         shared_ptr<WhileStatement> whileStatement = make_shared<WhileStatement>();
         iterationStatementStack_.push_back(whileStatement);
 
-        Token token = WaitForTokenReady_(caller);
+        Token token = TakeToken_(caller);
         if (token != OP_LPAREN)
         {
             ThrowInvalidTokenError(token, "`(` expected before controlling-expression of `while` iteration-statement");
@@ -1314,7 +1323,7 @@ namespace Compiler
 
         shared_ptr<ASTNode> controllingExpression = ParseExpression_(caller);
 
-        token = WaitForTokenReady_(caller);
+        token = TakeToken_(caller);
         if (token != OP_RPAREN)
         {
             ThrowInvalidTokenError(token, "`)` expected after controlling-expression of `while` iteration-statement");
@@ -1331,16 +1340,16 @@ namespace Compiler
 //------------------------------------------------------------------------------
     shared_ptr<JumpStatement> Parser::ParseJumpStatement_(CallerType& caller)
     {
-        Token token = WaitForTokenReady_(caller);
+        Token token = TakeToken_(caller);
         shared_ptr<JumpStatement> jumpStatement = make_shared<JumpStatement>(token);
         if (token == KW_RETURN)
         {
-            token = WithdrawTokenIf_(caller, OP_SEMICOLON);
+            token = TakeTokenIf_(caller, OP_SEMICOLON);
             if (token != OP_SEMICOLON)
             {
                 shared_ptr<ASTNode> expression = ParseExpression_(caller);
                 jumpStatement->SetReturnExpression(expression);
-                token = WaitForTokenReady_(caller);
+                token = TakeToken_(caller);
             }
         }
         else
@@ -1350,7 +1359,7 @@ namespace Compiler
                 ThrowError_("`break` or `continue` statement must belong to loop");
             }
             jumpStatement->SetRefLoopStatement(iterationStatementStack_.back());
-            token = WaitForTokenReady_(caller);
+            token = TakeToken_(caller);
         }
 
         if (token != OP_SEMICOLON)
@@ -1364,12 +1373,12 @@ namespace Compiler
     shared_ptr<ExpressionStatement> Parser::ParseExpressionStatement_(CallerType& caller)
     {
         shared_ptr<ExpressionStatement> expressionStatement = make_shared<ExpressionStatement>();
-        Token token = WithdrawTokenIf_(caller, OP_SEMICOLON);
+        Token token = TakeTokenIf_(caller, OP_SEMICOLON);
         if (token != OP_SEMICOLON)
         {
             shared_ptr<ASTNode> expression = ParseExpression_(caller);
             expressionStatement->SetExpression(expression);
-            token = WithdrawTokenIf_(caller, OP_SEMICOLON);
+            token = TakeTokenIf_(caller, OP_SEMICOLON);
             if (token != OP_SEMICOLON)
             {
                 ThrowInvalidTokenError(token, "semicolon expected at the end of expression-statement");
@@ -1381,7 +1390,7 @@ namespace Compiler
 //------------------------------------------------------------------------------
     shared_ptr<Statement> Parser::ParseStatement_(CallerType& caller)
     {
-        Token token = WithdrawTokenIf_(caller, OP_LBRACE);
+        Token token = TakeTokenIf_(caller, OP_LBRACE);
         switch (token.type)
         {
             case OP_LBRACE:
@@ -1418,7 +1427,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    Token Parser::WaitForTokenReady_(CallerType& caller)
+    Token Parser::TakeToken_(CallerType& caller)
     {
         Token token;
         if (tokenStack_.empty())
@@ -1435,9 +1444,9 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    Token Parser::WithdrawTokenIf_(Parser::CallerType& caller, const ETokenType& tokenType)
+    Token Parser::TakeTokenIf_(Parser::CallerType& caller, const ETokenType& tokenType)
     {
-        Token token = WaitForTokenReady_(caller);
+        Token token = TakeToken_(caller);
         if (token != tokenType)
         {
             tokenStack_.push_back(token);
@@ -1446,9 +1455,9 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    Token Parser::WithdrawTokenIf_(Parser::CallerType& caller, bool condition)
+    Token Parser::TakeTokenIf_(Parser::CallerType& caller, bool condition)
     {
-        Token token = WaitForTokenReady_(caller);
+        Token token = TakeToken_(caller);
         if (!condition)
         {
             tokenStack_.push_back(token);
@@ -1659,6 +1668,7 @@ namespace Compiler
         assert(ftToTtMap.find(type) != ftToTtMap.end());
 
         Token token(ftToTtMap[type], source, line, column);
+        token.size = nbytes;
 
         switch (type)
         {
@@ -1693,6 +1703,7 @@ namespace Compiler
         Token token(TT_LITERAL_CHAR_ARRAY, "\"" + source + "\"", line, column);
         token.charValue = new char [nbytes];
         memcpy(token.charValue, data, nbytes);
+        token.size = nbytes;
         ResumeParse_(token);
     }
 

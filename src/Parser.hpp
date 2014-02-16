@@ -53,6 +53,8 @@ namespace Compiler
         shared_ptr<SymbolTable> GetInternalSymbolTable() const;
         shared_ptr<SymbolTable> GetGlobalSymbolTable() const;
 
+        std::vector<shared_ptr<ASTNode>> stringTable_;
+
     private:
         std::vector<Token> tokenStack_;
         std::vector<shared_ptr<ASTNode>> nodeStack_;
@@ -105,11 +107,11 @@ namespace Compiler
 
         void ThrowError_(const std::string& descriptionText);
         void ResumeParse_(const Token& token);
-        Token WaitForTokenReady_(CallerType& caller);
+        Token TakeToken_(CallerType& caller);
 
         // waits for token, returns it and pushes it back if token is not of tokenType
-        Token WithdrawTokenIf_(CallerType& caller, const ETokenType& tokenType = TT_INVALID);
-        Token WithdrawTokenIf_(CallerType& caller, bool condition);
+        Token TakeTokenIf_(CallerType& caller, const ETokenType& tokenType = TT_INVALID);
+        Token TakeTokenIf_(CallerType& caller, bool condition);
 
         bool IsDeclarationSpecifier_(const Token& token) const;
         bool IsSpecifierQualifier_(const Token& token) const;

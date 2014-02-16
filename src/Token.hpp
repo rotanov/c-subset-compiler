@@ -12,6 +12,7 @@ namespace Compiler
         std::string text{""};
         unsigned line{0};
         unsigned column{0};
+        unsigned size{0};
 
         Token(const ETokenType& type, const std::string& text, const unsigned& line, const unsigned& column);
         Token(const ETokenType& type, const std::string& text);

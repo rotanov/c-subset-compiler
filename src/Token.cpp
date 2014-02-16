@@ -58,6 +58,7 @@ namespace Compiler
             column = token.column;
             type = token.type;
             text = token.text;
+            size = token.size;
 
             intValue = 0;
 
@@ -81,6 +82,7 @@ namespace Compiler
         , column(token.column)
         , type(token.type)
         , text(token.text)
+        , size(token.size)
     {
         if (token == TT_LITERAL_CHAR_ARRAY)
         {
@@ -100,6 +102,7 @@ namespace Compiler
         , column(token.column)
         , type(token.type)
         , text(token.text)
+        , size(token.size)
     {
         if (token == TT_LITERAL_CHAR_ARRAY)
         {
@@ -127,6 +130,7 @@ namespace Compiler
             column = token.column;
             type = token.type;
             text = token.text;
+            size = token.size;
 
             intValue = 0;
 

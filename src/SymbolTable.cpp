@@ -378,9 +378,13 @@ namespace Compiler
         {
             int& size = const_cast<SymbolStruct*>(this)->size_;
             size = 0;
-            for (auto& v : const_cast<SymbolStruct*>(this)->fields_->orderedVariables)
+            auto vars = const_cast<SymbolStruct*>(this)->fields_->orderedVariables;
+            for (auto& v : vars)
             {
-                size += GetActualType(v)->GetSize();
+                // TODO: propert padding for alginment
+                auto sizeIncrement = GetActualType(v)->GetSize();
+                sizeIncrement += (4 - sizeIncrement % 4) * (sizeIncrement % 4 != 0);
+                size += sizeIncrement;
             }
             return size;
         }

@@ -104,7 +104,7 @@
 			"file": "sandbox/vs-toasm/test.cpp",
 			"settings":
 			{
-				"buffer_size": 998,
+				"buffer_size": 4474,
 				"line_ending": "Windows"
 			}
 		},
@@ -112,16 +112,17 @@
 			"file": "sandbox/vs-toasm/test.asm",
 			"settings":
 			{
-				"buffer_size": 328,
+				"buffer_size": 380,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "sandbox/do.bat",
+			"contents": "char* pes = {'a', 'b', 'c', 'd', 'e', 'f', };",
 			"settings":
 			{
-				"buffer_size": 135,
-				"line_ending": "Windows"
+				"buffer_size": 45,
+				"line_ending": "Windows",
+				"name": "char* pes = {'a', 'b', 'c', 'd', 'e', 'f', };"
 			}
 		},
 		{
@@ -626,8 +627,12 @@
 	},
 	"file_history":
 	[
-		"/D/dev/compiler/sandbox/vs-toasm/do.bat",
 		"/C/portableApplications/miranda-ng-v0.94.8_x64/Profiles/Satana/Logs/Jabber.ru/shinkai_project@conference.jabber.ru.log",
+		"/C/portableApplications/miranda-ng-v0.94.8_x64/Profiles/Satana/Logs/IRCHighway/#iichan - IRCHighway.log",
+		"/D/dev/compiler/sandbox/do.bat",
+		"/C/Users/mapho_000/AppData/Local/Temp/buzzard.c",
+		"/C/Users/mapho_000/AppData/Local/Temp/stb.h",
+		"/D/dev/compiler/sandbox/vs-toasm/do.bat",
 		"/C/portableApplications/miranda-ng-v0.94.8_x64/Profiles/Satana/Logs/Jabber.ru/zadrawch@conference.jabber.ru.log",
 		"/D/dev/compiler/test-asm/vs-toasm/test.cpp",
 		"/D/dev/compiler/test-asm/src.asm",
@@ -749,11 +754,7 @@
 		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/100-integer-zero.ref",
 		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/450-string-literal-concat.t",
 		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/500-plus-ud-suffix.t",
-		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/500-plus-ud-suffix.ref",
-		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/700-hard-string-concat.t",
-		"/D/dev/cppgm/dev/cppgm-starter-kits/pa1/tests/200-charname-allowed.t",
-		"/D/dev/cppgm/dev/cppgm-starter-kits/pa1/tests/200-charname-allowed.ref",
-		"/D/dev/cppgm/dev/cppgm-starter-kits/pa1/tests/100-utf8.ref"
+		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/500-plus-ud-suffix.ref"
 	],
 	"find":
 	{
@@ -822,6 +823,10 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"initializer",
+			"вайб",
+			"initializer",
+			"init-declarator-list",
 			"_a",
 			"_notMain",
 			"Maji.*htt",
@@ -945,11 +950,7 @@
 			"struct",
 			"CTYpeSymbol",
 			"declaration spe",
-			"declarator",
-			"direct-abstract-declarator",
-			"init-declarat",
-			"declarator",
-			"declaration-specifiers"
+			"declarator"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1041,7 +1042,7 @@
 	"groups":
 	[
 		{
-			"selected": 5,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -1342,15 +1343,15 @@
 					"file": "sandbox/vs-toasm/test.cpp",
 					"settings":
 					{
-						"buffer_size": 998,
+						"buffer_size": 4474,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								998,
-								998
+								4456,
+								4456
 							]
 						],
 						"settings":
@@ -1405,7 +1406,7 @@
 							"syntax": "Packages/C++/C++.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 349.0,
+						"translation.y": 5626.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -1415,15 +1416,15 @@
 					"file": "sandbox/vs-toasm/test.asm",
 					"settings":
 					{
-						"buffer_size": 328,
+						"buffer_size": 380,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								312,
-								312
+								196,
+								196
 							]
 						],
 						"settings":
@@ -1486,23 +1487,23 @@
 				},
 				{
 					"buffer": 6,
-					"file": "sandbox/do.bat",
 					"settings":
 					{
-						"buffer_size": 135,
+						"buffer_size": 45,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								50,
-								135
+								45,
+								45
 							]
 						],
 						"settings":
 						{
 							"BracketHighlighterBusy": false,
+							"auto_name": "char* pes = {'a', 'b', 'c', 'd', 'e', 'f', };",
 							"bh_regions":
 							[
 								"bh_regex",
@@ -1546,10 +1547,8 @@
 								"bh_single_quote_open",
 								"bh_single_quote_close"
 							],
-							"encoding_helper_confidence": 1.0,
-							"encoding_helper_encoding": "UTF-8",
 							"encoding_helper_encoding_sublime": "UTF-8",
-							"syntax": "Packages/Batch File/Batch File.tmLanguage"
+							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -1935,8 +1934,8 @@
 						"selection":
 						[
 							[
-								2828,
-								2828
+								3983,
+								3994
 							]
 						],
 						"settings":
@@ -1993,7 +1992,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1253.0,
+						"translation.y": 2148.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -2010,8 +2009,8 @@
 						"selection":
 						[
 							[
-								29,
-								29
+								0,
+								33
 							]
 						],
 						"settings":

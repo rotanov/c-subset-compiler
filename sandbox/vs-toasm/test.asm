@@ -8,32 +8,16 @@
 
 INCLUDELIB LIBCMT
 
+PUBLIC	_a
+PUBLIC	_b
 _DATA	SEGMENT
-COMM	_a:BYTE:030H
-COMM	_b:BYTE:030H
+COMM	_aaaa:DWORD
 _DATA	ENDS
-PUBLIC	_main
-; Function compile flags: /Odsp
-_TEXT	SEGMENT
-_main	PROC
-; File d:\dev\compiler\sandbox\vs-toasm\test.cpp
-; Line 236
-	push	ebp
-	mov	ebp, esp
-	push	esi
-	push	edi
-; Line 237
-	push	12					; 0000000cH
-	pop	ecx
-	mov	esi, OFFSET _b
-	mov	edi, OFFSET _a
-	rep movsd
-; Line 238
-	xor	eax, eax
-	pop	edi
-	pop	esi
-	pop	ebp
-	ret	0
-_main	ENDP
-_TEXT	ENDS
+_DATA	SEGMENT
+_a	DD	FLAT:$SG1274
+$SG1274	DB	'abaaa', 00H
+	ORG $+2
+_b	DD	FLAT:$SG1276
+$SG1276	DB	'ab', 00H
+_DATA	ENDS
 END

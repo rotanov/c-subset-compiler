@@ -16,24 +16,26 @@ namespace Compiler
 
     void CodeGenerator::Flush() const
     {
-        std::cout << asmHeader;
+        using namespace std;
+
+        cout << asmHeader;
 
         shared_ptr<SymbolTable> internalSymbols = GetInternalSymbolTable();
         shared_ptr<SymbolTable> globalSymbols = GetGlobalSymbolTable();
 
         for (auto& f : globalSymbols->functions)
         {
-            std::cout << "PUBLIC _" << f.second->name << std::endl;
+            cout << "PUBLIC _" << f.second->name << endl;
         }
         if (globalSymbols->functions.size() > 0)
         {
-            std::cout << std::endl;
+            cout << endl;
         }
 
         if (globalSymbols->variables.size() > 0)
         {
-            // order ignored
-            std::cout << "_DATA SEGMENT" << std::endl;
+            // TODO: take order into account
+            cout << "_DATA SEGMENT" << endl;
             for (auto& f : globalSymbols->variables)
             {
                 // TODO: initializer present case
@@ -74,18 +76,46 @@ namespace Compiler
                     }
                     if (size != 1)
                     {
-                        std::stringstream ss;
-                        ss << std::hex << size;
+                        stringstream ss;
+                        ss << hex << size;
                         sizeName += ":0" + ss.str() + "H";
                     }
                 }
 
-                std::cout << "COMM _" << v->name << ":" << sizeName << std::endl;
+                cout << "COMM _" << v->name << ":" << sizeName << endl;
             }
-            std::cout << "_DATA ENDS" << std::endl;
+            cout << "_DATA ENDS" << endl;
         }
 
-        std::cout << asmFooter;
+        if (stringTable_.size() > 0)
+        {
+            cout << "_DATA SEGMENT" << endl;
+
+            int size = 1000;
+            for (auto& s : stringTable_)
+            {
+                Token& token = s->token;
+                cout << "$SG" << size << " ";
+                for (int i = 0; i < token.size; i++)
+                {
+                    stringstream ss;
+                    unsigned value = static_cast<unsigned char>(token.charValue[i]);
+                    ss << hex << value;
+                    cout << "DB 0" << ss.str() << "H" << endl;
+                }
+                size += token.size;
+                int pad = (4 - size % 4) * (size % 4 != 0);
+                size += pad;
+                if (pad != 0)
+                {
+                    cout << "ORG $+" << pad << endl;
+                }
+            }
+
+            cout << "_DATA ENDS" << endl;
+        }
+
+        cout << asmFooter;
     }
 
 } // namespace Compiler
