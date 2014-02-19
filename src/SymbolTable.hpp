@@ -164,6 +164,8 @@ namespace Compiler
         void SetInitializer(shared_ptr<ASTNode> initializer);
         virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
 
+        int offset{-1};
+
     protected:
         shared_ptr<ASTNode> initializer_{NULL};
     };

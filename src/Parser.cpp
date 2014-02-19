@@ -3,6 +3,7 @@
 #include <sstream>
 #include <unordered_set>
 #include <iostream>
+#include <stack>
 #include <cassert>
 #include <tuple>
 
@@ -704,9 +705,8 @@ namespace Compiler
         {
             if (token == OP_ASS)
             {
-                // Parse initializer
-                // TODO: complex initializer
-                declarator->SetInitializer(ParseInitializer_(caller));
+                tokenStack_.push_back(token);
+                ParseInitializer_(caller, declarator);
             }
             else if (token == OP_COMMA)
             {
@@ -929,21 +929,35 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    shared_ptr<ASTNode> Parser::ParseInitializer_(Parser::CallerType& caller)
+    void Parser::ParseInitializer_(Parser::CallerType& caller, shared_ptr<SymbolVariable> declarator)
     {
-        Token token = TakeTokenIf_(caller, OP_LBRACE);
+        // it's `=` now
+        Token token = TakeToken_(caller);
 
-        if (token == OP_LBRACE)
+        if (IfConst(declarator))
         {
-            token = TakeToken_(caller);
+            ThrowInvalidTokenError(token, "can't initialize variable of constant type");
         }
-        else
+
+        std::stack<shared_ptr<SymbolType>> typeSymStack;
+        typeSymStack.push(GetRefSymbol(declarator));
+
+        while (!typeSymStack.empty())
         {
-            shared_ptr<ASTNode> initializerExpression = ParseAssignmentExpression_(caller);
-            return initializerExpression;
+            auto top = typeSymStack.top();
+            auto type = top->GetType();
+
+            token = TakeTokenIf_(caller, OP_LBRACE);
+
+            if (token == OP_LBRACE)
+            {
+                token = TakeToken_(caller);
+            }
+            else
+            {
+                shared_ptr<ASTNode> initializerExpression = ParseAssignmentExpression_(caller);
+            }
         }
-        // TODO: this is stub implementation, only eating up simple initializer
-        return NULL;
     }
 
 //------------------------------------------------------------------------------

@@ -379,9 +379,8 @@ namespace Compiler
             int& size = const_cast<SymbolStruct*>(this)->size_;
             size = 0;
             auto vars = const_cast<SymbolStruct*>(this)->fields_->orderedVariables;
-            for (auto& v : vars)
+            for (int i = 0; i < vars.size(); i++)
             {
-                // TODO: propert padding for alginment
                 auto sizeIncrement = GetActualType(v)->GetSize();
                 sizeIncrement += (4 - sizeIncrement % 4) * (sizeIncrement % 4 != 0);
                 size += sizeIncrement;
