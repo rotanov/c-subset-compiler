@@ -161,13 +161,13 @@ namespace Compiler
 
         virtual ESymbolType GetType() const;
         virtual std::string GetQualifiedName() const;
-        void SetInitializer(shared_ptr<ASTNode> initializer);
         virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
+        void PushInitializer(shared_ptr<ASTNode> initializer);
 
         int offset{-1};
 
     protected:
-        shared_ptr<ASTNode> initializer_{NULL};
+        std::vector<shared_ptr<ASTNode>> initializers_;
     };
 
 //------------------------------------------------------------------------------

@@ -131,11 +131,6 @@ namespace Compiler
         return "variable " + name + " of type " + type_->GetQualifiedName();
     }
 
-    void SymbolVariable::SetInitializer(shared_ptr<ASTNode> initializer)
-    {
-        initializer_ = initializer;
-    }
-
     bool SymbolVariable::IfTypeFits(shared_ptr<Symbol> symbol) const
     {
         if (symbol->GetType() == ESymbolType::VARIABLE)
@@ -147,6 +142,12 @@ namespace Compiler
         {
             return false;
         }
+    }
+
+    void SymbolVariable::PushInitializer(shared_ptr<ASTNode> initializer)
+    {
+        assert(initializer != NULL);
+        initializers_.push_back(initializer);
     }
 
     SymbolChar::SymbolChar()
@@ -741,7 +742,6 @@ namespace Compiler
 
             case ESymbolType::TYPE_ARRAY:
             case ESymbolType::TYPE_FUNCTION:
-            case ESymbolType::TYPE_POINTER:
             case ESymbolType::TYPE_TYPEDEF:
             case ESymbolType::VARIABLE:
                 return IfConst(GetRefSymbol(symbol));

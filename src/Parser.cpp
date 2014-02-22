@@ -934,29 +934,42 @@ namespace Compiler
         // it's `=` now
         Token token = TakeToken_(caller);
 
-        if (IfConst(declarator))
-        {
-            ThrowInvalidTokenError(token, "can't initialize variable of constant type");
-        }
-
         std::stack<shared_ptr<SymbolType>> typeSymStack;
         typeSymStack.push(GetRefSymbol(declarator));
+        auto top = typeSymStack.top();
+        auto type = top->GetType();
 
-        while (!typeSymStack.empty())
+        token = TakeTokenIf_(caller, OP_LBRACE);
+        bool isBraced = (token == OP_LBRACE);
+        int initializerCount = 0;
+
+        if ((type == ESymbolType::TYPE_ARRAY
+             || type == ESymbolType::TYPE_STRUCT)
+            && !isBraced)
         {
-            auto top = typeSymStack.top();
-            auto type = top->GetType();
+            ThrowInvalidTokenError(token, "array or struct initializer list must be braced with `{` `}`");
+        }
 
-            token = TakeTokenIf_(caller, OP_LBRACE);
+        do
+        {
+            shared_ptr<ASTNode> initializerExpression = ParseAssignmentExpression_(caller);
+            declarator->PushInitializer(initializerExpression);
+            initializerCount++;
+            token = TakeToken_(caller);
+        }
+        while (isBraced
+               && token == OP_COMMA);
 
-            if (token == OP_LBRACE)
+        if (isBraced)
+        {
+            if (token != OP_RBRACE)
             {
-                token = TakeToken_(caller);
+                ThrowInvalidTokenError(token, "`}` exprected to close init-declarator-list");
             }
-            else
-            {
-                shared_ptr<ASTNode> initializerExpression = ParseAssignmentExpression_(caller);
-            }
+        }
+        else
+        {
+            tokenStack_.push_back(token);
         }
     }
 

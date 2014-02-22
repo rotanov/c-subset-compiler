@@ -1,0 +1,15 @@
+variables:
+------------------------------------------------
+variable p of type int
+variable pi of type pointer to const int
+functions:
+------------------------------------------------
+variable main of type function() returning int
+>----------------------------------------------;
+  =----
+  |   |
+  pi  &
+      |
+      p
+
+<----------------------------------------------;
