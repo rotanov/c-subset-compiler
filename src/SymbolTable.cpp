@@ -381,6 +381,7 @@ namespace Compiler
             auto vars = const_cast<SymbolStruct*>(this)->fields_->orderedVariables;
             for (int i = 0; i < vars.size(); i++)
             {
+                auto v = vars[i];
                 auto sizeIncrement = GetActualType(v)->GetSize();
                 sizeIncrement += (4 - sizeIncrement % 4) * (sizeIncrement % 4 != 0);
                 size += sizeIncrement;

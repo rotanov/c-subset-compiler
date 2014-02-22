@@ -44,7 +44,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ExpressionASTNode* ExpressionParser::ParseTopLevelExpression_(Coroutine::caller_type& caller)
+    ExpressionASTNode* ExpressionParser::ParseTopLevelExpression_(CallerType& caller)
     {
         while (true)
         {
@@ -67,7 +67,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ExpressionASTNode* ExpressionParser::ParsePrimaryExpression_(Coroutine::caller_type& caller)
+    ExpressionASTNode* ExpressionParser::ParsePrimaryExpression_(CallerType& caller)
     {
         Token token = WaitForTokenReady_(caller);
         switch(token.type)
@@ -106,7 +106,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ExpressionASTNode* ExpressionParser::ParseBinaryOperator_(Coroutine::caller_type& caller, int priority)
+    ExpressionASTNode* ExpressionParser::ParseBinaryOperator_(CallerType& caller, int priority)
     {
         ExpressionASTNode* left = NULL;
 
@@ -134,7 +134,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ExpressionASTNode* ExpressionParser::ParseExpression_(Coroutine::caller_type& caller)
+    ExpressionASTNode* ExpressionParser::ParseExpression_(CallerType& caller)
     {
         ExpressionASTNode* node = ParseAssignmentExpression_(caller);
         Token token = WaitForTokenReady_(caller);
@@ -149,7 +149,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ExpressionASTNode* ExpressionParser::ParseAssignmentExpression_(Coroutine::caller_type& caller)
+    ExpressionASTNode* ExpressionParser::ParseAssignmentExpression_(CallerType& caller)
     {
         ExpressionASTNode* node = ParseUnaryExpression_(caller);
         Token token = WaitForTokenReady_(caller);
@@ -169,7 +169,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ExpressionASTNode* ExpressionParser::ParseUnaryExpression_(Coroutine::caller_type& caller)
+    ExpressionASTNode* ExpressionParser::ParseUnaryExpression_(CallerType& caller)
     {
         Token token = WaitForTokenReady_(caller);
 
@@ -200,7 +200,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ExpressionASTNode* ExpressionParser::ParseConditionalExpression_(Coroutine::caller_type& caller)
+    ExpressionASTNode* ExpressionParser::ParseConditionalExpression_(CallerType& caller)
     {
         ExpressionASTNode* node = ParseBinaryOperator_(caller, 0);
         Token token = WaitForTokenReady_(caller);
@@ -227,7 +227,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ExpressionASTNode* ExpressionParser::ParsePostfixExpression_(Coroutine::caller_type& caller)
+    ExpressionASTNode* ExpressionParser::ParsePostfixExpression_(CallerType& caller)
     {
         ExpressionASTNode* node = ParsePrimaryExpression_(caller);
         Token token = WaitForTokenReady_(caller);
@@ -496,7 +496,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    ExpressionParser::Token ExpressionParser::WaitForTokenReady_(Coroutine::caller_type& caller)
+    ExpressionParser::Token ExpressionParser::WaitForTokenReady_(CallerType& caller)
     {
         Token token;
         if (tokenStack_.empty())

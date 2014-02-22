@@ -7,6 +7,8 @@
 #include <type_traits>
 #include <cassert>
 
+#undef BOOST_COROUTINES_UNIDIRECT
+#define BOOST_COROUTINES_OLD
 #include <boost/coroutine/all.hpp>
 #include <boost/bind.hpp>
 

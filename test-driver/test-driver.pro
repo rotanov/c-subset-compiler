@@ -50,10 +50,10 @@ CONFIG(debug, debug|release) {
 }
 
 LIBS += \
-    -lboost_system-mgw48-mt-s-1_54 \
-    -lboost_regex-mgw48-mt-s-1_54 \
-    -lboost_coroutine-mgw48-mt-s-1_54 \
-    -lboost_context-mgw48-mt-1_54 \
+    -lboost_system-mgw48-mt-1_55 \
+    -lboost_regex-mgw48-mt-1_55 \
+    -lboost_coroutine-mgw48-mt-1_55 \
+    -lboost_context-mgw48-mt-1_55 \
 
 SOURCES += main.cpp\
         MainWindow.cpp \
@@ -74,7 +74,7 @@ SOURCES += main.cpp\
     ../src/Statement.cpp \
     ../src/codegen.cpp
 
-HEADERS  += MainWindow.hpp \
+HEADERS += MainWindow.hpp \
     ../src/utils.hpp \
     ../src/unicode.hpp \
     ../src/Tokenizer.hpp \
@@ -98,4 +98,4 @@ HEADERS  += MainWindow.hpp \
     ../src/Visitor.hpp \
     ../src/codegen.hpp
 
-FORMS    += mainwindow.ui
+FORMS += mainwindow.ui
