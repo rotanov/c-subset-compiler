@@ -64,5 +64,4 @@ namespace Compiler
     bool IsLiteral(const ETokenType& tokenType);
     bool IsStatement(const ETokenType& tokenType);
 
-
 } // namespace Compiler

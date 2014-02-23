@@ -109,6 +109,12 @@ namespace Compiler
         return name;
     }
 
+    int SymbolType::GetAbsoluteElementCount()
+    {
+        assert(false);
+        return 0;
+    }
+
     SymbolVariable::SymbolVariable(const std::string& name)
         : SymbolTypeRef(name)
     {
@@ -150,6 +156,21 @@ namespace Compiler
         initializers_.push_back(initializer);
     }
 
+    int SymbolVariable::GetAbsoluteElementCount()
+    {
+        auto typeSym = GetActualType(shared_from_this());
+
+        switch (typeSym->GetType())
+        {
+            case ESymbolType::TYPE_ARRAY:
+            case ESymbolType::TYPE_STRUCT:
+                return typeSym->GetAbsoluteElementCount();
+
+            default:
+                return 1;
+        }
+    }
+
     SymbolChar::SymbolChar()
         : SymbolType("char")
     {
@@ -166,7 +187,7 @@ namespace Compiler
         return symbol->GetType() == ESymbolType::TYPE_CHAR;
     }
 
-    int SymbolChar::GetSize() const
+    int SymbolChar::GetSize()
     {
         return 1;
     }
@@ -188,7 +209,7 @@ namespace Compiler
         // || symbol->GetSymbolType() == ESymbolType::TYPE_CHAR;
     }
 
-    int SymbolInt::GetSize() const
+    int SymbolInt::GetSize()
     {
         return 4;
     }
@@ -211,7 +232,7 @@ namespace Compiler
         //|| symbol->GetSymbolType() == ESymbolType::TYPE_CHAR;
     }
 
-    int SymbolFloat::GetSize() const
+    int SymbolFloat::GetSize()
     {
         return 4;
     }
@@ -232,7 +253,7 @@ namespace Compiler
         return symbol->GetType() == ESymbolType::TYPE_VOID;
     }
 
-    int SymbolVoid::GetSize() const
+    int SymbolVoid::GetSize()
     {
         assert(false);
         return 0;
@@ -369,7 +390,7 @@ namespace Compiler
         return false;
     }
 
-    int SymbolStruct::GetSize() const
+    int SymbolStruct::GetSize()
     {
         if (size_ != -1)
         {
@@ -389,6 +410,23 @@ namespace Compiler
             }
             return size;
         }
+    }
+
+    int SymbolStruct::GetAbsoluteElementCount()
+    {
+        int r = 0;
+
+        if (fields_ != NULL)
+        {
+            auto vars = fields_->orderedVariables;
+
+            for (int i = 0; i < vars.size(); i++)
+            {
+                r += vars[i]->GetAbsoluteElementCount();
+            }
+        }
+
+        return r;
     }
 
     SymbolPointer::SymbolPointer()
@@ -424,6 +462,12 @@ namespace Compiler
 
     }
 
+    SymbolArray::SymbolArray(shared_ptr<SymbolType> symType)
+        : SymbolTypeRef("array", symType)
+    {
+
+    }
+
     ESymbolType SymbolArray::GetType() const
     {
         return ESymbolType::TYPE_ARRAY;
@@ -432,18 +476,50 @@ namespace Compiler
     void SymbolArray::SetSizeInitializer(shared_ptr<ASTNode> initializerExpression)
     {
         assert(initializerExpression != NULL);
+
         if (!initializerExpression->IsConstExpr())
         {
             ThrowInvalidTokenError(initializerExpression->token, "size initializer have to be constant expression");
         }
+
         sizeInitializer_ = initializerExpression;
+        elementCount_ = sizeInitializer_->EvalToInt();
+
+        if (elementCount_ <= 0)
+        {
+            ThrowInvalidTokenError(initializerExpression->token, "size of an array must be >= 0");
+        }
     }
 
-    int SymbolArray::GetSize() const
+    int SymbolArray::GetSize()
     {
-        assert(sizeInitializer_ != NULL);
-        return sizeInitializer_->EvalToInt() * GetActualType(this->GetRefSymbol())->GetSize();
-        return 0;
+        assert(elementCount_ != 0);
+        if (size_ == -1)
+        {
+            size_ = elementCount_ * GetArrayType(this->shared_from_this())->GetSize();
+        }
+        return size_;
+    }
+
+    int SymbolArray::GetElementCount() const
+    {
+        return elementCount_;
+    }
+
+    int SymbolArray::GetAbsoluteElementCount()
+    {
+        int r = this->GetElementCount();
+        auto symType = Compiler::GetRefSymbol(this->shared_from_this());
+
+        switch (symType->GetType())
+        {
+            case ESymbolType::TYPE_ARRAY:
+            case ESymbolType::TYPE_STRUCT:
+                return r * symType->GetAbsoluteElementCount();
+
+            default:
+                return r;
+        }
     }
 
     std::string SymbolArray::GetQualifiedName() const
@@ -591,7 +667,7 @@ namespace Compiler
     }
 
 //------------------------------------------------------------------------------
-    int SymbolTypeRef::GetSize() const
+    int SymbolTypeRef::GetSize()
     {
         return GetActualType(const_cast<SymbolTypeRef*>(this)->shared_from_this())->GetSize();
     }

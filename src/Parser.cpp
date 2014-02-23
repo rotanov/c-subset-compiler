@@ -828,6 +828,10 @@ namespace Compiler
                             ThrowInvalidTokenError(token, "closing `]` expected for array declarator");
                         }
                     }
+                    else
+                    {
+                        ThrowInvalidTokenError(token, "arrays with unspecified length are unsupported");
+                    }
                 }
 
                 assert(IfSymbolIsRef(rightmostType));
@@ -933,6 +937,8 @@ namespace Compiler
     {
         // it's `=` now
         Token token = TakeToken_(caller);
+        // for errors
+        Token eqToken = token;
 
         std::stack<shared_ptr<SymbolType>> typeSymStack;
         typeSymStack.push(GetRefSymbol(declarator));
@@ -959,6 +965,11 @@ namespace Compiler
         }
         while (isBraced
                && token == OP_COMMA);
+
+        if (initializerCount != declarator->GetAbsoluteElementCount())
+        {
+            ThrowInvalidTokenError(eqToken, "initializer count doesn't correspond to object field count");
+        }
 
         if (isBraced)
         {
