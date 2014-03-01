@@ -101,10 +101,13 @@
 			}
 		},
 		{
+			"contents": "// int notMain()\n// {\n//     return 0;\n// }\n\n// int main()\n// {\n\n// }\n\n// int notMain2()\n// {\n//     return 0;\n// }\n\n// void VoidNoParams()\n// {\n\n// }\n\n// void Void2Params(int a, float b)\n// {\n\n// }\n\n//#pragma pack(1)\n\n//\n\n// struct Foo\n// {\n//     int a;\n//     int b;\n//     char c;\n// };\n\n// int a = 2;\n// struct Foo f;\n// float b;\n// char c = 3;\n// int bar[10];\n// int* ptr;\n// struct Foo* fooPtr;\n// char chararrfour[4];\n// int sizeCalc[2 * 4 + 1];\n// int initialized[] = {1, 2, 3, 10, 16,};\n// int arrayOfArray[2][3];\n// struct Foo arrayOfStruct[2][3];\n// float initFloat = 0.001f;\n\n//////////////////////////////////////////////////\n\n// int foo()\n// {\n//     return 2;\n// }\n\n// char* string = \"pe\";\n// char* anoos = \"a\";\n// int fooInit;\n// int singleElementArray[1];\n\n// int main()\n// {\n//     int bar = foo();\n//     char* temp = \"abcde\";\n//     fooInit = foo();\n// }\n\n//////////////////////////////////////////////////\n\n// const int a = 2;\n// const int c = 3;\n// int b[sizeof(a)];\n// int e[sizeof(b)];\n\n//\n\n\n// char* a = \"abc\";\n// char b[3] = {'a', 'b', 'c'};\n// char c[3] = \"abc\";\n// char d[] = \"abc\";\n// char e[4] = \"abc\";\n// int asize = sizeof(a);\n// int bsize = sizeof(b);\n// int csize = sizeof(c);\n// int dsize = sizeof(d);\n// int esize = sizeof(e);\n\n// char f[1] = \"abc\";\n// int fsize = sizeof(f);\n\n// int aa;\n// char ddd[4];\n\n// int main()\n// {\n//     char* foo = \"abcdef\";\n//     char bar[4] = \"cdefghajs\";\n//     foo = d + 1;\n// }\n\n\n//int a[2][2] = {{1, 2}, {2, 3}};\n\n//char a[10] = \"a\";\n\n// int a  = { 2};\n\n// struct Foo\n// {\n//     char c;\n//     int a1;\n//     char a;\n//     int a2;\n//     char d;\n//     int a3;\n// } foo =  {1, 2, 1, 2, 1, 2};\n\n///////////////////////////////////////////////\n\n// struct Foo\n// {\n//     char c;\n//     int a;\n// }*** bar;\n\n// int main()\n// {\n//     int a;\n//     //a = 2;\n//     (**bar)->a = 2;\n// }\n\n////////////////////////////////////////////////////\n\n// int foo()\n// {\n//     return 2;\n// }\n\n// int (**bar)();\n\n// int main()\n// {\n//     bar = foo;\n//     printf(\"%d\", bar());\n// }\n//////////////////////////////////////////////////////\n\n// typedef int (*fptr)();\n// typedef int f();\n\n// void foo(void* bar)\n// {\n//    ((fptr)bar)();\n// }\n\n// void bar(f baz)\n// {\n\n// }\n\n// void zak(int baz())\n// {\n//   baz();\n// }\n\n// int foobar()\n// {\n//     return 2;\n// }\n\n// int main()\n// {\n//     zak(foobar);\n// }\n//////////////////////////////////////////////////////\n\n// typedef int a();\n\n// a b;\n\n// int main()\n// {\n//   //a e;\n// }\n\n// a e\n// {\n// return 2;\n// }\n//////////////////////////////////////////////////////\n\n// struct pes\n// {\n//     char a;\n//     int c;\n//     char b;\n//     int e, f, g, h;\n// } p, f;\n\n// int main()\n// {\n//   p = f;\n// }\n\n//////////////////////////////////////////////////////\n// struct Pes\n// {\n//    int sep;\n// } pes;\n\n// int main()\n// {\n//     int a, b;\n//     a = b > 0 ? pes : b;\n// }\n/////////////\n\n// lol bug\n// struct pes\n// {\n// const int a[10];\n// char c;\n// };\n\n// struct yes\n// {\n//     struct pes a;\n//     int b;\n// }a, b;\n\n// int main()\n// {\n//     a = b;\n// }\n\n////////////////////////////////\n\n// int foo()\n// {\n\n// }\n\n// int main()\n// {\n//     *&foo = &foo;\n// }\n\n////////////////////////// WOW padding got zeroed if I {{1}}\n// struct Foo\n// {\n//     char c;\n//     int i;\n//     int j;\n// };\n\n// int main()\n// {\n//     struct Foo foo = {{1};\n// }\n\n// int main()\n// {\n//     int a = 2;\n//     int b = a + 1;\n//     int c[2] = { 2, 1};\n// }\n\n// struct Bar\n// {\n//     char a4;\n//     char a3[2];\n//     int a;\n// } baz[2] = {2, 3, 4, 5, 6, 7};\n\n// int barsize = sizeof(struct Bar);\n// int bazsize = sizeof (baz);\n\n// char a3[3];\n\n// char p;\n// int aaa;\n// char p2;\n\n// void bar(char* arg)\n// {\n\n// }\n\n// char eeff[5] = {'e', 'e', 'f', 'g', 'g'};\n\n// char* a = \"a\\0 foo\";\n\n// int main()\n// {\n//     char* b = \"b foo\";\n//     bar(\"c foo\");\n// }\n\n// int sizeofa = sizeof(a);\n\n//////////////////////////////////////////////////////////////\n\n// struct Foo\n// {\n//     int a;\n//     char c;    \n// };\n\n// int size = sizeof(struct Foo);\n\n\n////////////////////////////////////\n// char c = 1;\n// char b = 2;\n\n/////////////////////////////////////////////////////////////////\n\n// char a3[3];\n\n// char p;\n// int aaa;\n// char p2;\n\n// void bar(char* arg)\n// {\n\n// }\n\n// char eeff[5] = {'e', 'e', 'f', 'g', 'g'};\n\n// char* a = \"a\\0 foo\";\n\n// int main()\n// {\n//     char* b = \"b foo\";\n//     bar(\"c foo\");\n// }\n\n// int sizeofa = sizeof(a);\n////////////////////////////////////////////////////////////\n// int aaaa;\n// char* a = \"abaaa\";\n// char* b = \"ab\";\n///////////////////////////////////////////////////////////////\n// int a;\n// int c;\n// int* b = &a + 1;\n////////////////////////////////////////////////////////////////\n// struct foo{int a;} bar = {{{1}}};\n//////////////////////////////////////////////////////////////////////\n",
 			"file": "sandbox/vs-toasm/test.cpp",
+			"file_size": 5270,
+			"file_write_time": 130371195056665917,
 			"settings":
 			{
-				"buffer_size": 4474,
+				"buffer_size": 4821,
 				"line_ending": "Windows"
 			}
 		},
@@ -112,17 +115,8 @@
 			"file": "sandbox/vs-toasm/test.asm",
 			"settings":
 			{
-				"buffer_size": 380,
+				"buffer_size": 324,
 				"line_ending": "Windows"
-			}
-		},
-		{
-			"contents": "char* pes = {'a', 'b', 'c', 'd', 'e', 'f', };",
-			"settings":
-			{
-				"buffer_size": 45,
-				"line_ending": "Windows",
-				"name": "char* pes = {'a', 'b', 'c', 'd', 'e', 'f', };"
 			}
 		},
 		{
@@ -151,6 +145,26 @@
 			}
 		},
 		{
+			"contents": "\nдалее :\n33 , 121 , (60 - надо будет ещё раз обсудить),\nну и в последнюю очередь в добавок 117, 115 .\n\nЧо надо решить по fefu-mmorpg\n\n1. в чём писать доки по протоколу\n\n    а) markdown\n    б) reST\n\n2. определиться с permanent storage, кандидаты\n    \n    а) postgresql\n\n        http://www.postgresql.org/docs/7.2/static/libpqplusplus.html\n\n    б) sqlite\n    в) berkeleydb\n\n3. глянуть на boost ASIO здесь http://think-async.com/\n\n\n4. определиться с либой про вебсокеты, читать это \n    \n    http://www.altdevblogaday.com/2012/02/01/controlling-your-game-engine-over-websocket/\n\n    http://libwebsockets.org/trac/libwebsockets\n\n    http://stackoverflow.com/questions/3916217/standalone-c-or-c-websocket-server-library\n\n\n5. определиться с http либой для с++\n\n    http://casablanca.codeplex.com/\n\n    http://cpp-netlib.org/ говно\n\n    http://www.jenkinssoftware.com/features.html\n\n    POCO\n\n    http://schneide.wordpress.com/2011/02/07/ssl-with-poco/\n    http://pocoproject.org/download/index.html\n    http://xjia.heroku.com/2011/09/10/learning-poco-get-with-http/\n\n    тёма взял wt\n\n\n6. определиться как обходить защиту XSS уязвимости, например \n\n    http://en.wikipedia.org/wiki/Cross-origin_resource_sharing\n\n    http://en.wikipedia.org/wiki/JSONP\n\n    http://stackoverflow.com/questions/15005500/loading-cross-domain-html-page-with-jquery-ajax\n\n7. осмотреть проекты предыдущих соискателей успеха\n\n    https://bitbucket.org/GlassCube/game\n\n    https://bitbucket.org/lanior/mysterious-bomberman/src\n\n    https://github.com/lobodin/ftw-game-protocol\n\n\n8. Задания Олейникова Петрухи\n\n    http://imcs.dvfu.ru/works/course_view?id=16635;year=2014\n\n9. Определиться с говном для тестирования js\n\n    mocha\n    phantomjs\n    node.js\n\n10. чтобы просраться через роутер: \n    https://github.com/miniupnp/miniupnp\n    http://miniupnp.free.fr/\n    http://www.codeproject.com/Articles/13285/Using-UPnP-for-Programmatic-Port-Forwardings-and-N\n\n    DeviceSpy\n\n11. поставить wireshark",
+			"file": "/C/Users/mapho_000/Downloads/gistf79acdd746cd8efc21bc-53b83f8a06e0fbf3d7c0580c404595dd890b0742/asdf.txt",
+			"file_size": 2486,
+			"file_write_time": 130375303134070007,
+			"settings":
+			{
+				"buffer_size": 1966,
+				"line_ending": "Windows",
+				"name": "таски под номерами:"
+			}
+		},
+		{
+			"file": "/D/dev/whiterra/repo/doc/tasks.todo",
+			"settings":
+			{
+				"buffer_size": 13357,
+				"line_ending": "Windows"
+			}
+		},
+		{
 			"file": "doc/unrelated-docs-and-lectures/codegen1.txt",
 			"settings":
 			{
@@ -173,22 +187,106 @@
 				"buffer_size": 8759,
 				"line_ending": "Windows"
 			}
-		},
-		{
-			"file": "sandbox/vs-toasm/do.bat",
-			"settings":
-			{
-				"buffer_size": 33,
-				"line_ending": "Windows"
-			}
 		}
 	],
 	"build_system": "",
 	"command_palette":
 	{
-		"height": 286.0,
+		"height": 86.0,
 		"selected_items":
 		[
+			[
+				"githmarkpre",
+				"Markdown Preview: Github Flavored Markdown: Preview in Browser"
+			],
+			[
+				"gith mark",
+				"Markdown Preview: Github Flavored Markdown: Preview in Browser"
+			],
+			[
+				"preview bro",
+				"Markdown Preview: Github Flavored Markdown: Preview in Browser"
+			],
+			[
+				"pewvoew",
+				"Markdown Preview: Github Flavored Markdown: Preview in Browser"
+			],
+			[
+				"preview mark",
+				"Markdown Preview: Python Markdown: Preview in Browser"
+			],
+			[
+				"preview brow",
+				"Markdown Preview: Github Flavored Markdown: Preview in Browser"
+			],
+			[
+				"markdown",
+				"Markdown Preview: Open Markdown Cheat sheet"
+			],
+			[
+				"preview githbr",
+				"Markdown Preview: Github Flavored Markdown: Preview in Browser"
+			],
+			[
+				"github",
+				"Markdown Preview: Github Flavored Markdown: Preview in Browser"
+			],
+			[
+				"markwbro",
+				"Markdown Preview: Python Markdown: Preview in Browser"
+			],
+			[
+				"markgitbrow",
+				"Markdown Preview: Github Flavored Markdown: Preview in Browser"
+			],
+			[
+				"gibro",
+				"Markdown Preview: Github Flavored Markdown: Preview in Browser"
+			],
+			[
+				"gmabro",
+				"Markdown Preview: Github Flavored Markdown: Preview in Browser"
+			],
+			[
+				"gitmarkdownbro",
+				"Markdown Preview: Github Flavored Markdown: Preview in Browser"
+			],
+			[
+				"preview in bro",
+				"Markdown Preview: Github Flavored Markdown: Preview in Browser"
+			],
+			[
+				"mark prev gith",
+				"Markdown Preview: Github Flavored Markdown: Preview in Browser"
+			],
+			[
+				"inst pack",
+				"Package Control: Install Package"
+			],
+			[
+				"remove pack",
+				"Package Control: Remove Package"
+			],
+			[
+				"Package Control: li",
+				"Package Control: List Packages"
+			],
+			[
+				"pack contr remo",
+				"Package Control: Remove Package"
+			],
+			[
+				"InstPack",
+				"Package Control: Install Package"
+			],
+			[
+				"Markdo",
+				"Set Syntax: Markdown"
+			],
+			[
+				"Syntax sh",
+				"Set Syntax: Shell Script (Bash)"
+			],
 			[
 				"hex",
 				"Hex Viewer: Toggle Hex View"
@@ -196,10 +294,6 @@
 			[
 				"list pac",
 				"Package Control: List Packages"
-			],
-			[
-				"inst pack",
-				"Package Control: Install Package"
 			],
 			[
 				"instpack",
@@ -438,10 +532,6 @@
 				"Set Syntax: C++"
 			],
 			[
-				"markdown",
-				"Markdown Preview: preview in Browser"
-			],
-			[
 				"markdow",
 				"Markdown Preview: preview in Sublime Text"
 			],
@@ -610,7 +700,7 @@
 				"Set Syntax: C++"
 			]
 		],
-		"width": 450.0
+		"width": 562.0
 	},
 	"console":
 	{
@@ -627,12 +717,120 @@
 	},
 	"file_history":
 	[
+		"/D/dev/QtWebsocket/Example/ServerThreaded/ServerThreaded.pro",
+		"/D/dev/fefu-mmorpg/README.md",
+		"/D/dev/fefu-mmorpg-protocol/README.md",
+		"/D/dev/QtWebsocket/Example/ServerThreaded/main.cpp",
+		"/D/dev/QtWebsocket/Example/ServerThreaded/ServerThreaded.h",
+		"/D/dev/QtWebsocket/QtWebsocket.pro",
+		"/D/dev/fefu-mmorpg/fefu-mmorpg.pro",
+		"/D/dev/game-indie-zadrawch/Intro.md",
+		"/C/portableApplications/Sublime/Data/Packages/Markdown Preview/sample.md",
+		"/D/dev/fefu-mmorpg/bin/static/index.html",
+		"/C/Users/mapho_000/Dropbox/published/Intro.html",
+		"/D/dev/compiler/sandbox/vs-toasm/do.bat",
+		"/D/dev/fefu-mmorpg-protocol/auth.md",
+		"/D/dev/fefu-mmorpg/bin/static/chugun.css",
+		"/D/dev/fefu-mmorpg/.gitignore",
+		"/D/dev/fefu-mmorpg/server/main.cpp",
+		"/D/dev/fefu-mmorpg/server/server.cpp",
+		"/D/dev/qhttpserver/examples/examples.pro",
+		"/D/dev/qhttpserver/qhttpserver.pri",
+		"/D/dev/qhttpserver/qhttpserver.pro",
+		"/D/dev/qhttpserver/TODO",
+		"/D/dev/qhttpserver/README.md",
+		"/C/Users/mapho_000/Downloads/fuck/fuck/jscript.js",
+		"/D/dev/codestyle.cpp",
+		"/C/Users/mapho_000/Downloads/proba.txt",
+		"/D/dev/fefu-mmorpg/static/index.html",
+		"/D/dev/fefu-mmorpg/static/chugun.css",
+		"/C/Users/mapho_000/Downloads/fuck/fuck/style.css",
+		"/C/Users/mapho_000/Desktop/#трисемёрки #Прислал_Пахом.txt",
+		"/C/Users/mapho_000/Downloads/gistf79acdd746cd8efc21bc-53b83f8a06e0fbf3d7c0580c404595dd890b0742/asdf.txt",
+		"/C/Users/mapho_000/Downloads/gistf79acdd746cd8efc21bc-53b83f8a06e0fbf3d7c0580c404595dd890b0742/asdf",
+		"/C/Users/mapho_000/Downloads/gistf79acdd746cd8efc21bc-53b83f8a06e0fbf3d7c0580c404595dd890b0742/╨▓╨╛╨┐╤А╨╛╤Б╤Л",
+		"/C/Users/mapho_000/Downloads/gistf79acdd746cd8efc21bc-53b83f8a06e0fbf3d7c0580c404595dd890b0742/╨┐╨╛",
+		"/C/Users/mapho_000/Downloads/gistf79acdd746cd8efc21bc-53b83f8a06e0fbf3d7c0580c404595dd890b0742/╨║╤Г╤А╤Б╤Г",
+		"/C/Users/mapho_000/Downloads/gistf79acdd746cd8efc21bc-53b83f8a06e0fbf3d7c0580c404595dd890b0742/╨░╤А╤Е╨╕╤В╨╡╨║╤В╤Г╤А╨░",
+		"/C/Users/mapho_000/Downloads/gistf79acdd746cd8efc21bc-53b83f8a06e0fbf3d7c0580c404595dd890b0742/╨┐╨║",
+		"/D/dev/boost_1_55_0/boost/coroutine/attributes.hpp",
+		"/D/dev/boost_1_55_0/boost/coroutine/all.hpp",
+		"/D/dev/boost_1_55_0/boost/coroutine/coroutine.hpp",
+		"/D/dev/boost_1_55_0/boost/coroutine/detail/config.hpp",
+		"/D/dev/boost_1_55_0/boost/coroutine/v1/coroutine.hpp",
+		"/C/Users/mapho_000/Downloads/phantomjs-1.9.7-windows/phantomjs-1.9.7-windows/examples/colorwheel.js",
+		"/C/Users/mapho_000/Downloads/phantomjs-1.9.7-windows/phantomjs-1.9.7-windows/examples/tweets.js",
+		"/C/Users/mapho_000/Downloads/IDZ8.txt",
+		"/D/dev/cpp-netlib/build/http/test/v2/client/units/CMakeFiles/cpp-netlib-http-v2-response_test.dir/link.txt",
+		"/D/dev/cpp-netlib/build/http/test/v2/client/units/CMakeFiles/cpp-netlib-http-v2-request_test.dir/link.txt",
+		"/D/dev/cpp-netlib/build/http/test/v2/client/units/CMakeFiles/cpp-netlib-http-v2-request_options_test.dir/link.txt",
+		"/D/dev/cpp-netlib/build/http/test/v2/client/units/CMakeFiles/cpp-netlib-http-v2-client_test.dir/link.txt",
+		"/D/dev/cpp-netlib/build/http/test/v2/client/units/CMakeFiles/cpp-netlib-http-v2-client_resolution_test.dir/link.txt",
+		"/D/dev/cpp-netlib/build/http/test/v2/client/units/CMakeFiles/cpp-netlib-http-v2-client_options_test.dir/link.txt",
+		"/D/dev/cpp-netlib/build/http/test/v2/client/units/CMakeFiles/cpp-netlib-http-v2-byte_source_test.dir/link.txt",
+		"/D/dev/cpp-netlib/build/http/test/v2/client/features/CMakeFiles/cpp-netlib-http-v2-ssl_connection_test.dir/link.txt",
+		"/D/dev/cpp-netlib/build/http/test/v2/client/features/CMakeFiles/cpp-netlib-http-v2-normal_connection_test.dir/link.txt",
+		"/D/dev/cpp-netlib/build/http/test/v2/client/features/CMakeFiles/cpp-netlib-http-v2-http_client_test.dir/link.txt",
+		"/D/dev/cpp-netlib/build/http/test/v2/client/features/CMakeFiles/cpp-netlib-http-v2-async_resolver_test.dir/link.txt",
+		"/D/dev/cpp-netlib/build/http/test/CMakeFiles/cpp-netlib-http-server_test.dir/link.txt",
+		"/D/dev/cpp-netlib/build/http/test/CMakeFiles/cpp-netlib-http-server_simple_sessions_test.dir/link.txt",
+		"/D/dev/cpp-netlib/build/http/test/CMakeFiles/cpp-netlib-http-server_dynamic_dispatcher_test.dir/link.txt",
+		"/D/dev/cpp-netlib/build/http/test/CMakeFiles/cpp-netlib-http-server_default_connection_manager_test.dir/link.txt",
+		"/D/dev/cpp-netlib/build/http/test/CMakeFiles/cpp-netlib-http-response_test.dir/link.txt",
+		"/D/dev/cpp-netlib/build/http/test/CMakeFiles/cpp-netlib-http-response_incremental_parser_test.dir/link.txt",
+		"/D/dev/cpp-netlib/build/http/test/CMakeFiles/cpp-netlib-http-request_test.dir/link.txt",
+		"/D/dev/cpp-netlib/build/http/test/CMakeFiles/cpp-netlib-http-request_base_test.dir/link.txt",
+		"/D/dev/cpp-netlib/build/uri/test/CMakeFiles/uri_builder_test.dir/link.txt",
+		"/D/dev/cpp-netlib/build/uri/test/CMakeFiles/uri_comparison_test.dir/link.txt",
+		"/D/dev/cpp-netlib/build/uri/test/CMakeFiles/uri_encoding_test.dir/link.txt",
+		"/D/dev/cpp-netlib/build/uri/test/CMakeFiles/uri_normalization_test.dir/link.txt",
+		"/D/dev/cpp-netlib/build/uri/test/CMakeFiles/uri_reference_test.dir/link.txt",
+		"/D/dev/cpp-netlib/build/uri/test/CMakeFiles/uri_resolve_test.dir/link.txt",
+		"/D/dev/cpp-netlib/build/uri/test/CMakeFiles/uri_stream_test.dir/link.txt",
+		"/D/dev/cpp-netlib/build/uri/test/CMakeFiles/uri_test.dir/link.txt",
+		"/D/dev/cpp-netlib/CMakeLists.txt",
+		"/D/dev/cpp-netlib/http/src/CMakeLists.txt",
+		"/D/dev/cpp-netlib/http/test/CMakeLists.txt",
+		"/D/dev/cpp-netlib/uri/CMakeLists.txt",
+		"/D/dev/cpp-netlib/uri/src/network/uri/config.hpp",
+		"/D/dev/cpp-netlib/build/Makefile",
+		"/D/dev/cpp-netlib/uri/README.rst",
+		"/D/dev/cpp-netlib/uri/src/CMakeLists.txt",
+		"/D/dev/cpp-netlib/uri/test/CMakeLists.txt",
+		"/D/dev/cpp-netlib/build/uri/test/Makefile",
+		"/D/dev/cpp-netlib/build/uri/Makefile",
+		"/C/Qt/Qt5.2.0-mingw48-opengl-x86/Tools/mingw48_32/opt/lib/python2.7/config/Makefile",
+		"/D/dev/cpp-netlib/package.sh",
+		"/D/dev/cpp-netlib/RATIONALE.txt",
+		"/D/dev/cpp-netlib/README.rst",
+		"/D/dev/cpp-netlib/deps/asio/asio/include/asio.hpp",
+		"/C/Users/mapho_000/Downloads/openssl-1.0.1f.tar/openssl-1.0.1f/openssl-1.0.1f/INSTALL.W32",
+		"/C/Users/mapho_000/Downloads/openssl-1.0.1f.tar/openssl-1.0.1f/openssl-1.0.1f/README",
+		"/C/portableApplications/miranda-ng-v0.94.8_x64/Profiles/Satana/Logs/Jabber.ru/fefu-mmorpg-study@conference.jabber.ru.log",
+		"/C/Users/mapho_000/Downloads/cpp-netlib-0.11.0/cpp-netlib-0.11.0-final/CMakeLists.txt",
+		"/D/temp.txt",
+		"/D/dev/boost_1_55_0/build.log",
+		"/D/dev/boost_1_55_0/bootstrap.log",
+		"/D/dev/boost_1_55_0/INSTALL",
+		"/C/Users/mapho_000/Downloads/cpp-netlib-0.11.0/cpp-netlib-0.11.0-final/README.rst",
+		"/C/portableApplications/miranda-ng-v0.94.8_x64/Profiles/Satana/Logs/Jabber.ru/g+ch@vox.hangar.tk.log",
+		"/D/dev/whiterra/repo/bin/data/translation.ini",
+		"/D/dev/whiterra/repo/bin/data/interface/statistics.ini",
+		"/C/Users/mapho_000/Downloads/kai/kai/2/script.sh",
+		"/C/Users/mapho_000/Downloads/kai/kai/1/script.sh",
+		"//UBUNTU/Dev/os/a0/t1/do.sh",
+		"/C/Users/mapho_000/Downloads/kai/kai/1/cheat.sh",
+		"//UBUNTU/Dev/os/a0/t0/do.sh",
+		"//UBUNTU/Dev/os/a0/t1/t3.txt",
+		"//UBUNTU/Dev/os/a0/t1/t1.txt",
+		"//UBUNTU/Dev/os/a0/t1/t2.txt",
+		"//UBUNTU/Dev/os/a0/t1/t4.txt",
+		"//UBUNTU/Dev/os/a0/t1/t5.txt",
 		"/C/portableApplications/miranda-ng-v0.94.8_x64/Profiles/Satana/Logs/Jabber.ru/shinkai_project@conference.jabber.ru.log",
 		"/C/portableApplications/miranda-ng-v0.94.8_x64/Profiles/Satana/Logs/IRCHighway/#iichan - IRCHighway.log",
 		"/D/dev/compiler/sandbox/do.bat",
 		"/C/Users/mapho_000/AppData/Local/Temp/buzzard.c",
 		"/C/Users/mapho_000/AppData/Local/Temp/stb.h",
-		"/D/dev/compiler/sandbox/vs-toasm/do.bat",
 		"/C/portableApplications/miranda-ng-v0.94.8_x64/Profiles/Satana/Logs/Jabber.ru/zadrawch@conference.jabber.ru.log",
 		"/D/dev/compiler/test-asm/vs-toasm/test.cpp",
 		"/D/dev/compiler/test-asm/src.asm",
@@ -646,115 +844,7 @@
 		"/D/dev/compiler/src/Visitor.hpp",
 		"/D/dev/compiler/tests/parser/099.t",
 		"/D/dev/compiler/tests/type-check/111.t",
-		"/C/Users/mapho_000/Downloads/Mathematica",
-		"/C/Users/mapho_000/Downloads/Mathematica 9/9/mathpass",
-		"/C/Users/mapho_000/Downloads/Wolfram Mathematica 9.0.1 (32-Bit & 64-Bit)/ReadMe.txt",
-		"/C/portableApplications/miranda-ng-v0.93.5_x64/Profiles/Satana/Logs/Jabber.ru/zadrawch@conference.jabber.ru.log",
-		"/D/dev/ncc/src/parser.cpp",
-		"/D/dev/compiler/test-asm/test.cod",
-		"/D/dev/compiler/test-asm/test.cpp",
-		"/C/Program Files (x86)/Microsoft Visual Studio 12.0/VC/bin/vcvars32.bat",
-		"/C/Program Files (x86)/Microsoft Visual Studio 12.0/VC/bin/link.exe.config",
-		"/D/dev/whiterra/repo/bin/editor-warnings.txt",
-		"/D/dev/compiler/doc/grammar.txt",
-		"/D/dev/whiterra/repo/game/game.pro",
-		"/D/dev/compiler/test-driver/Makefile.Release",
-		"/D/dev/compiler/test-driver/object_script.test-driver-release.Release",
-		"/D/dev/compiler/bin/flag.txt",
-		"/D/dev/compiler/test-driver/Makefile.Debug",
-		"/D/dev/compiler/tests/parser/047.t",
-		"/D/dev/compiler/tests/parser/047.ref",
-		"/D/dev/compiler/doc/unrelated-docs-and-lectures/compilers-lecture.txt",
-		"/D/dev/compiler/src/prettyPrinting.cpp",
-		"/D/dev/compiler/doc/grammar",
-		"/D/dev/compiler/src/Parser.cpp",
-		"/D/dev/ncc/tests/parser-declarations/24-local-anonymous-struct.c",
-		"/D/dev/ncc/tests/parser-declarations/11-global-vars-of-struct-type.c",
-		"/D/dev/ncc/tests/parser-declarations/10-nested-global-structs.c",
-		"/D/dev/ncc/tests/parser-declarations/09-multiple-global-structs.c",
-		"/D/dev/ncc/tests/parser-declarations/08-global-tagged-struct.c",
-		"/D/dev/ncc/tests/parser-declarations/07-global-anonymous-struct.c",
-		"/D/dev/ncc/tests/parser-declarations/06-nested-global-typedefs.c",
-		"/D/dev/ncc/tests/parser-declarations/05-multiple-global-typedefs.c",
-		"/D/dev/ncc/tests/parser-declarations/04-single-global-typedef.c",
-		"/D/dev/ncc/tests/parser-declarations/03-multiple-global-vars-of-internal-types.c",
-		"/D/dev/ncc/tests/parser-declarations/02-single-global-var-of-internal-type.c",
-		"/D/dev/ncc/tests/parser-declarations/01-empty.c",
-		"/C/portableApplications/Sublime/Data/Packages/User/Preferences.sublime-settings",
-		"/D/dev/ncc/include/parser.h",
-		"/D/dev/ncc/src/symbols.cpp",
-		"/D/dev/ncc/include/expressions.h",
-		"/D/dev/ncc/include/symbols.h",
-		"/D/dev/compiler/tests/parser/040.t",
-		"/D/dev/compiler/tests/temp/081.t",
-		"/D/dev/compiler/tests/temp/080.t",
-		"/D/dev/compiler/tests/temp/079.t",
-		"/D/dev/compiler/tests/temp/078.t",
-		"/D/dev/compiler/tests/temp/077.t",
-		"/D/dev/compiler/tests/temp/076.t",
-		"/D/dev/compiler/tests/temp/075.t",
-		"/D/dev/compiler/doc/declarations-test-draft",
-		"/D/dev/compiler/src/main.cpp",
-		"/D/dev/compiler/doc/lexical-grammar.txt",
-		"/D/dev/compiler/doc/tasks2.txt",
-		"/D/dev/compiler/doc/next-week-task.txt",
-		"/D/dev/compiler/doc/LL(k).txt",
-		"/D/dev/whiterra/repo/3rd/deku2d/2de_TypeInfo.h",
-		"/D/dev/whiterra/repo/3rd/deku2d/2de_TypeInfo.cpp",
-		"/D/dev/compiler/tests/parser/000.t",
-		"/D/dev/compiler/doc/Лекция. Курс компиляторов.",
-		"/D/dev/compiler/doc/Кэширование",
-		"/C/portableApplications/miranda-ng-v0.93.5_x64/Profiles/Satana/Logs/Jabber.ru/shinkai_project@conference.jabber.ru.log",
-		"/C/Users/mapho_000/Downloads/cdecl-blocks-2.5.tar/cdecl-blocks-2.5/cdecl-blocks-2.5/cdgram.y",
-		"/C/Users/mapho_000/Downloads/cdecl-blocks-2.5.tar/cdecl-blocks-2.5/cdecl-blocks-2.5/README",
-		"/C/Users/mapho_000/Downloads/cdecl-blocks-2.5.tar/cdecl-blocks-2.5/cdecl-blocks-2.5/cdecl.c",
-		"/C/portableApplications/miranda-ng-v0.93.5_x64/Profiles/Satana/Logs/IRCHighway/#iichantra - IRCHighway.log",
-		"/D/dev/whiterra/repo/bin/res/json/resources.json",
-		"/C/Users/mapho_000/AppData/Local/Temp/Md5.c",
-		"/C/Users/mapho_000/Desktop/aaaaa/game-crash-2013-10-28-13-42-00-907.txt",
-		"/D/dev/ncc/include/statements.h",
-		"/D/dev/ncc/include/common.h",
-		"/D/dev/ncc/include/codegen.h",
-		"/D/dev/ncc/include/cli.h",
-		"/C/Users/mapho_000/Desktop/error.log",
-		"/C/Users/mapho_000/AppData/Local/Temp/asm_test.txt",
-		"/H/doc/University/asm_test.txt",
-		"/D/dev/compiler/tests/parser/001.t",
-		"/D/dev/whiterra/repo/game/src/Grid.cpp",
-		"/D/dev/compiler/src/Parser.hpp",
-		"/D/dev/compiler/src/utils.cpp",
-		"/D/dev/compiler/src/constants.hpp",
-		"/C/dev/boost_1_54_0/libs/context/src/asm/jump_i386_ms_pe_masm.asm",
-		"/C/dev/boost_1_54_0/libs/context/src/asm/make_i386_ms_pe_masm.asm",
-		"/D/dev/compiler/tests/expression-parser/046.t",
-		"/D/dev/compiler/tests/expression-parser/000.t",
-		"/D/dev/boost_1_54_0/boost/coroutine/v1/detail/coroutine_op.hpp",
-		"/D/dev/compiler/test-driver/Makefile",
-		"/C/Users/mapho_000/Desktop/библграфпоиск.txt",
-		"/H/dev/epicfail/src/to_draw_list.txt",
-		"/D/dev/compiler/tests/expression-parser/001.t",
-		"/D/dev/compiler/doc/simple-expression-grammar",
-		"/D/dev/compiler/doc/integral-types",
-		"/D/dev/compiler/tests/simple-expression-parser/000.t",
-		"/H/dev/epicfail/src/zadrawch@conference.jabber.ru-Log.txt",
-		"/H/dev/epicfail/doc/todo.txt",
-		"/D/dev/compiler/tests/tokenizer/032.ref",
-		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/450-string-literal-concat.ref",
-		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/300-integer-limits.t",
-		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/300-hex-limits.t",
-		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/300-floating-suffix.t",
-		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/250-ud-strchar.t",
-		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/250-string-literal.t",
-		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/200-octal-limits.t",
-		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/200-character-literal.t",
-		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/200-basic-integer-suffix.t",
-		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/200-basic-floating.t",
-		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/100-simple.t",
-		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/100-integer-zero.t",
-		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/100-integer-zero.ref",
-		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/450-string-literal-concat.t",
-		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/500-plus-ud-suffix.t",
-		"/D/dev/cppgm/dev/cppgm-starter-kits/pa2/tests/500-plus-ud-suffix.ref"
+		"/C/Users/mapho_000/Downloads/Mathematica"
 	],
 	"find":
 	{
@@ -762,7 +852,7 @@
 	},
 	"find_in_files":
 	{
-		"height": 0.0,
+		"height": 95.0,
 		"where_history":
 		[
 			"D:\\cppgm\\dev\\cppgm-dev\\common",
@@ -823,6 +913,28 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"url",
+			"ws2",
+			"link",
+			"ole32",
+			"ws2_32",
+			"libra",
+			"-lws2_32",
+			"-l",
+			"-lws2_32",
+			"test",
+			"-lws2_32",
+			"uri_builder_test",
+			"!.*",
+			"log/",
+			"regex",
+			"asio",
+			"boost",
+			"Visual",
+			";",
+			"pastie",
+			"remain",
+			"TimeScoreNum",
 			"initializer",
 			"вайб",
 			"initializer",
@@ -928,29 +1040,7 @@
 			"ParsePointer",
 			"Const",
 			"declarator",
-			"init-declarator",
-			"declarator",
-			"declaration-specifiers",
-			"declaration-list",
-			"declaration-specifiers declarator",
-			"declaration-list",
-			"declaration-specifiers declarator",
-			"declaration-specifiers declarator \\{declaration-list\\}",
-			"declaration-specifiers declarator \\{declaration-list\\} compound-statement",
-			"declaration-specifiers declarator {declaration-list} compound-statement",
-			"TablesContainer",
-			"AddT",
-			"TYPE",
-			"ParseDeclaration",
-			"TryParseDeclaration",
-			"ParseBlock",
-			"comp",
-			"Compo",
-			"compound-statement",
-			"struct",
-			"CTYpeSymbol",
-			"declaration spe",
-			"declarator"
+			"init-declarator"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -958,6 +1048,8 @@
 		"regex": true,
 		"replace_history":
 		[
+			"",
+			"\\n",
 			"case \\1:",
 			"",
 			"case \\1:",
@@ -1042,7 +1134,7 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 10,
 			"sheets":
 			[
 				{
@@ -1130,8 +1222,8 @@
 						"selection":
 						[
 							[
-								0,
-								0
+								1026,
+								1026
 							]
 						],
 						"settings":
@@ -1259,7 +1351,7 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 6642.0,
+						"translation.y": 277.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -1343,15 +1435,15 @@
 					"file": "sandbox/vs-toasm/test.cpp",
 					"settings":
 					{
-						"buffer_size": 4474,
+						"buffer_size": 4821,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4456,
-								4456
+								4821,
+								4821
 							]
 						],
 						"settings":
@@ -1406,7 +1498,7 @@
 							"syntax": "Packages/C++/C++.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 5626.0,
+						"translation.y": 5801.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -1416,15 +1508,15 @@
 					"file": "sandbox/vs-toasm/test.asm",
 					"settings":
 					{
-						"buffer_size": 380,
+						"buffer_size": 324,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								196,
-								196
+								258,
+								258
 							]
 						],
 						"settings":
@@ -1487,77 +1579,6 @@
 				},
 				{
 					"buffer": 6,
-					"settings":
-					{
-						"buffer_size": 45,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								45,
-								45
-							]
-						],
-						"settings":
-						{
-							"BracketHighlighterBusy": false,
-							"auto_name": "char* pes = {'a', 'b', 'c', 'd', 'e', 'f', };",
-							"bh_regions":
-							[
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close"
-							],
-							"encoding_helper_encoding_sublime": "UTF-8",
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 7,
 					"file": "/D/dev/ncc/src/codegen.cpp",
 					"settings":
 					{
@@ -1631,7 +1652,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 8,
+					"buffer": 7,
 					"file": "/C/Program Files (x86)/Microsoft Visual Studio 12.0/VC/include/listing.inc",
 					"settings":
 					{
@@ -1642,8 +1663,8 @@
 						"selection":
 						[
 							[
-								544,
-								544
+								653,
+								653
 							]
 						],
 						"settings":
@@ -1700,13 +1721,13 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 228.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
-					"buffer": 9,
+					"buffer": 8,
 					"settings":
 					{
 						"buffer_size": 658,
@@ -1716,8 +1737,8 @@
 						"selection":
 						[
 							[
-								634,
-								634
+								658,
+								658
 							]
 						],
 						"settings":
@@ -1777,7 +1798,156 @@
 					"type": "text"
 				},
 				{
+					"buffer": 9,
+					"file": "/C/Users/mapho_000/Downloads/gistf79acdd746cd8efc21bc-53b83f8a06e0fbf3d7c0580c404595dd890b0742/asdf.txt",
+					"settings":
+					{
+						"buffer_size": 1966,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"auto_name": "таски под номерами:",
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 0.99,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
 					"buffer": 10,
+					"file": "/D/dev/whiterra/repo/doc/tasks.todo",
+					"settings":
+					{
+						"buffer_size": 13357,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								901,
+								901
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close"
+							],
+							"encoding_helper_confidence": 0.99,
+							"encoding_helper_encoding": "UTF-8",
+							"encoding_helper_encoding_sublime": "UTF-8",
+							"syntax": "Packages/PlainTasks/PlainTasks.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 11,
 					"file": "doc/unrelated-docs-and-lectures/codegen1.txt",
 					"settings":
 					{
@@ -1850,7 +2020,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 11,
+					"buffer": 12,
 					"file": "doc/unrelated-docs-and-lectures/codegen2.txt",
 					"settings":
 					{
@@ -1923,7 +2093,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 12,
+					"buffer": 13,
 					"file": "doc/grammar.txt",
 					"settings":
 					{
@@ -1993,79 +2163,6 @@
 						},
 						"translation.x": 0.0,
 						"translation.y": 2148.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 13,
-					"file": "sandbox/vs-toasm/do.bat",
-					"settings":
-					{
-						"buffer_size": 33,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								33
-							]
-						],
-						"settings":
-						{
-							"BracketHighlighterBusy": false,
-							"bh_regions":
-							[
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close"
-							],
-							"encoding_helper_confidence": 1.0,
-							"encoding_helper_encoding": "UTF-8",
-							"encoding_helper_encoding_sublime": "UTF-8",
-							"syntax": "Packages/Batch File/Batch File.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"

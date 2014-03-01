@@ -841,5 +841,36 @@ namespace Compiler
         }
     }
 
+    bool IfAssCouldBeDone(shared_ptr<SymbolType> lhs, shared_ptr<SymbolType> rhs)
+    {
+        auto lTypeSym = GetActualType(lhs);
+        auto rTypeSym = GetActualType(rhs);
+
+        if (IfArithmetic(lhs)
+            && IfArithmetic(rhs))
+        {
+            return true;
+        }
+        else if (lTypeSym->GetType() == ESymbolType::TYPE_STRUCT
+                 && rTypeSym->GetType() == ESymbolType::TYPE_STRUCT
+                 && lTypeSym->name == rTypeSym->name)
+        {
+            return true;
+        }
+        else if (lTypeSym->GetType() == ESymbolType::TYPE_POINTER
+                 && ((rTypeSym->GetType() == ESymbolType::TYPE_POINTER
+                      && GetRefSymbol(lTypeSym)->IfTypeFits(GetRefSymbol(rTypeSym)))
+                     // or it is 0 constant
+                     || (false)
+                     // or it is ptr to void
+                     || (false)))
+        {
+            return true;
+        }
+
+        return false;
+
+    }
+
 
 } // namespace Compiler

@@ -329,6 +329,12 @@ namespace Compiler
     bool IfScalar(shared_ptr<SymbolType> symbol);
     bool IfOfType(shared_ptr<SymbolType> symbol, ESymbolType type);
     bool IfConst(shared_ptr<SymbolType> symbol);
+
+    // this one used for type check when initializing const qualified variables
+    // and for checking return statement value type, so lhs could be
+    // modifiable lvalue in some cases and in some it could be not
+    bool IfAssCouldBeDone(shared_ptr<SymbolType> lhs, shared_ptr<SymbolType> rhs);
+
     shared_ptr<SymbolType> GetRefSymbol(shared_ptr<Symbol> symbol);
     shared_ptr<SymbolType> CalcCommonArithmeticType(shared_ptr<SymbolType> left, shared_ptr<SymbolType> right);
     shared_ptr<SymbolType> GetActualType(shared_ptr<SymbolType> symbol);
