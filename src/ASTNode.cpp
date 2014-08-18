@@ -314,10 +314,14 @@ namespace Compiler
 
         switch (token.type)
         {
-            case OP_ASS:
+//            case OP_ASS:
+            default:
             {
                 // simple assignment
-
+                if (!IfAssCouldBeDone(left, right))
+                {
+                    ThrowInvalidTokenError(token, "assignment not possible");
+                }
                 break;
             }
         }
@@ -551,7 +555,9 @@ namespace Compiler
     }
 
 ////////////////////////////////////////////////////////////////////////////////
-    ASTNodeFunctionCall::ASTNodeFunctionCall(const Token& token, shared_ptr<ASTNode> caller, vector<shared_ptr<ASTNode> >& parameters)
+    ASTNodeFunctionCall::ASTNodeFunctionCall(const Token& token
+                                             , shared_ptr<ASTNode> caller
+                                             , vector<shared_ptr<ASTNode>>& parameters)
         : ASTNode(token)
     {
         assert(caller != NULL);
@@ -585,12 +591,13 @@ namespace Compiler
         for (size_t i = 0; i < parameters.size(); i++)
         {
             if (!internal
-                && !GetRefSymbol(argsSymbols->orderedVariables[i])->IfTypeFits(parameters[i]->GetTypeSym()))
+//                && !GetRefSymbol(argsSymbols->orderedVariables[i])->IfTypeFits(parameters[i]->GetTypeSym()))
+                && !IfAssCouldBeDone(argsSymbols->orderedVariables[i], parameters[i]))
             {
-                ThrowInvalidTokenError(caller->token, "actual parameter "
+                ThrowInvalidTokenError(caller->token, "type of actual parameter "
                   + std::to_string(i)
                   + ": " + parameters[i]->GetTypeSym()->GetQualifiedName()
-                  + "doesn't fit formal parameter: "
+                  + "doesn't fit type of formal parameter: "
                   + argsSymbols->orderedVariables[i]->GetQualifiedName());
             }
             children_.push_back(parameters[i]);
@@ -801,6 +808,43 @@ namespace Compiler
             default:
                 return false;
         }
+    }
+
+    bool IfAssCouldBeDone(shared_ptr<ASTNode> lhs, shared_ptr<ASTNode> rhs)
+    {
+        auto lTypeSym = GetActualType(lhs->GetTypeSym());
+        return IfAssCouldBeDone(lTypeSym, rhs);
+    }
+
+    bool IfAssCouldBeDone(shared_ptr<SymbolType> lhs, shared_ptr<ASTNode> rhs)
+    {
+        auto lTypeSym = GetActualType(lhs);
+        auto rTypeSym = GetActualType(rhs->GetTypeSym());
+
+        if (IfArithmetic(lTypeSym)
+            && IfArithmetic(rTypeSym))
+        {
+            return true;
+        }
+        else if (lTypeSym->GetType() == ESymbolType::TYPE_STRUCT
+                 && rTypeSym->GetType() == ESymbolType::TYPE_STRUCT
+                 && lTypeSym->name == rTypeSym->name)
+        {
+            return true;
+        }
+        else if (lTypeSym->GetType() == ESymbolType::TYPE_POINTER
+                 && ((rTypeSym->GetType() == ESymbolType::TYPE_POINTER
+                      && GetRefSymbol(lTypeSym)->IfTypeFits(GetRefSymbol(rTypeSym)))
+                     // or it is 0 constant
+                     || (rhs->IsConstExpr() && rhs->EvalToInt() == 0)
+                     // or it is ptr to void
+                     || (rTypeSym->GetType() == ESymbolType::TYPE_POINTER
+                         && GetRefSymbol(rTypeSym)->GetType() == ESymbolType::TYPE_VOID)))
+        {
+            return true;
+        }
+
+        return false;
     }
 
 } // namespace

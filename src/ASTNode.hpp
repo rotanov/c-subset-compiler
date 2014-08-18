@@ -178,4 +178,10 @@ namespace Compiler
     bool IfLValue(shared_ptr<ASTNode> node);
     bool IfModifiableLValue(shared_ptr<ASTNode> node);
 
+    // this one used for type check when initializing const qualified variables
+    // and for checking return statement value type, so lhs could be
+    // modifiable lvalue in some cases and in some it could be not
+    bool IfAssCouldBeDone(shared_ptr<SymbolType> lhs, shared_ptr<ASTNode> rhs);
+    bool IfAssCouldBeDone(shared_ptr<ASTNode> lhs, shared_ptr<ASTNode> rhs);
+
 } // namespace Compiler

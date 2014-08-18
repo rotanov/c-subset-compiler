@@ -1,0 +1,16 @@
+types:
+------------------------------------------------
+struct s
+  variables:
+  ----------------------------------------------
+  variable mem of type int
+
+variables:
+------------------------------------------------
+variable pci of type pointer to const int
+variable pi of type pointer to int
+variable cs of type const struct s
+functions:
+------------------------------------------------
+variable main of type function() returning int
+ERROR: unexpected token OP_ASS : "=" at 10-6, assignment not possible
