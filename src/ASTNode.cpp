@@ -8,52 +8,52 @@
 
 namespace Compiler
 {
-    // not sure if really need it
-    extern Parser* theParser;
+// not sure if really need it
+extern Parser* theParser;
 ////////////////////////////////////////////////////////////////////////////////
-    ASTNode::~ASTNode()
-    {
+ASTNode::~ASTNode()
+{
 
-    }
+}
 
-//------------------------------------------------------------------------------
-    int ASTNode::GetChildCount() const
-    {
+//==============================================================================
+int ASTNode::GetChildCount() const
+{
         return children_.size();
-    }
+}
 
-//------------------------------------------------------------------------------
-    shared_ptr<ASTNode> ASTNode::GetChild(const int index)
-    {
+//==============================================================================
+shared_ptr<ASTNode> ASTNode::GetChild(const int index)
+{
         assert(index >= 0 && static_cast<size_t>(index) < children_.size());
         return children_[index];
-    }
+}
 
-//------------------------------------------------------------------------------
-    void ASTNode::SetTypeSym(shared_ptr<SymbolType> type)
-    {
+//==============================================================================
+void ASTNode::SetTypeSym(shared_ptr<SymbolType> type)
+{
         assert(type != NULL);
         typeSym_ = type;
-    }
+}
 
-//------------------------------------------------------------------------------
-    shared_ptr<SymbolType> ASTNode::GetTypeSym() const
-    {
+//==============================================================================
+shared_ptr<SymbolType> ASTNode::GetTypeSym() const
+{
         assert(typeSym_ != NULL);
         return typeSym_;
-    }
+}
 
-//------------------------------------------------------------------------------
-    bool ASTNode::IsConstExpr() const
-    {
+//==============================================================================
+bool ASTNode::IsConstExpr() const
+{
         return token == TT_LITERAL_CHAR
                || token == TT_LITERAL_INT
                || token == TT_LITERAL_FLOAT;
-    }
+}
 
-//------------------------------------------------------------------------------
-    int ASTNode::EvalToInt() const
-    {
+//==============================================================================
+int ASTNode::EvalToInt() const
+{
         switch (token.type)
         {
             case TT_LITERAL_CHAR:
@@ -68,27 +68,27 @@ namespace Compiler
         }
 
         return 0;
-    }
+}
 
-//------------------------------------------------------------------------------
-    ASTNode::ASTNode(const Token &token)
+//==============================================================================
+ASTNode::ASTNode(const Token &token)
         : token(token)
-    {
+{
 
-    }
+}
 
-//------------------------------------------------------------------------------
-    ASTNode::ASTNode(const Token& token, shared_ptr<SymbolType> type)
+//==============================================================================
+ASTNode::ASTNode(const Token& token, shared_ptr<SymbolType> type)
         : token(token)
         , typeSym_(type)
-    {
+{
         assert(type != NULL);
-    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
-    ASTNodeBinaryOperator::ASTNodeBinaryOperator(const Token& token, shared_ptr<ASTNode> left, shared_ptr<ASTNode> right)
+ASTNodeBinaryOperator::ASTNodeBinaryOperator(const Token& token, shared_ptr<ASTNode> left, shared_ptr<ASTNode> right)
         : ASTNode(token)
-    {
+{
         assert(left != NULL && right != NULL);
         assert(IsBinaryOperator(token));
         children_.push_back(left);
@@ -239,19 +239,19 @@ namespace Compiler
             default:
                 assert(false);
         }
-    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
-    bool ASTNodeBinaryOperator::IsConstExpr() const
-    {
+bool ASTNodeBinaryOperator::IsConstExpr() const
+{
         return token != OP_COMMA
                && children_[0]->IsConstExpr()
                 && children_[1]->IsConstExpr();
-    }
+}
 
-//------------------------------------------------------------------------------
-    int ASTNodeBinaryOperator::EvalToInt() const
-    {
+//==============================================================================
+int ASTNodeBinaryOperator::EvalToInt() const
+{
         int lhs  = children_[0]->EvalToInt();
         int rhs = children_[1]->EvalToInt();
 
@@ -296,12 +296,12 @@ namespace Compiler
             default:
                 return ASTNode::EvalToInt();
         }
-    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
-    ASTNodeAssignment::ASTNodeAssignment(const Token& token, shared_ptr<ASTNode> left, shared_ptr<ASTNode> right)
+ASTNodeAssignment::ASTNodeAssignment(const Token& token, shared_ptr<ASTNode> left, shared_ptr<ASTNode> right)
         : ASTNode(token)
-    {
+{
         assert(left != NULL && right != NULL);
 
         children_.push_back(left);
@@ -327,57 +327,57 @@ namespace Compiler
         }
 
         SetTypeSym(left->GetTypeSym());
-    }
+}
 
-//------------------------------------------------------------------------------
-    bool ASTNodeAssignment::IsConstExpr() const
-    {
+//==============================================================================
+bool ASTNodeAssignment::IsConstExpr() const
+{
         return false;
-    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
-    ASTNodeUnaryOperator::ASTNodeUnaryOperator(const Token& token)
+ASTNodeUnaryOperator::ASTNodeUnaryOperator(const Token& token)
         : ASTNode(token)
-    {
+{
 
-    }
+}
 
-//------------------------------------------------------------------------------
-    ASTNodeUnaryOperator::ASTNodeUnaryOperator(const Token& token, shared_ptr<ASTNode> node)
+//==============================================================================
+ASTNodeUnaryOperator::ASTNodeUnaryOperator(const Token& token, shared_ptr<ASTNode> node)
         : ASTNode(token)
-    {
+{
         assert(node != NULL);
         children_.push_back(node);
         CheckTypes_();
-    }
+}
 
-//------------------------------------------------------------------------------
-    void ASTNodeUnaryOperator::SetOperand(shared_ptr<ASTNode> node)
-    {
+//==============================================================================
+void ASTNodeUnaryOperator::SetOperand(shared_ptr<ASTNode> node)
+{
         assert(children_.size() == 0);
         assert(node != NULL);
         children_.push_back(node);
         CheckTypes_();
-    }
+}
 
-//------------------------------------------------------------------------------
-    shared_ptr<ASTNode> ASTNodeUnaryOperator::GetOperand()
-    {
+//==============================================================================
+shared_ptr<ASTNode> ASTNodeUnaryOperator::GetOperand()
+{
         assert(children_.size() == 1);
         return children_[0];
-    }
+}
 
-//------------------------------------------------------------------------------
-    bool ASTNodeUnaryOperator::IsConstExpr() const
-    {
+//==============================================================================
+bool ASTNodeUnaryOperator::IsConstExpr() const
+{
         return token != OP_INC
             && token != OP_DEC
             && children_[0]->IsConstExpr();
-    }
+}
 
-//------------------------------------------------------------------------------
-    int ASTNodeUnaryOperator::EvalToInt() const
-    {
+//==============================================================================
+int ASTNodeUnaryOperator::EvalToInt() const
+{
         int rhs = children_[0]->EvalToInt();
         switch (token.type)
         {
@@ -388,11 +388,11 @@ namespace Compiler
             default:
                 return ASTNode::EvalToInt();
         }
-    }
+}
 
-//------------------------------------------------------------------------------
-    void ASTNodeUnaryOperator::CheckTypes_()
-    {
+//==============================================================================
+void ASTNodeUnaryOperator::CheckTypes_()
+{
         assert(children_.size() == 1);
 
         shared_ptr<ASTNode> node = children_[0];
@@ -461,15 +461,15 @@ namespace Compiler
             default:
                 assert(false);
         }
-    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
-    ASTNodeConditionalOperator::ASTNodeConditionalOperator(const Token& token,
+ASTNodeConditionalOperator::ASTNodeConditionalOperator(const Token& token,
         shared_ptr<ASTNode> condition, shared_ptr<ASTNode> thenExpression, shared_ptr<ASTNode> elseExpression)
-    // TOOD: dunno whatever the reason for token to be here
-    // should it be `?` or `:`
+// TOOD: dunno whatever the reason for token to be here
+// should it be `?` or `:`
         : ASTNode(token)
-    {
+{
         assert(condition != NULL);
         assert(thenExpression != NULL);
         assert(elseExpression != NULL);
@@ -478,11 +478,11 @@ namespace Compiler
         children_.push_back(elseExpression);
 
         // TODO: check for constraints, apply type, see 6.5.15
-    }
+}
 
-//------------------------------------------------------------------------------
-    bool ASTNodeConditionalOperator::IsConstExpr() const
-    {
+//==============================================================================
+bool ASTNodeConditionalOperator::IsConstExpr() const
+{
         if (!children_[0]->IsConstExpr())
         {
             return false;
@@ -496,16 +496,16 @@ namespace Compiler
         {
             return children_[2]->IsConstExpr();
         }
-    }
+}
 
-//------------------------------------------------------------------------------
-    int ASTNodeConditionalOperator::EvalToInt() const
-    {
+//==============================================================================
+int ASTNodeConditionalOperator::EvalToInt() const
+{
         int condition = children_[0]->EvalToInt();
         return condition ? children_[1]->EvalToInt() : children_[2]->EvalToInt();
     }
 
-////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////
     ASTNodeArraySubscript::ASTNodeArraySubscript(const Token& token, shared_ptr<ASTNode> left, shared_ptr<ASTNode> right)
         : ASTNode(token)
     {
@@ -546,20 +546,20 @@ namespace Compiler
         }
         SetTypeSym(leftTypeSym);
         // TODO: completness check
-    }
+}
 
-//------------------------------------------------------------------------------
-    bool ASTNodeArraySubscript::IsConstExpr() const
-    {
+//==============================================================================
+bool ASTNodeArraySubscript::IsConstExpr() const
+{
         return false;
-    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
     ASTNodeFunctionCall::ASTNodeFunctionCall(const Token& token
                                              , shared_ptr<ASTNode> caller
                                              , vector<shared_ptr<ASTNode>>& parameters)
         : ASTNode(token)
-    {
+{
         assert(caller != NULL);
         children_.push_back(caller);
 
@@ -603,18 +603,18 @@ namespace Compiler
             children_.push_back(parameters[i]);
         }
 
-    }
+}
 
-    //------------------------------------------------------------------------------
-    bool ASTNodeFunctionCall::IsConstExpr() const
-    {
+//==============================================================================
+bool ASTNodeFunctionCall::IsConstExpr() const
+{
         return false;
-    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
-    ASTNodeStructureAccess::ASTNodeStructureAccess(const Token& token, shared_ptr<ASTNode> lhs, shared_ptr<ASTNode> rhs)
+ASTNodeStructureAccess::ASTNodeStructureAccess(const Token& token, shared_ptr<ASTNode> lhs, shared_ptr<ASTNode> rhs)
         : ASTNode(token)
-    {
+{
         assert(lhs != NULL);
         assert(rhs != NULL);
         children_.push_back(lhs);
@@ -679,78 +679,78 @@ namespace Compiler
         {
             typeSym_ = make_shared<SymbolConst>(typeSym);
         }
-    }
+}
 
-//------------------------------------------------------------------------------
-    bool ASTNodeStructureAccess::IsConstExpr() const
-    {
+//==============================================================================
+bool ASTNodeStructureAccess::IsConstExpr() const
+{
         return false;
-    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
-    ASTNodeTypeName::ASTNodeTypeName(shared_ptr<SymbolType> typeNameSymbol)
+ASTNodeTypeName::ASTNodeTypeName(shared_ptr<SymbolType> typeNameSymbol)
         : ASTNode(Token(TT_TYPE_NAME, typeNameSymbol->GetQualifiedName()))
         , typeSymbol_(typeNameSymbol)
-    {
+{
 
-    }
+}
 
-//------------------------------------------------------------------------------
-    bool ASTNodeTypeName::IsConstExpr() const
-    {
+//==============================================================================
+bool ASTNodeTypeName::IsConstExpr() const
+{
         return false;
-    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
-    ASTNodeCast::ASTNodeCast(shared_ptr<ASTNodeTypeName> left, shared_ptr<ASTNode> right)
+ASTNodeCast::ASTNodeCast(shared_ptr<ASTNodeTypeName> left, shared_ptr<ASTNode> right)
         : ASTNode(Token(TT_CAST, "cast"))
-    {
+{
         assert(left != NULL && right != NULL);
         children_.push_back(left);
         children_.push_back(right);
         SetTypeSym(left->GetTypeSym());
-    }
+}
 
-//------------------------------------------------------------------------------
-    bool ASTNodeCast::IsConstExpr() const
-    {
+//==============================================================================
+bool ASTNodeCast::IsConstExpr() const
+{
         return children_[1]->IsConstExpr()
                && IfArithmetic(children_[0]->GetTypeSym());
-    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
-    ASTNodeCommaOperator::ASTNodeCommaOperator(const Token& token)
+ASTNodeCommaOperator::ASTNodeCommaOperator(const Token& token)
         : ASTNode(token)
-    {
+{
         assert(token == OP_COMMA);
-    }
+}
 
-//------------------------------------------------------------------------------
-    bool ASTNodeCommaOperator::IsConstExpr() const
-    {
+//==============================================================================
+bool ASTNodeCommaOperator::IsConstExpr() const
+{
         assert(children_.size() > 0);
         return children_.back()->IsConstExpr();
-    }
+}
 
-//------------------------------------------------------------------------------
-    int ASTNodeCommaOperator::EvalToInt() const
-    {
+//==============================================================================
+int ASTNodeCommaOperator::EvalToInt() const
+{
         assert(children_.size() > 0);
         return children_.back()->EvalToInt();
-    }
+}
 
-//------------------------------------------------------------------------------
-    void ASTNodeCommaOperator::PushOperand(const shared_ptr<ASTNode> node)
-    {
+//==============================================================================
+void ASTNodeCommaOperator::PushOperand(const shared_ptr<ASTNode> node)
+{
         assert(node != NULL);
         children_.push_back(node);
         SetTypeSym(node->GetTypeSym());
-    }
+}
 
-//------------------------------------------------------------------------------
+//==============================================================================
 ////////////////////////////////////////////////////////////////////////////////
-    bool IfModifiableLValue(shared_ptr<ASTNode> node)
-    {
+bool IfModifiableLValue(shared_ptr<ASTNode> node)
+{
         assert(node != NULL);
         Token token = node->token;
 
@@ -777,10 +777,10 @@ namespace Compiler
             default:
                 return false;
         }
-    }
+}
 
-    bool IfLValue(shared_ptr<ASTNode> node)
-    {
+bool IfLValue(shared_ptr<ASTNode> node)
+{
         assert(node != NULL);
         Token token = node->token;
 
@@ -808,7 +808,7 @@ namespace Compiler
             default:
                 return false;
         }
-    }
+}
 
     bool IfAssCouldBeDone(shared_ptr<ASTNode> lhs, shared_ptr<ASTNode> rhs)
     {

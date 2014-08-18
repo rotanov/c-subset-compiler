@@ -7,59 +7,59 @@
 
 namespace Compiler
 {
-    Symbol::Symbol(const std::string& name)
+Symbol::Symbol(const std::string& name)
         : name(name)
-    {
+{
 
-    }
+}
 
-    Symbol::~Symbol()
-    {
+Symbol::~Symbol()
+{
 
-    }
+}
 
-    SymbolTable::SymbolTable()
-    {
+SymbolTable::SymbolTable()
+{
 
-    }
+}
 
-    SymbolTable::SymbolTable(const EScopeType scope)
+SymbolTable::SymbolTable(const EScopeType scope)
         : scope_(scope)
-    {
+{
         assert(scope != EScopeType::UNDEFINED
                 && scope != EScopeType::PARAMETERS
                 && scope != EScopeType::STRUCTURE);
-    }
+}
 
-    SymbolTable::~SymbolTable()
-    {
+SymbolTable::~SymbolTable()
+{
 
-    }
+}
 
-    EScopeType SymbolTable::GetScopeType() const
-    {
+EScopeType SymbolTable::GetScopeType() const
+{
         return scope_;
-    }
+}
 
-    void SymbolTable::AddType(shared_ptr<SymbolType> symbolType)
-    {
+void SymbolTable::AddType(shared_ptr<SymbolType> symbolType)
+{
         assert(symbolType != NULL);
         //        if (symbolType->GetSymbolType() == ESymbolType::TYPE_STRUCT)
         //        {
         //            key = "struct " + key;
         //        }
         AddType(symbolType, symbolType->name);
-    }
+}
 
-    void SymbolTable::AddType(shared_ptr<SymbolType> symbolType, const std::string& key)
-    {
+void SymbolTable::AddType(shared_ptr<SymbolType> symbolType, const std::string& key)
+{
         assert(symbolType != NULL);
         assert(types.find(key) == types.end());
         types[key] = symbolType;
-    }
+}
 
-    void SymbolTable::AddFunction(shared_ptr<SymbolVariable> symbolVariable)
-    {
+void SymbolTable::AddFunction(shared_ptr<SymbolVariable> symbolVariable)
+{
         assert(symbolVariable != NULL);
         assert(symbolVariable->GetRefSymbol()->GetType() == ESymbolType::TYPE_FUNCTION);
 
@@ -68,10 +68,10 @@ namespace Compiler
         assert(functions.find(key) == functions.end());
 
         functions[key] = symbolVariable;
-    }
+}
 
-    void SymbolTable::AddVariable(shared_ptr<SymbolVariable> symbolVariable)
-    {
+void SymbolTable::AddVariable(shared_ptr<SymbolVariable> symbolVariable)
+{
         assert(symbolVariable != NULL);
 
         std::string key = symbolVariable->name;
@@ -81,64 +81,64 @@ namespace Compiler
         // assert(variables.find(key) == variables.end());
 
         variables[key] = symbolVariable;
-    }
+}
 
-    shared_ptr<SymbolVariable> SymbolTable::LookupVariable(const std::string& name) const
-    {
+shared_ptr<SymbolVariable> SymbolTable::LookupVariable(const std::string& name) const
+{
         return LookupHelper_(variables, name);
-    }
+}
 
-    shared_ptr<SymbolType> SymbolTable::LookupType(const std::string& name) const
-    {
+shared_ptr<SymbolType> SymbolTable::LookupType(const std::string& name) const
+{
         return LookupHelper_(types, name);
-    }
+}
 
-    shared_ptr<SymbolVariable> SymbolTable::LookupFunction(const std::string& name) const
-    {
+shared_ptr<SymbolVariable> SymbolTable::LookupFunction(const std::string& name) const
+{
         return LookupHelper_(functions, name);
-    }
+}
 
-    SymbolType::SymbolType(const std::string& name)
+SymbolType::SymbolType(const std::string& name)
         : Symbol(name)
-    {
+{
 
-    }
+}
 
-    std::string SymbolType::GetQualifiedName() const
-    {
+std::string SymbolType::GetQualifiedName() const
+{
         return name;
-    }
+}
 
-    int SymbolType::GetAbsoluteElementCount()
-    {
+int SymbolType::GetAbsoluteElementCount()
+{
         assert(false);
         return 0;
-    }
+}
 
-    SymbolVariable::SymbolVariable(const std::string& name)
+SymbolVariable::SymbolVariable(const std::string& name)
         : SymbolTypeRef(name)
-    {
+{
 
-    }
+}
 
-    SymbolVariable::SymbolVariable(const std::string& name, shared_ptr<SymbolType> symType)
+SymbolVariable::SymbolVariable(const std::string& name, shared_ptr<SymbolType> symType)
         : SymbolTypeRef(name, symType)
-    {
-    }
+{
+}
 
-    ESymbolType SymbolVariable::GetType() const
-    {
+ESymbolType SymbolVariable::GetType() const
+{
         return ESymbolType::VARIABLE;
-    }
+}
 
-    std::string SymbolVariable::GetQualifiedName() const
-    {
+std::string SymbolVariable::GetQualifiedName() const
+{
         assert(type_ != NULL);
         return "variable " + name + " of type " + type_->GetQualifiedName();
-    }
+}
 
-    bool SymbolVariable::IfTypeFits(shared_ptr<Symbol> symbol) const
-    {
+bool SymbolVariable::IfTypeFits(shared_ptr<Symbol> symbol) const
+{
         if (symbol->GetType() == ESymbolType::VARIABLE)
         {
             assert(type_ != NULL);
@@ -148,16 +148,16 @@ namespace Compiler
         {
             return false;
         }
-    }
+}
 
-    void SymbolVariable::PushInitializer(shared_ptr<ASTNode> initializer)
-    {
+void SymbolVariable::PushInitializer(shared_ptr<ASTNode> initializer)
+{
         assert(initializer != NULL);
         initializers_.push_back(initializer);
-    }
+}
 
-    int SymbolVariable::GetAbsoluteElementCount()
-    {
+int SymbolVariable::GetAbsoluteElementCount()
+{
         auto typeSym = GetActualType(shared_from_this());
 
         switch (typeSym->GetType())
@@ -169,117 +169,117 @@ namespace Compiler
             default:
                 return 1;
         }
-    }
+}
 
-    SymbolChar::SymbolChar()
+SymbolChar::SymbolChar()
         : SymbolType("char")
-    {
+{
 
-    }
+}
 
-    ESymbolType SymbolChar::GetType() const
-    {
+ESymbolType SymbolChar::GetType() const
+{
         return ESymbolType::TYPE_CHAR;
-    }
+}
 
-    bool SymbolChar::IfTypeFits(shared_ptr<Symbol> symbol) const
-    {
+bool SymbolChar::IfTypeFits(shared_ptr<Symbol> symbol) const
+{
         return symbol->GetType() == ESymbolType::TYPE_CHAR;
-    }
+}
 
-    int SymbolChar::GetSize()
-    {
+int SymbolChar::GetSize()
+{
         return 1;
-    }
+}
 
-    SymbolInt::SymbolInt()
+SymbolInt::SymbolInt()
         : SymbolType("int")
-    {
+{
 
-    }
+}
 
-    ESymbolType SymbolInt::GetType() const
-    {
+ESymbolType SymbolInt::GetType() const
+{
         return ESymbolType::TYPE_INT;
-    }
+}
 
-    bool SymbolInt::IfTypeFits(shared_ptr<Symbol> symbol) const
-    {
+bool SymbolInt::IfTypeFits(shared_ptr<Symbol> symbol) const
+{
         return symbol->GetType() == ESymbolType::TYPE_INT;
         // || symbol->GetSymbolType() == ESymbolType::TYPE_CHAR;
-    }
+}
 
-    int SymbolInt::GetSize()
-    {
+int SymbolInt::GetSize()
+{
         return 4;
-    }
+}
 
-    SymbolFloat::SymbolFloat()
+SymbolFloat::SymbolFloat()
         : SymbolType("float")
-    {
+{
 
-    }
+}
 
-    ESymbolType SymbolFloat::GetType() const
-    {
+ESymbolType SymbolFloat::GetType() const
+{
         return ESymbolType::TYPE_FLOAT;
-    }
+}
 
-    bool SymbolFloat::IfTypeFits(shared_ptr<Symbol> symbol) const
-    {
+bool SymbolFloat::IfTypeFits(shared_ptr<Symbol> symbol) const
+{
         return symbol->GetType() == ESymbolType::TYPE_FLOAT;
                //|| symbol->GetSymbolType() == ESymbolType::TYPE_INT
         //|| symbol->GetSymbolType() == ESymbolType::TYPE_CHAR;
-    }
+}
 
-    int SymbolFloat::GetSize()
-    {
+int SymbolFloat::GetSize()
+{
         return 4;
-    }
+}
 
-    SymbolVoid::SymbolVoid()
+SymbolVoid::SymbolVoid()
         : SymbolType("void")
-    {
+{
 
-    }
+}
 
-    ESymbolType SymbolVoid::GetType() const
-    {
+ESymbolType SymbolVoid::GetType() const
+{
         return ESymbolType::TYPE_VOID;
-    }
+}
 
-    bool SymbolVoid::IfTypeFits(shared_ptr<Symbol> symbol) const
-    {
+bool SymbolVoid::IfTypeFits(shared_ptr<Symbol> symbol) const
+{
         return symbol->GetType() == ESymbolType::TYPE_VOID;
-    }
+}
 
-    int SymbolVoid::GetSize()
-    {
+int SymbolVoid::GetSize()
+{
         assert(false);
         return 0;
-    }
+}
 
-    SymbolFunctionType::SymbolFunctionType(shared_ptr<SymbolTableWithOrder> parametersSymTable)
+SymbolFunctionType::SymbolFunctionType(shared_ptr<SymbolTableWithOrder> parametersSymTable)
         : SymbolTypeRef("function")
         , parameters_(parametersSymTable)
-    {
+{
         assert(parameters_ != NULL);
-    }
+}
 
-    SymbolFunctionType::SymbolFunctionType(shared_ptr<SymbolType> returnType, shared_ptr<SymbolTableWithOrder> parametersSymTable)
+SymbolFunctionType::SymbolFunctionType(shared_ptr<SymbolType> returnType, shared_ptr<SymbolTableWithOrder> parametersSymTable)
         : SymbolTypeRef("function", returnType)
         , parameters_(parametersSymTable)
-    {
+{
         assert(parameters_ != NULL);
-    }
+}
 
-    ESymbolType SymbolFunctionType::GetType() const
-    {
+ESymbolType SymbolFunctionType::GetType() const
+{
         return ESymbolType::TYPE_FUNCTION;
-    }
+}
 
-    std::string SymbolFunctionType::GetQualifiedName() const
-    {
+std::string SymbolFunctionType::GetQualifiedName() const
+{
         assert(type_ != NULL);
         std::string argStr;
         for (auto& a : parameters_->orderedVariables)
@@ -291,35 +291,35 @@ namespace Compiler
             }
         }
         return "function(" + argStr + ") returning " + type_->GetQualifiedName();
-    }
+}
 
-    void SymbolFunctionType::AddParameter(shared_ptr<SymbolVariable> parameter)
-    {
+void SymbolFunctionType::AddParameter(shared_ptr<SymbolVariable> parameter)
+{
         assert(parameter != NULL);
         parameters_->AddVariable(parameter);
-    }
+}
 
-    shared_ptr<SymbolTableWithOrder> SymbolFunctionType::GetSymbolTable() const
-    {
+shared_ptr<SymbolTableWithOrder> SymbolFunctionType::GetSymbolTable() const
+{
         assert(parameters_ != NULL);
         return parameters_;
-    }
+}
 
-    void SymbolFunctionType::SetBody(shared_ptr<CompoundStatement> body)
-    {
+void SymbolFunctionType::SetBody(shared_ptr<CompoundStatement> body)
+{
         assert(body_ == NULL);
         assert(body != NULL);
         body_ = body;
-    }
+}
 
-    shared_ptr<CompoundStatement> SymbolFunctionType::GetBody() const
-    {
-//        assert(body_ != NULL);
+shared_ptr<CompoundStatement> SymbolFunctionType::GetBody() const
+{
+  //        assert(body_ != NULL);
         return body_;
-    }
+}
 
-    bool SymbolFunctionType::IfTypeFits(shared_ptr<Symbol> symbol) const
-    {
+bool SymbolFunctionType::IfTypeFits(shared_ptr<Symbol> symbol) const
+{
         if (symbol->GetType() == ESymbolType::TYPE_FUNCTION)
         {
             shared_ptr<SymbolFunctionType> funSym = static_pointer_cast<SymbolFunctionType>(symbol);
@@ -337,21 +337,21 @@ namespace Compiler
         {
             return false;
         }
-    }
+}
 
-    SymbolStruct::SymbolStruct(const std::string name)
+SymbolStruct::SymbolStruct(const std::string name)
         : SymbolType(name)
         , size_(-1)
-    {
-    }
+{
+}
 
-    ESymbolType SymbolStruct::GetType() const
-    {
+ESymbolType SymbolStruct::GetType() const
+{
         return ESymbolType::TYPE_STRUCT;
-    }
+}
 
-    std::string SymbolStruct::GetQualifiedName() const
-    {
+std::string SymbolStruct::GetQualifiedName() const
+{
         // TODO: don't print members everytime
         //        std::string membersStr;
         //        if (fields_ != NULL)
@@ -362,36 +362,36 @@ namespace Compiler
         //            }
         //        }
         return "struct " + name;// + membersStr + "\n";
-    }
+}
 
-    void SymbolStruct::AddField(shared_ptr<SymbolVariable> field)
-    {
+void SymbolStruct::AddField(shared_ptr<SymbolVariable> field)
+{
         assert(field != NULL);
         assert(fields_ != NULL);
         fields_->AddVariable(field);
-    }
+}
 
-    shared_ptr<SymbolTableWithOrder> SymbolStruct::GetSymbolTable() const
-    {
+shared_ptr<SymbolTableWithOrder> SymbolStruct::GetSymbolTable() const
+{
         assert(fields_ != NULL);
         return fields_;
-    }
+}
 
-    void SymbolStruct::SetFieldsSymTable(shared_ptr<SymbolTableWithOrder> fieldsSymTable)
-    {
+void SymbolStruct::SetFieldsSymTable(shared_ptr<SymbolTableWithOrder> fieldsSymTable)
+{
         assert(fieldsSymTable != NULL);
         assert(fields_ == NULL);
         fields_ = fieldsSymTable;
-    }
+}
 
-    bool SymbolStruct::IfTypeFits(shared_ptr<Symbol> symbol) const
-    {
+bool SymbolStruct::IfTypeFits(shared_ptr<Symbol> symbol) const
+{
         // TODO: implement
         return false;
-    }
+}
 
-    int SymbolStruct::GetSize()
-    {
+int SymbolStruct::GetSize()
+{
         if (size_ != -1)
         {
             return size_;
@@ -410,10 +410,10 @@ namespace Compiler
             }
             return size;
         }
-    }
+}
 
-    int SymbolStruct::GetAbsoluteElementCount()
-    {
+int SymbolStruct::GetAbsoluteElementCount()
+{
         int r = 0;
 
         if (fields_ != NULL)
@@ -427,54 +427,54 @@ namespace Compiler
         }
 
         return r;
-    }
+}
 
-    SymbolPointer::SymbolPointer()
+SymbolPointer::SymbolPointer()
         : SymbolTypeRef("pointer")
-    {
-    }
+{
+}
 
-    SymbolPointer::SymbolPointer(shared_ptr<SymbolType> symType)
+SymbolPointer::SymbolPointer(shared_ptr<SymbolType> symType)
         : SymbolTypeRef("pointer", symType)
-    {
-    }
+{
+}
 
-    ESymbolType SymbolPointer::GetType() const
-    {
+ESymbolType SymbolPointer::GetType() const
+{
         return ESymbolType::TYPE_POINTER;
-    }
+}
 
-    std::string SymbolPointer::GetQualifiedName() const
-    {
+std::string SymbolPointer::GetQualifiedName() const
+{
         assert(type_ != NULL);
         return name + " to " + type_->GetQualifiedName();
-    }
+}
 
-    bool SymbolPointer::IfTypeFits(shared_ptr<Symbol> symbol) const
-    {
+bool SymbolPointer::IfTypeFits(shared_ptr<Symbol> symbol) const
+{
         return symbol->GetType() == ESymbolType::TYPE_POINTER
                && type_->IfTypeFits(static_pointer_cast<SymbolPointer>(symbol)->GetRefSymbol());
-    }
+}
 
-    SymbolArray::SymbolArray()
+SymbolArray::SymbolArray()
         : SymbolTypeRef("array")
-    {
+{
 
-    }
+}
 
-    SymbolArray::SymbolArray(shared_ptr<SymbolType> symType)
+SymbolArray::SymbolArray(shared_ptr<SymbolType> symType)
         : SymbolTypeRef("array", symType)
-    {
+{
 
-    }
+}
 
-    ESymbolType SymbolArray::GetType() const
-    {
+ESymbolType SymbolArray::GetType() const
+{
         return ESymbolType::TYPE_ARRAY;
-    }
+}
 
-    void SymbolArray::SetSizeInitializer(shared_ptr<ASTNode> initializerExpression)
-    {
+void SymbolArray::SetSizeInitializer(shared_ptr<ASTNode> initializerExpression)
+{
         assert(initializerExpression != NULL);
 
         if (!initializerExpression->IsConstExpr())
@@ -489,25 +489,25 @@ namespace Compiler
         {
             ThrowInvalidTokenError(initializerExpression->token, "size of an array must be >= 0");
         }
-    }
+}
 
-    int SymbolArray::GetSize()
-    {
+int SymbolArray::GetSize()
+{
         assert(elementCount_ != 0);
         if (size_ == -1)
         {
             size_ = elementCount_ * GetArrayType(this->shared_from_this())->GetSize();
         }
         return size_;
-    }
+}
 
-    int SymbolArray::GetElementCount() const
-    {
+int SymbolArray::GetElementCount() const
+{
         return elementCount_;
-    }
+}
 
-    int SymbolArray::GetAbsoluteElementCount()
-    {
+int SymbolArray::GetAbsoluteElementCount()
+{
         int r = this->GetElementCount();
         auto symType = Compiler::GetRefSymbol(this->shared_from_this());
 
@@ -520,10 +520,10 @@ namespace Compiler
             default:
                 return r;
         }
-    }
+}
 
-    std::string SymbolArray::GetQualifiedName() const
-    {
+std::string SymbolArray::GetQualifiedName() const
+{
         assert(type_ != NULL);
         std::string size;
         if (sizeInitializer_ != NULL)
@@ -531,30 +531,30 @@ namespace Compiler
             size = " " + std::to_string(sizeInitializer_->EvalToInt());
         }
         return name + size + " of " + type_->GetQualifiedName();
-    }
+}
 
-    bool SymbolArray::IfTypeFits(shared_ptr<Symbol> symbol) const
-    {
+bool SymbolArray::IfTypeFits(shared_ptr<Symbol> symbol) const
+{
         // TODO: add dims check
         return symbol->GetType() == ESymbolType::TYPE_ARRAY
                 && type_->IfTypeFits(static_pointer_cast<SymbolArray>(symbol)->GetRefSymbol());
-    }
+}
 
-    SymbolTableWithOrder::SymbolTableWithOrder(const EScopeType scope)
+SymbolTableWithOrder::SymbolTableWithOrder(const EScopeType scope)
         : SymbolTable()
-    {
+{
         assert(scope == EScopeType::PARAMETERS
                || scope == EScopeType::STRUCTURE);
         scope_ = scope;
-    }
+}
 
-    SymbolTableWithOrder::~SymbolTableWithOrder()
-    {
+SymbolTableWithOrder::~SymbolTableWithOrder()
+{
 
-    }
+}
 
-    void SymbolTableWithOrder::AddVariable(shared_ptr<SymbolVariable> symbolVariable)
-    {
+void SymbolTableWithOrder::AddVariable(shared_ptr<SymbolVariable> symbolVariable)
+{
         assert(symbolVariable != NULL);
 
         std::string key = symbolVariable->name;
@@ -563,73 +563,73 @@ namespace Compiler
 
         variables[key] = symbolVariable;
         orderedVariables.push_back(symbolVariable);
-    }
+}
 
-    SymbolConst::SymbolConst()
+SymbolConst::SymbolConst()
         : SymbolTypeRef("const")
-    {
-    }
+{
+}
 
-    SymbolConst::SymbolConst(shared_ptr<SymbolType> symType)
+SymbolConst::SymbolConst(shared_ptr<SymbolType> symType)
         : SymbolTypeRef("const", symType)
-    {
-    }
+{
+}
 
-    ESymbolType SymbolConst::GetType() const
-    {
+ESymbolType SymbolConst::GetType() const
+{
         return ESymbolType::TYPE_CONST;
-    }
+}
 
-    std::string SymbolConst::GetQualifiedName() const
-    {
+std::string SymbolConst::GetQualifiedName() const
+{
         // name is always "const" here
         assert(type_ != NULL);
         return name + " " + type_->GetQualifiedName();
-    }
+}
 
-    bool SymbolConst::IfTypeFits(shared_ptr<Symbol> symbol) const
-    {
+bool SymbolConst::IfTypeFits(shared_ptr<Symbol> symbol) const
+{
         return symbol->GetType() == ESymbolType::TYPE_CONST
                 && type_->IfTypeFits(static_pointer_cast<SymbolConst>(symbol)->GetRefSymbol());
-    }
+}
 
-    SymbolTypedef::SymbolTypedef(const std::string& name)
+SymbolTypedef::SymbolTypedef(const std::string& name)
         : SymbolTypeRef(name)
-    {
+{
 
-    }
+}
 
-    ESymbolType SymbolTypedef::GetType() const
-    {
+ESymbolType SymbolTypedef::GetType() const
+{
         return ESymbolType::TYPE_TYPEDEF;
-    }
+}
 
-    std::string SymbolTypedef::GetQualifiedName() const
-    {
+std::string SymbolTypedef::GetQualifiedName() const
+{
         return "typedef " + name + " " + type_->GetQualifiedName();
-    }
+}
 
-    bool SymbolTypedef::IfTypeFits(shared_ptr<Symbol> symbol) const
-    {
+bool SymbolTypedef::IfTypeFits(shared_ptr<Symbol> symbol) const
+{
         return symbol->GetType() == ESymbolType::TYPE_TYPEDEF
                 && type_->IfTypeFits(static_pointer_cast<SymbolTypedef>(symbol)->GetRefSymbol());
-    }
+}
 
-    SymbolTypeRef::SymbolTypeRef(const std::string& name)
+SymbolTypeRef::SymbolTypeRef(const std::string& name)
         : SymbolType(name)
-    {
+{
 
-    }
+}
 
-    SymbolTypeRef::SymbolTypeRef(const std::string& name, shared_ptr<SymbolType> type)
+SymbolTypeRef::SymbolTypeRef(const std::string& name, shared_ptr<SymbolType> type)
         : SymbolType(name)
         , type_(type)
-    {
+{
         assert(type != NULL);
-    }
+}
 
-    void SymbolTypeRef::SetRefSymbol(shared_ptr<SymbolType> type)
-    {
+void SymbolTypeRef::SetRefSymbol(shared_ptr<SymbolType> type)
+{
         assert(type_ == NULL);
         assert(type != NULL);
 
@@ -657,25 +657,25 @@ namespace Compiler
         }
 
         type_ = type;
-    }
+}
 
-//------------------------------------------------------------------------------
-    shared_ptr<SymbolType> SymbolTypeRef::GetRefSymbol() const
-    {
+//==============================================================================
+shared_ptr<SymbolType> SymbolTypeRef::GetRefSymbol() const
+{
         assert(type_ != NULL);
         return type_;
-    }
+}
 
-//------------------------------------------------------------------------------
-    int SymbolTypeRef::GetSize()
-    {
+//==============================================================================
+int SymbolTypeRef::GetSize()
+{
         return GetActualType(const_cast<SymbolTypeRef*>(this)->shared_from_this())->GetSize();
-    }
+}
 
-//------------------------------------------------------------------------------
+//==============================================================================
 
-    bool IfSymbolIsRef(shared_ptr<Symbol> symbol)
-    {
+bool IfSymbolIsRef(shared_ptr<Symbol> symbol)
+{
         switch (symbol->GetType())
         {
             case ESymbolType::TYPE_ARRAY:
@@ -689,10 +689,10 @@ namespace Compiler
             default:
                 return false;
         }
-    }
+}
 
-    bool IfArithmetic(shared_ptr<SymbolType> symbol)
-    {
+bool IfArithmetic(shared_ptr<SymbolType> symbol)
+{
         switch (symbol->GetType())
         {
             case ESymbolType::TYPE_CHAR:
@@ -708,22 +708,22 @@ namespace Compiler
             default:
                 return false;
         }
-    }
+}
 
-    bool IfScalar(shared_ptr<SymbolType> symbol)
-    {
+bool IfScalar(shared_ptr<SymbolType> symbol)
+{
         return IfOfType(symbol, ESymbolType::TYPE_POINTER)
                || IfArithmetic(symbol);
-    }
+}
 
-    shared_ptr<SymbolType> GetRefSymbol(shared_ptr<Symbol> symbol)
-    {
+shared_ptr<SymbolType> GetRefSymbol(shared_ptr<Symbol> symbol)
+{
         assert(IfSymbolIsRef(symbol));
         return static_pointer_cast<SymbolTypeRef>(symbol)->GetRefSymbol();
-    }
+}
 
-    bool IfInteger(shared_ptr<SymbolType> symbol)
-    {
+bool IfInteger(shared_ptr<SymbolType> symbol)
+{
         switch (symbol->GetType())
         {
             case ESymbolType::TYPE_CHAR:
@@ -738,10 +738,10 @@ namespace Compiler
             default:
                 return false;
         }
-    }
+}
 
-    shared_ptr<SymbolType> CalcCommonArithmeticType(shared_ptr<SymbolType> left, shared_ptr<SymbolType> right)
-    {
+shared_ptr<SymbolType> CalcCommonArithmeticType(shared_ptr<SymbolType> left, shared_ptr<SymbolType> right)
+{
         assert(IfArithmetic(left) && IfArithmetic(right));
 
         if (IfOfType(left, ESymbolType::TYPE_FLOAT)
@@ -758,10 +758,10 @@ namespace Compiler
         {
             return make_shared<SymbolChar>();
         }
-    }
+}
 
-    bool IfOfType(shared_ptr<SymbolType> symbol, ESymbolType type)
-    {
+bool IfOfType(shared_ptr<SymbolType> symbol, ESymbolType type)
+{
         auto symType = symbol->GetType();
 
         switch (symType)
@@ -774,10 +774,10 @@ namespace Compiler
             default:
                 return symType == type;
         }
-    }
+}
 
-    shared_ptr<SymbolType> GetActualType(shared_ptr<SymbolType> symbol)
-    {
+shared_ptr<SymbolType> GetActualType(shared_ptr<SymbolType> symbol)
+{
         auto symType = symbol->GetType();
 
         switch (symType)
@@ -790,10 +790,10 @@ namespace Compiler
             default:
                 return symbol;
         }
-    }
+}
 
-    shared_ptr<SymbolType> GetArrayType(shared_ptr<SymbolType> symbol)
-    {
+shared_ptr<SymbolType> GetArrayType(shared_ptr<SymbolType> symbol)
+{
         assert(symbol->GetType() == ESymbolType::TYPE_ARRAY);
         shared_ptr<SymbolArray> arraySymbol = static_pointer_cast<SymbolArray>(symbol);
         shared_ptr<SymbolType> refTypeSymbol = GetActualType(arraySymbol->GetRefSymbol());
@@ -805,10 +805,10 @@ namespace Compiler
         {
             return GetArrayType(refTypeSymbol);
         }
-    }
+}
 
-    bool IfConst(shared_ptr<SymbolType> symbol)
-    {
+bool IfConst(shared_ptr<SymbolType> symbol)
+{
         assert(symbol != NULL);
 
         switch (symbol->GetType())
@@ -839,7 +839,7 @@ namespace Compiler
             default:
                 return false;
         }
-    }
+}
 
 
 } // namespace Compiler

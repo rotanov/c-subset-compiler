@@ -10,15 +10,15 @@
 
 namespace Compiler
 {
-    using std::shared_ptr;
-    using std::weak_ptr;
-    using std::make_shared;
-    using std::static_pointer_cast;
-    // code-style note: since we have strongly typed enums there is a point to
-    // rethink naming of enum members: they pollute namespace no more.
-    // so prefixes are already removed, may be all-cpas should be too?
-    enum class ESymbolType
-    {
+using std::shared_ptr;
+using std::weak_ptr;
+using std::make_shared;
+using std::static_pointer_cast;
+// code-style note: since we have strongly typed enums there is a point to
+// rethink naming of enum members: they pollute namespace no more.
+// so prefixes are already removed, may be all-cpas should be too?
+enum class ESymbolType
+{
         TYPE_VOID,
         TYPE_FLOAT,
         TYPE_INT,
@@ -30,12 +30,12 @@ namespace Compiler
         TYPE_CONST,
         TYPE_TYPEDEF,
         VARIABLE,
-    };
+};
 
-    // symbol tables with scope type of sctructure of parameters
-    // are of class SymbolTableWithOrder by agreement
-    enum class EScopeType
-    {
+// symbol tables with scope type of sctructure of parameters
+// are of class SymbolTableWithOrder by agreement
+enum class EScopeType
+{
         UNDEFINED,
         INTERNAL,
         GLOBAL,
@@ -44,16 +44,16 @@ namespace Compiler
         BODY,
         BLOCK,
         LOOP,
-    };
+};
 
-    class SymbolType;
-    class SymbolVariable;
-    class SymbolStruct;
+class SymbolType;
+class SymbolVariable;
+class SymbolStruct;
 
-//------------------------------------------------------------------------------
-    class Symbol
-    {
-    public:
+//==============================================================================
+class Symbol
+{
+public:
         std::string name{""};
 
         Symbol(const std::string& name);
@@ -63,14 +63,14 @@ namespace Compiler
         virtual std::string GetQualifiedName() const = 0;
         virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const = 0;
 
-    private:
+private:
 
-    };
+};
 
-//------------------------------------------------------------------------------
-    class SymbolTable
-    {
-    public:
+//==============================================================================
+class SymbolTable
+{
+public:
         template <typename T>
         using TSymbols = std::unordered_map<std::string, shared_ptr<T>>;
 
@@ -92,7 +92,7 @@ namespace Compiler
         TSymbols<SymbolType> types;
         TSymbols<SymbolVariable> functions;
 
-    protected:
+protected:
         SymbolTable();
 
         template <typename T>
@@ -109,12 +109,12 @@ namespace Compiler
         }
 
         EScopeType scope_{EScopeType::UNDEFINED};
-    };
+};
 
-//------------------------------------------------------------------------------
-    class SymbolTableWithOrder : public SymbolTable
-    {
-    public:
+//==============================================================================
+class SymbolTableWithOrder : public SymbolTable
+{
+public:
         SymbolTableWithOrder(const EScopeType scope);
         virtual ~SymbolTableWithOrder();
 
@@ -122,25 +122,25 @@ namespace Compiler
 
         std::vector<shared_ptr<SymbolVariable>> orderedVariables;
 
-    private:
-    };
+private:
+};
 
-//------------------------------------------------------------------------------
-    class SymbolType : public Symbol
-    {
-    public:
+//==============================================================================
+class SymbolType : public Symbol
+{
+public:
         SymbolType(const std::string& name);
 
         virtual std::string GetQualifiedName() const;
         int virtual GetSize() = 0;
         virtual int GetAbsoluteElementCount();
-    };
-//------------------------------------------------------------------------------
-    class SymbolTypeRef
+};
+//==============================================================================
+class SymbolTypeRef
             : public SymbolType
             , public std::enable_shared_from_this<SymbolTypeRef>
-    {
-    public:
+{
+public:
         SymbolTypeRef(const std::string& name);
         SymbolTypeRef(const std::string& name, shared_ptr<SymbolType> type);
 
@@ -148,15 +148,15 @@ namespace Compiler
         shared_ptr<SymbolType> GetRefSymbol() const;
         int virtual GetSize();
 
-    protected:
+protected:
         shared_ptr<SymbolType> type_{NULL};
-    };
+};
 
-//------------------------------------------------------------------------------
-    class ASTNode;
-    class SymbolVariable : public SymbolTypeRef
-    {
-    public:
+//==============================================================================
+class ASTNode;
+class SymbolVariable : public SymbolTypeRef
+{
+public:
         SymbolVariable(const std::string& name);
         SymbolVariable(const std::string &name, shared_ptr<SymbolType> symType);
 
@@ -168,15 +168,15 @@ namespace Compiler
 
         int offset{-1};
 
-    protected:
+protected:
         std::vector<shared_ptr<ASTNode>> initializers_;
-    };
+};
 
-//------------------------------------------------------------------------------
-    class CompoundStatement;
-    class SymbolFunctionType : public SymbolTypeRef
-    {
-    public:
+//==============================================================================
+class CompoundStatement;
+class SymbolFunctionType : public SymbolTypeRef
+{
+public:
         SymbolFunctionType(shared_ptr<SymbolTableWithOrder> parametersSymTable);
         SymbolFunctionType(shared_ptr<SymbolType> returnType, shared_ptr<SymbolTableWithOrder> parametersSymTable);
 
@@ -188,15 +188,15 @@ namespace Compiler
         void SetBody(shared_ptr<CompoundStatement> body);
         shared_ptr<CompoundStatement> GetBody() const;
 
-    private:
+private:
         shared_ptr<SymbolTableWithOrder> parameters_{NULL};
         shared_ptr<CompoundStatement> body_{NULL};
-    };
+};
 
-//------------------------------------------------------------------------------
-    class SymbolStruct : public SymbolType
-    {
-    public:
+//==============================================================================
+class SymbolStruct : public SymbolType
+{
+public:
         SymbolStruct(const std::string name = "");
 
         virtual ESymbolType GetType() const;
@@ -210,59 +210,59 @@ namespace Compiler
 
         bool complete{false};
 
-    private:
+private:
         shared_ptr<SymbolTableWithOrder> fields_{NULL};
         int size_;
-    };
+};
 
-//------------------------------------------------------------------------------
-    class SymbolChar : public SymbolType
-    {
-    public:
+//==============================================================================
+class SymbolChar : public SymbolType
+{
+public:
         SymbolChar();
 
         virtual ESymbolType GetType() const;
         virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
         virtual int GetSize();
-    };
+};
 
-//------------------------------------------------------------------------------
-    class SymbolInt : public SymbolType
-    {
-    public:
+//==============================================================================
+class SymbolInt : public SymbolType
+{
+public:
         SymbolInt();
 
         virtual ESymbolType GetType() const;
         virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
         virtual int GetSize();
-    };
+};
 
-//------------------------------------------------------------------------------
-    class SymbolFloat : public SymbolType
-    {
-    public:
+//==============================================================================
+class SymbolFloat : public SymbolType
+{
+public:
         SymbolFloat();
 
         virtual ESymbolType GetType() const;
         virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
         virtual int GetSize();
-    };
+};
 
-//------------------------------------------------------------------------------
-    class SymbolVoid : public SymbolType
-    {
-    public:
+//==============================================================================
+class SymbolVoid : public SymbolType
+{
+public:
         SymbolVoid();
 
         virtual ESymbolType GetType() const;
         virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
         virtual int GetSize();
-    };
+};
 
-//------------------------------------------------------------------------------
-    class SymbolPointer : public SymbolTypeRef
-    {
-    public:
+//==============================================================================
+class SymbolPointer : public SymbolTypeRef
+{
+public:
         SymbolPointer();
         SymbolPointer(shared_ptr<SymbolType> symType);
 
@@ -270,14 +270,14 @@ namespace Compiler
         virtual std::string GetQualifiedName() const;
         virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
 
-    };
+};
 
-//------------------------------------------------------------------------------
-    class ASTNode;
+//==============================================================================
+class ASTNode;
 
-    class SymbolArray : public SymbolTypeRef
-    {
-    public:
+class SymbolArray : public SymbolTypeRef
+{
+public:
         SymbolArray();
         SymbolArray(shared_ptr<SymbolType> symType);
 
@@ -289,16 +289,16 @@ namespace Compiler
         int GetElementCount() const;
         virtual int GetAbsoluteElementCount();
 
-    private:
+private:
         shared_ptr<ASTNode> sizeInitializer_{NULL};
         int size_{-1};
         unsigned elementCount_{0};
-    };
+};
 
-//------------------------------------------------------------------------------
-    class SymbolConst : public SymbolTypeRef
-    {
-    public:
+//==============================================================================
+class SymbolConst : public SymbolTypeRef
+{
+public:
         SymbolConst();
         SymbolConst(shared_ptr<SymbolType> symType);
 
@@ -306,32 +306,32 @@ namespace Compiler
         virtual std::string GetQualifiedName() const;
         virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
 
-    private:
+private:
         shared_ptr<SymbolType> refSymbol_{NULL};
-    };
+};
 
-//------------------------------------------------------------------------------
-    class SymbolTypedef : public SymbolTypeRef
-    {
-    public:
+//==============================================================================
+class SymbolTypedef : public SymbolTypeRef
+{
+public:
         SymbolTypedef(const std::string& name);
 
         virtual ESymbolType GetType() const;
         virtual std::string GetQualifiedName() const;
         virtual bool IfTypeFits(shared_ptr<Symbol> symbol) const;
 
-    };
+};
 
-//------------------------------------------------------------------------------
-    bool IfSymbolIsRef(shared_ptr<Symbol> symbol);
-    bool IfInteger(shared_ptr<SymbolType> symbol);
-    bool IfArithmetic(shared_ptr<SymbolType> symbol);
-    bool IfScalar(shared_ptr<SymbolType> symbol);
-    bool IfOfType(shared_ptr<SymbolType> symbol, ESymbolType type);
-    bool IfConst(shared_ptr<SymbolType> symbol);
-    shared_ptr<SymbolType> GetRefSymbol(shared_ptr<Symbol> symbol);
-    shared_ptr<SymbolType> CalcCommonArithmeticType(shared_ptr<SymbolType> left, shared_ptr<SymbolType> right);
-    shared_ptr<SymbolType> GetActualType(shared_ptr<SymbolType> symbol);
-    shared_ptr<SymbolType> GetArrayType(shared_ptr<SymbolType> symbol);
+//==============================================================================
+bool IfSymbolIsRef(shared_ptr<Symbol> symbol);
+bool IfInteger(shared_ptr<SymbolType> symbol);
+bool IfArithmetic(shared_ptr<SymbolType> symbol);
+bool IfScalar(shared_ptr<SymbolType> symbol);
+bool IfOfType(shared_ptr<SymbolType> symbol, ESymbolType type);
+bool IfConst(shared_ptr<SymbolType> symbol);
+shared_ptr<SymbolType> GetRefSymbol(shared_ptr<Symbol> symbol);
+shared_ptr<SymbolType> CalcCommonArithmeticType(shared_ptr<SymbolType> left, shared_ptr<SymbolType> right);
+shared_ptr<SymbolType> GetActualType(shared_ptr<SymbolType> symbol);
+shared_ptr<SymbolType> GetArrayType(shared_ptr<SymbolType> symbol);
 
 } // namespace Compiler
