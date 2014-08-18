@@ -7,86 +7,86 @@
 
 namespace Compiler
 {
-    static const char* asmHeader = R"(
+static const char* asmHeader = R"(
     .686P
     .XMM
     include listing.inc
     .model flat
 
-INCLUDELIB LIBCMT
-INCLUDELIB OLDNAMES
+    INCLUDELIB LIBCMT
+    INCLUDELIB OLDNAMES
 
-)";
+    )";
 
-    static const char* asmFooter = R"(
-END
+static const char* asmFooter = R"(
+    END
 
-)";
+    )";
 
-    enum class EAsmMnemonic
-    {
-        MOV,
-        PUSH,
-        POP,
-        RET,
-        CALL,
-        NOP,
-    };
+enum class EAsmMnemonic
+{
+  MOV,
+  PUSH,
+  POP,
+  RET,
+  CALL,
+  NOP,
+};
 
-    enum class EAsmRegister
-    {
-        EAX,
-        EBX,
-        ECX,
-        EDX,
-        ESI,
-        EDI,
-        ESP,
-        EBP,
-    };
+enum class EAsmRegister
+{
+  EAX,
+  EBX,
+  ECX,
+  EDX,
+  ESI,
+  EDI,
+  ESP,
+  EBP,
+};
 
-    class AsmArgument
-    {
-    public:
-    private:
+class AsmArgument
+{
+public:
+private:
 
-    };
+};
 
-    class AsmInstruction
-    {
-    public:
-        AsmInstruction()
-        {
+class AsmInstruction
+{
+public:
+  AsmInstruction()
+  {
 
-        }
+  }
 
-    private:
+private:
 
-    };
+};
 
-    class CodeGenVisitor
-            : virtual public IVisitorBase
-            , virtual public IVisitor<ASTNodeAssignment>
-    {
-    public:
-        void VisitOnEnter(ASTNodeAssignment &)
-        {
+class CodeGenVisitor
+    : virtual public IVisitorBase
+    , virtual public IVisitor<ASTNodeAssignment>
+{
+public:
+  void VisitOnEnter(ASTNodeAssignment &)
+  {
 
-        }
+  }
 
-        void VisitOnLeave(ASTNodeAssignment &)
-        {
+  void VisitOnLeave(ASTNodeAssignment &)
+  {
 
-        }
-    };
+  }
+};
 
-    class CodeGenerator : public Parser
-    {
-    public:
-        CodeGenerator();
-        ~CodeGenerator();
+class CodeGenerator : public Parser
+{
+public:
+  CodeGenerator();
+  ~CodeGenerator();
 
-        virtual void Flush() const;
-    };
+  virtual void Flush() const;
+};
 
 } // namespace Compiler

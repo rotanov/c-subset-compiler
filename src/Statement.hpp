@@ -7,170 +7,170 @@
 
 namespace Compiler
 {
-//------------------------------------------------------------------------------
-    enum class EStatementType
-    {
-        COMPOUND,
-        SELECTION,
-        ITERATION_FOR,
-        ITERATION_DO,
-        ITERATION_WHILE,
-        JUMP,
-        EXPRESSION,
-    };
+//==============================================================================
+enum class EStatementType
+{
+  COMPOUND,
+  SELECTION,
+  ITERATION_FOR,
+  ITERATION_DO,
+  ITERATION_WHILE,
+  JUMP,
+  EXPRESSION,
+};
 
-//------------------------------------------------------------------------------
-    class Statement : public ASTNode
-    {
-    public:
-        Statement(const Token& token);
+//==============================================================================
+class Statement : public ASTNode
+{
+public:
+  Statement(const Token& token);
 
-        // this one really could be derived from the token
-        virtual EStatementType GetStatementType() const = 0;
+  // this one really could be derived from the token
+  virtual EStatementType GetStatementType() const = 0;
 
-    private:
+private:
 
-    };
+};
 
-//------------------------------------------------------------------------------
-    class SymbolTable;
+//==============================================================================
+class SymbolTable;
 
-    class CompoundStatement
-            : public Statement
-            , public IVisitableBase
-    {
-        COMPILER_DECLARE_VISITABLE()
+class CompoundStatement
+    : public Statement
+    , public IVisitableBase
+{
+  COMPILER_DECLARE_VISITABLE()
 
-    public:
-        CompoundStatement(shared_ptr<SymbolTable> symbols);
+  public:
+    CompoundStatement(shared_ptr<SymbolTable> symbols);
 
-        void AddStatement(shared_ptr<Statement> statement);
-        virtual EStatementType GetStatementType() const { return EStatementType::COMPOUND; }
-        shared_ptr<SymbolTable> GetSymbolTable() const;
+  void AddStatement(shared_ptr<Statement> statement);
+  virtual EStatementType GetStatementType() const { return EStatementType::COMPOUND; }
+  shared_ptr<SymbolTable> GetSymbolTable() const;
 
-    private:
-        shared_ptr<SymbolTable> symbols_{NULL};
+private:
+  shared_ptr<SymbolTable> symbols_{NULL};
 
-    };
+};
 
-//------------------------------------------------------------------------------
-    class ExpressionStatement
-            : public Statement
-            , public IVisitableBase
-    {
-        COMPILER_DECLARE_VISITABLE()
+//==============================================================================
+class ExpressionStatement
+    : public Statement
+    , public IVisitableBase
+{
+  COMPILER_DECLARE_VISITABLE()
 
-    public:
-        ExpressionStatement();
+  public:
+    ExpressionStatement();
 
-        void SetExpression(shared_ptr<ASTNode> expression);
-        shared_ptr<ASTNode> GetExpression() const;
-        virtual EStatementType GetStatementType() const { return EStatementType::EXPRESSION; }
+  void SetExpression(shared_ptr<ASTNode> expression);
+  shared_ptr<ASTNode> GetExpression() const;
+  virtual EStatementType GetStatementType() const { return EStatementType::EXPRESSION; }
 
-    private:
+private:
 
-    };
+};
 
-//------------------------------------------------------------------------------
-    class SelectionStatement
-            : public Statement
-            , public IVisitableBase
-    {
-        COMPILER_DECLARE_VISITABLE()
+//==============================================================================
+class SelectionStatement
+    : public Statement
+    , public IVisitableBase
+{
+  COMPILER_DECLARE_VISITABLE()
 
-    public:
-        SelectionStatement();
+  public:
+    SelectionStatement();
 
-        void SetConditionExpression(shared_ptr<ASTNode> conditionExpression);
-        void SetStatementForIf(shared_ptr<Statement> statement);
-        void SetStatementForElse(shared_ptr<Statement> statement);
-        virtual EStatementType GetStatementType() const { return EStatementType::SELECTION; }
+  void SetConditionExpression(shared_ptr<ASTNode> conditionExpression);
+  void SetStatementForIf(shared_ptr<Statement> statement);
+  void SetStatementForElse(shared_ptr<Statement> statement);
+  virtual EStatementType GetStatementType() const { return EStatementType::SELECTION; }
 
-    private:
+private:
 
-    };
+};
 
-//------------------------------------------------------------------------------
-    class IterationStatement : public Statement
-    {
+//==============================================================================
+class IterationStatement : public Statement
+{
 
-    public:
-        virtual void SetControllingExpression(shared_ptr<ASTNode> controllingExpression) = 0;
-        virtual void SetLoopStatement(shared_ptr<Statement> loopStatement) = 0;
+public:
+  virtual void SetControllingExpression(shared_ptr<ASTNode> controllingExpression) = 0;
+  virtual void SetLoopStatement(shared_ptr<Statement> loopStatement) = 0;
 
-    protected:
-        IterationStatement(const Token& token);
+protected:
+  IterationStatement(const Token& token);
 
-    };
+};
 
-//------------------------------------------------------------------------------
-    class ForStatement
-            : public IterationStatement
-            , public IVisitableBase
-    {
-        COMPILER_DECLARE_VISITABLE()
+//==============================================================================
+class ForStatement
+    : public IterationStatement
+    , public IVisitableBase
+{
+  COMPILER_DECLARE_VISITABLE()
 
-    public:
-        ForStatement();
-        virtual EStatementType GetStatementType() const { return EStatementType::ITERATION_FOR; }
-        shared_ptr<SymbolTable> GetSymbolTable() const;
-        void SetSymbolTable(shared_ptr<SymbolTable> symbols);
-        void SetInitializingExpression(shared_ptr<ASTNode> initializingExpression);
-        virtual void SetControllingExpression(shared_ptr<ASTNode> controllingExpression);
-        void SetIterationExpression(shared_ptr<ASTNode> iterationExpression);
-        virtual void SetLoopStatement(shared_ptr<Statement> loopStatement);
+  public:
+    ForStatement();
+  virtual EStatementType GetStatementType() const { return EStatementType::ITERATION_FOR; }
+  shared_ptr<SymbolTable> GetSymbolTable() const;
+  void SetSymbolTable(shared_ptr<SymbolTable> symbols);
+  void SetInitializingExpression(shared_ptr<ASTNode> initializingExpression);
+  virtual void SetControllingExpression(shared_ptr<ASTNode> controllingExpression);
+  void SetIterationExpression(shared_ptr<ASTNode> iterationExpression);
+  virtual void SetLoopStatement(shared_ptr<Statement> loopStatement);
 
-    private:
-        shared_ptr<SymbolTable> symbols_{NULL};
+private:
+  shared_ptr<SymbolTable> symbols_{NULL};
 
-    };
+};
 
-//------------------------------------------------------------------------------
-    class DoStatement
-            : public IterationStatement
-            , public IVisitableBase
-    {
-        COMPILER_DECLARE_VISITABLE()
+//==============================================================================
+class DoStatement
+    : public IterationStatement
+    , public IVisitableBase
+{
+  COMPILER_DECLARE_VISITABLE()
 
-    public:
-        DoStatement();
-        virtual EStatementType GetStatementType() const { return EStatementType::ITERATION_DO; }
-        virtual void SetControllingExpression(shared_ptr<ASTNode> controllingExpression);
-        virtual void SetLoopStatement(shared_ptr<Statement> loopStatement);
+  public:
+    DoStatement();
+  virtual EStatementType GetStatementType() const { return EStatementType::ITERATION_DO; }
+  virtual void SetControllingExpression(shared_ptr<ASTNode> controllingExpression);
+  virtual void SetLoopStatement(shared_ptr<Statement> loopStatement);
 
-    };
+};
 
-//------------------------------------------------------------------------------
-    class WhileStatement
-            : public IterationStatement
-            , public IVisitableBase
-    {
-        COMPILER_DECLARE_VISITABLE()
+//==============================================================================
+class WhileStatement
+    : public IterationStatement
+    , public IVisitableBase
+{
+  COMPILER_DECLARE_VISITABLE()
 
-    public:
-        WhileStatement();
-        virtual EStatementType GetStatementType() const { return EStatementType::ITERATION_WHILE; }
-        virtual void SetControllingExpression(shared_ptr<ASTNode> controllingExpression);
-        virtual void SetLoopStatement(shared_ptr<Statement> loopStatement);
+  public:
+    WhileStatement();
+  virtual EStatementType GetStatementType() const { return EStatementType::ITERATION_WHILE; }
+  virtual void SetControllingExpression(shared_ptr<ASTNode> controllingExpression);
+  virtual void SetLoopStatement(shared_ptr<Statement> loopStatement);
 
-    };
+};
 
-//------------------------------------------------------------------------------
-    class JumpStatement
-            : public Statement
-            , public IVisitableBase
-    {
-        COMPILER_DECLARE_VISITABLE()
+//==============================================================================
+class JumpStatement
+    : public Statement
+    , public IVisitableBase
+{
+  COMPILER_DECLARE_VISITABLE()
 
-    public:
-        JumpStatement(const Token& token);
-        void SetReturnExpression(shared_ptr<ASTNode> expression);
-        shared_ptr<ASTNode> GetReturnExpression() const;
-        virtual EStatementType GetStatementType() const { return EStatementType::JUMP; }
-        void SetRefLoopStatement(shared_ptr<IterationStatement> iterationStatement);
+  public:
+    JumpStatement(const Token& token);
+  void SetReturnExpression(shared_ptr<ASTNode> expression);
+  shared_ptr<ASTNode> GetReturnExpression() const;
+  virtual EStatementType GetStatementType() const { return EStatementType::JUMP; }
+  void SetRefLoopStatement(shared_ptr<IterationStatement> iterationStatement);
 
-    private:
-        shared_ptr<IterationStatement> refLoop_{NULL};
-    };
+private:
+  shared_ptr<IterationStatement> refLoop_{NULL};
+};
 
 } // namespace Compiler
